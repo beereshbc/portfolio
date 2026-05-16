@@ -1,0 +1,545 @@
+/* 1. Import Google Fonts (Outfit) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
+
+/* ==========================================================
+   2. LOCAL FONTS (Using Highly Optimized Variable Fonts)
+   ========================================================== */
+
+/* --- CLASH DISPLAY (Variable Font: Weights 200 to 700) --- */
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('/ClashDisplay_Complete/ClashDisplay_Complete/Fonts/WEB/fonts/ClashDisplay-Variable.woff2') format('woff2'),
+        url('/ClashDisplay_Complete/ClashDisplay_Complete/Fonts/WEB/fonts/ClashDisplay-Variable.woff') format('woff'),
+        url('/ClashDisplay_Complete/ClashDisplay_Complete/Fonts/WEB/fonts/ClashDisplay-Variable.ttf') format('truetype');
+    font-weight: 200 700;
+    font-display: swap;
+    font-style: normal;
+}
+
+/* --- EPILOGUE (Variable Font: Normal, Weights 100 to 900) --- */
+@font-face {
+    font-family: 'Epilogue';
+    src: url('/Epilogue_Complete/Epilogue_Complete/Fonts/WEB/fonts/Epilogue-Variable.woff2') format('woff2'),
+        url('/Epilogue_Complete/Epilogue_Complete/Fonts/WEB/fonts/Epilogue-Variable.woff') format('woff'),
+        url('/Epilogue_Complete/Epilogue_Complete/Fonts/WEB/fonts/Epilogue-Variable.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+}
+
+/* --- EPILOGUE (Variable Font: Italic, Weights 100 to 900) --- */
+@font-face {
+    font-family: 'Epilogue';
+    src: url('/Epilogue_Complete/Epilogue_Complete/Fonts/WEB/fonts/Epilogue-VariableItalic.woff2') format('woff2'),
+        url('/Epilogue_Complete/Epilogue_Complete/Fonts/WEB/fonts/Epilogue-VariableItalic.woff') format('woff'),
+        url('/Epilogue_Complete/Epilogue_Complete/Fonts/WEB/fonts/Epilogue-VariableItalic.ttf') format('truetype');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: italic;
+}
+
+
+/* ==========================================================
+   3. TAILWIND DIRECTIVES
+   ========================================================== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* ==========================================================
+   4. GLOBAL BASE STYLES & TYPOGRAPHY HIERARCHY
+   ========================================================== */
+@layer base {
+
+    /* Root HTML */
+    html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Body Typography & Theme */
+    body {
+        background-color: #F0EAE0;
+        color: #1A1A1A;
+        font-family: 'Epilogue', sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        letter-spacing: -0.5px;
+        font-weight: 400;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        position: relative;
+    }
+
+    /* Typography Scale - Extra Small & Small texts */
+    .text-xs-tiny {
+        font-size: 10px;
+        line-height: 14px;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+
+    .text-xs-small {
+        font-size: 11px;
+        line-height: 16px;
+        letter-spacing: 0.25px;
+        font-weight: 500;
+    }
+
+    .text-caption {
+        font-size: 12px;
+        line-height: 16px;
+        letter-spacing: 0px;
+        font-weight: 400;
+    }
+
+    .text-label {
+        font-size: 12px;
+        line-height: 16px;
+        letter-spacing: 0.3em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .text-small-body {
+        font-size: 13px;
+        line-height: 18px;
+        letter-spacing: 0px;
+        font-weight: 400;
+    }
+
+    /* Heading Hierarchy */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: 'ClashDisplay', sans-serif;
+        font-weight: 700;
+        letter-spacing: -1px;
+        line-height: 1.2;
+    }
+
+    h1 {
+        font-size: 72px;
+        font-weight: 700;
+        letter-spacing: -2px;
+    }
+
+    h2 {
+        font-size: 60px;
+        font-weight: 700;
+        letter-spacing: -1.5px;
+    }
+
+    h3 {
+        font-size: 48px;
+        font-weight: 700;
+        letter-spacing: -1.25px;
+    }
+
+    h4 {
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: -1px;
+    }
+
+    h5 {
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.75px;
+    }
+
+    h6 {
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+    }
+
+    /* Semantic Colors */
+    :root {
+        --color-primary: #000000;
+        --color-secondary: #5A5A5A;
+        --color-tertiary: #8B8B8B;
+        --color-accent: #F45B26;
+        --color-accent-dark: #5E0006;
+        --color-background: #F0EAE0;
+        --color-surface: #FFFFFF;
+        --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+        --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+}
+
+/* ==========================================================
+   5. SCROLLBAR STYLING
+   ========================================================== */
+
+/* Hide scrollbars globally for a cleaner app-like feel */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+body {
+    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+/* Hide scrollbar utility */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ==========================================================
+   6. UTILITY CLASSES & INTERACTIVE ELEMENTS
+   ========================================================== */
+
+/* Selection Styling */
+::selection {
+    background-color: #F45B26;
+    color: #FFFFFF;
+}
+
+::-moz-selection {
+    background-color: #F45B26;
+    color: #FFFFFF;
+}
+
+/* Links */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+a:hover {
+    color: #F45B26;
+}
+
+/* Buttons */
+button {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Epilogue', sans-serif;
+}
+
+/* Inputs */
+input,
+textarea,
+select {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #F45B26;
+    box-shadow: 0 0 0 3px rgba(244, 91, 38, 0.1);
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+    outline: 2px solid #F45B26;
+    outline-offset: 2px;
+}
+
+
+/* ==========================================================
+   7. PREMIUM ANIMATIONS & EFFECTS
+   ========================================================== */
+
+/* Smooth page transitions */
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        filter: blur(10px);
+    }
+
+    to {
+        opacity: 1;
+        filter: blur(0px);
+    }
+}
+
+/* Enhanced text reveal */
+@keyframes textReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) skewY(5deg);
+        filter: blur(4px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) skewY(0deg);
+        filter: blur(0px);
+    }
+}
+
+/* Floating parallax cards */
+@keyframes floatParallax {
+
+    0%,
+    100% {
+        transform: translateY(0px) translateX(0px);
+    }
+
+    25% {
+        transform: translateY(-15px) translateX(5px);
+    }
+
+    50% {
+        transform: translateY(-30px) translateX(0px);
+    }
+
+    75% {
+        transform: translateY(-15px) translateX(-5px);
+    }
+}
+
+/* Glow pulse for interactive elements */
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 15px rgba(244, 91, 38, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(244, 91, 38, 0.4);
+    }
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmerEffect {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+/* Border shimmer */
+@keyframes borderShimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+
+/* ==========================================================
+   8. COMPONENT UTILITIES
+   ========================================================== */
+
+/* Glass morphism effect */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #000000 0%, #5E0006 50%, #F45B26 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Elevated card */
+.card-elevated {
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-elevated:hover {
+    border-color: rgba(244, 91, 38, 0.2);
+    box-shadow: 0 20px 60px rgba(244, 91, 38, 0.1);
+    transform: translateY(-4px);
+}
+
+/* Premium button styling */
+.btn-premium {
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+}
+
+.btn-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transform: translateX(-100%);
+    animation: shimmerEffect 3s infinite;
+    z-index: -1;
+}
+
+.btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(244, 91, 38, 0.3);
+}
+
+/* Divider accent */
+.divider-accent {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #F45B26, transparent);
+}
+
+/* Text gradient animation */
+.text-gradient-animate {
+    background: linear-gradient(90deg,
+            #000000 0%,
+            #5E0006 25%,
+            #F45B26 50%,
+            #5E0006 75%,
+            #000000 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 6s ease infinite;
+}
+
+@keyframes gradientShift {
+
+    0%,
+    100% {
+        background-position: 0% center;
+    }
+
+    50% {
+        background-position: 100% center;
+    }
+}
+
+
+/* ==========================================================
+   9. RESPONSIVE TYPOGRAPHY
+   ========================================================== */
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 48px;
+    }
+
+    h2 {
+        font-size: 36px;
+    }
+
+    h3 {
+        font-size: 28px;
+    }
+
+    h4 {
+        font-size: 24px;
+    }
+
+    h5 {
+        font-size: 18px;
+    }
+
+    h6 {
+        font-size: 16px;
+    }
+
+    body {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+
+    h3 {
+        font-size: 22px;
+    }
+
+    body {
+        font-size: 13px;
+    }
+}
+
+
+/* ==========================================================
+   10. PERFORMANCE OPTIMIZATIONS
+   ========================================================== */
+
+/* GPU acceleration for animations */
+.gpu-accelerate {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

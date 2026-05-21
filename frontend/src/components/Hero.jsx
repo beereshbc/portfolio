@@ -395,20 +395,6 @@ const Hero = () => {
           className="relative z-[11] w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-24 flex flex-col items-center md:items-end text-center md:text-right"
         >
           <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 items-center md:items-end max-w-xl lg:max-w-3xl mt-[-2vh] md:mt-0">
-            {/* SECTION LABEL */}
-            <motion.div
-              initial={{ opacity: 0, x: -24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex items-center gap-3 justify-center md:justify-end"
-            >
-              <span className="font-primary text-[9px] sm:text-[10px] uppercase tracking-[0.5em] text-themeBrown font-bold">
-                Full-Stack Architect
-              </span>
-              <div className="h-px w-8 md:w-12 bg-themeBrown" />
-            </motion.div>
-
             {/* HEADLINE */}
             <div className="overflow-hidden pb-2 w-full flex justify-center md:justify-end">
               <motion.h2

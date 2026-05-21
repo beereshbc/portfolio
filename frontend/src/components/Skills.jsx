@@ -193,25 +193,12 @@ const Skills = () => {
 
       {/* ── HEADER ── */}
       <div className="relative z-20 w-full max-w-7xl mx-auto px-5 text-center mb-10 sm:mb-16">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center items-center gap-3 mb-4"
-        >
-          <div className="h-px w-8 sm:w-12 bg-themeBrown" />
-          <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.5em] text-themeBrown font-bold font-geist">
-            The Arsenal
-          </span>
-          <div className="h-px w-8 sm:w-12 bg-themeBrown" />
-        </motion.div>
-
         <motion.h2
           initial={{ y: 50, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-humane font-black text-6xl sm:text-8xl md:text-[130px] text-themeBlack tracking-tighter leading-[0.8] uppercase"
+          className="font-humane font-black text-2xl sm:text-8xl md:text-[100px] text-themeBlack tracking-tighter leading-[0.8] uppercase"
         >
           Technical <span className="text-themeBrown">Expertise</span>
         </motion.h2>

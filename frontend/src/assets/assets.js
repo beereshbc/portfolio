@@ -129,6 +129,7 @@ export const assets = {
   footerImage,
   me,
 };
+
 export const worksData = [
   // ── P-01 ─────────────────────────────────────────────────────────────────
   {
@@ -154,8 +155,8 @@ export const worksData = [
       "TejasDairy is a purpose-built, end-to-end dairy management system developed for a freelance client. The platform automates the traditionally manual process of recording daily milk collection from multiple suppliers, calculating dynamic billing based on fat/SNF content, and maintaining real-time inventory ledgers. The admin dashboard provides granular control over user accounts, collection records, billing cycles, and monthly reports — drastically reducing operational overhead. Built on the MERN stack with a clean Tailwind CSS interface, the system is designed for ease-of-use by non-technical dairy staff while supporting high-volume daily transactions with reliable RESTful API architecture.",
     images: [p1_img1, p1_img2, p1_img3],
     links: {
-      live: "acssd",
-      github: "csdc",
+      live: "https://tejas-dairy.vercel.app",
+      github: "https://github.com/beereshbc/TJDairy",
     },
   },
 
@@ -199,8 +200,8 @@ export const worksData = [
       p2_img14,
     ],
     links: {
-      live: "",
-      github: "",
+      live: "https://pdms-creater.vercel.app",
+      github: "https://github.com/beereshbc/PDMS",
     },
   },
 
@@ -238,8 +239,8 @@ export const worksData = [
       p3_img8,
     ],
     links: {
-      live: "",
-      github: "",
+      live: "https://cse-gmu-falcon.vercel.app",
+      github: "https://github.com/beereshbc/CSE-GMU",
     },
   },
 
@@ -269,8 +270,8 @@ export const worksData = [
       "Service4U is a full-featured gig-based marketplace for home services, connecting customers with verified service providers across plumbing, electrical, carpentry, cleaning, and event management verticals. The platform features a three-tier role architecture — customers, service providers, and admins — each with purpose-built dashboards. Customers can search providers by service and location, view availability calendars, book real-time slots, and pay securely via Razorpay's payment gateway. Service providers manage their profiles, service offerings, slot availability, and earnings reports. Admins oversee platform-wide operations, handle disputes, and manage provider verifications. Media uploads (profile photos, service portfolio images) are handled by Cloudinary with Multer middleware. Built with JWT-based authentication and bcrypt password hashing for enterprise-grade security.",
     images: [p4_img7, p4_ss1, p4_ss2, p4_ss3, p4_ss4, p4_ss5],
     links: {
-      live: "",
-      github: "",
+      live: "https://service4u-1-frontend.onrender.com",
+      github: "https://github.com/beereshbc/Service4U",
     },
   },
 
@@ -301,7 +302,7 @@ export const worksData = [
     images: [p5_img1, p5_img2, p5_img3, p5_img4, p5_img5, p5_img6],
     links: {
       live: "",
-      github: "",
+      github: "https://github.com/beereshbc/SIH",
     },
   },
 
@@ -346,8 +347,8 @@ export const worksData = [
       p6_img15,
     ],
     links: {
-      live: "",
-      github: "",
+      live: "https://influencaaabrandin.vercel.app",
+      github: "https://github.com/beereshbc/InFluencaaa",
     },
   },
 
@@ -376,8 +377,8 @@ export const worksData = [
       "HealthChain is a Web3 application that reimagines patient health records by leveraging the immutability and transparency of the Ethereum blockchain. Traditional centralised health record systems are vulnerable to data breaches, unauthorised modifications, and inter-provider access friction. HealthChain solves this by storing record hashes on-chain with smart contract-enforced access control — only authorised healthcare providers (granted explicit patient consent) can view or update records. The Solidity smart contract implements granular role-based permissions (patient, doctor, hospital admin) with full audit trails of every access event. The MERN-backed web interface handles record management, consent workflows, and provider search, while Ethers.js and Web3.js manage all blockchain interactions. MetaMask serves as the authentication layer, eliminating password-based vulnerabilities.",
     images: [p7_img1, p7_img2, p7_img3, p7_img4, p7_img5, p7_img6, p7_img7],
     links: {
-      live: "",
-      github: "",
+      live: "https://ub-1013-golden-time.vercel.app",
+      github: "https://github.com/beereshbc/UB-1013",
     },
   },
 
@@ -434,7 +435,7 @@ export const worksData = [
     images: [p9_img1, p9_img2, p9_img3],
     links: {
       live: "",
-      github: "",
+      github: "https://github.com/beereshbc/Prescripto-Frontend",
     },
   },
 
@@ -463,8 +464,8 @@ export const worksData = [
       "Blogiee is a modern, AI-augmented blogging platform that reduces the friction of content creation and publication. At its core is a Gemini API integration that helps writers overcome creative blocks — users can generate full article drafts from a title and bullet points, expand existing paragraphs, improve writing clarity, or generate SEO-optimised meta descriptions with a single click. The rich-text editor supports formatted content (headings, bold, italic, lists, code blocks, image embeds) with a clean, distraction-free writing mode. Category management, tags, and a content discovery feed help readers find relevant articles. The commenting system supports threaded discussions with moderation controls. One-click share functionality generates optimised previews for Twitter, LinkedIn, and WhatsApp. JWT-based auth handles user accounts with public profiles showcasing each writer's portfolio.",
     images: [p10_img1, p10_img2, p10_img3, p10_img4],
     links: {
-      live: "",
-      github: "",
+      live: "https://blogiee-ai.vercel.app",
+      github: "https://github.com/beereshbc/Blogiee-AI",
     },
   },
 
@@ -492,7 +493,7 @@ export const worksData = [
     images: [p11_img1, p11_img2],
     links: {
       live: "",
-      github: "",
+      github: "https://github.com/beereshbc/Lottery-App",
     },
   },
 
@@ -523,7 +524,7 @@ export const worksData = [
     images: [p12_img1],
     links: {
       live: "",
-      github: "",
+      github: "https://github.com/beereshbc/iMAGIFY-Saas",
     },
   },
 
@@ -550,7 +551,7 @@ export const worksData = [
     images: [p13_img1],
     links: {
       live: "",
-      github: "",
+      github: "https://github.com/beereshbc/Gemini-Yaksha",
     },
   },
 
@@ -593,28 +594,39 @@ export const worksData = [
       p14_img14,
     ],
     links: {
-      live: "",
-      github: "",
+      live: "https://inter-connect-self.vercel.app",
+      github: "https://github.com/beereshbc/InterConnect",
     },
   },
 
   // ── P-15 ─────────────────────────────────────────────────────────────────
   {
     id: "P-15",
-    title: "Project Name",
-    projectType: "Type · Description",
-    year: "YYYY",
-    accentColor: "#COLOR",
-    category: "Category",
-    tags: ["Tag1", "Tag2", "Tag3"],
-    softwareUsed: ["Tech1", "Tech2", "Tech3"],
-    shortDescription: "Short description of the project",
+    title: "Photo Organizer",
+    projectType: "Full-Stack Web Application · Photo Management",
+    year: "2024",
+    accentColor: "#4285F4",
+    category: "Web Application",
+    tags: ["React.js", "Node.js", "MongoDB", "OAuth 2.0"],
+    softwareUsed: [
+      "React.js",
+      "Tailwind CSS",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "OAuth 2.0 (Google Login)",
+      "Google Photos API",
+      "Google Cloud Vision",
+      "Docker",
+    ],
+    shortDescription:
+      "A web-based platform that enhances Google Photos organization with seamless uploading, intelligent tagging, advanced search, and interactive slideshow creation capabilities.",
     fullDescription:
-      "Full detailed description of the project goes here with all the details about what was built and why.",
-    images: [p15_img1, p15_img2, p15_img3, p15_img4, p15_img5],
+      "Google Photos Organizer is a comprehensive full-stack web application designed to streamline photo management and organization. Built with a React.js frontend and Node.js/Express backend connected to MongoDB, it integrates seamlessly with Google Photos via OAuth 2.0 authentication. Users can upload photos directly to their Google Photos library, tag images individually or in groups for better categorization, and leverage advanced search functionality to locate photos by custom tags. The application includes date-range filtering to browse photos chronologically and a Memory Slideshow feature to create personalized photo presentations. A unique offering is the ability to generate embeddable slideshow links for integration into external websites, making it ideal for photographers, content creators, and anyone managing large photo collections. The backend leverages Google Cloud Vision API for intelligent image processing, while Docker containerization enables easy deployment across environments. All data is securely managed through MongoDB with proper OAuth authentication handling.",
+    images: [],
     links: {
-      live: "",
-      github: "",
+      live: "https://photo-organizer-falcon.vercel.app",
+      github: "https://github.com/beereshbc/Photo_Organizer",
     },
   },
 ];

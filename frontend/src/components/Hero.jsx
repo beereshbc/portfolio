@@ -169,7 +169,7 @@ const DustParticles = () => {
       draw(ctx) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(244, 91, 38, ${this.opacity})`;
+        ctx.fillStyle = `rgba(94, 0, 6, ${this.opacity * 0.6})`;
         ctx.fill();
       }
     }
@@ -211,11 +211,11 @@ const DustParticles = () => {
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   LOADER COMPONENT — Rotating rings animation
+   LOADER COMPONENT — Rotating rings animation (Updated colors)
 ───────────────────────────────────────────────────────────────── */
 const Loader = () => {
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-darkBg">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-background">
       <div id="loader">
         <div className="inner rotate-one"></div>
         <div className="inner rotate-two"></div>
@@ -240,17 +240,17 @@ const Loader = () => {
         .rotate-one {
           left: 50%;
           margin-left: -25px;
-          border-top: 2px solid #f45b26;
+          border-top: 2px solid #5E0006;
         }
         .rotate-two {
           top: -10px;
           left: 30px;
-          border-left: 2px solid #f45b26;
+          border-left: 2px solid #5E0006;
         }
         .rotate-three {
           top: -10px;
           right: 30px;
-          border-right: 2px solid #f45b26;
+          border-right: 2px solid #5E0006;
         }
         @keyframes rotate {
           0% { transform: rotateZ(0deg); }
@@ -310,8 +310,13 @@ const Hero = () => {
         onMouseMove={onMove}
         className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-start pt-20 md:pt-0 md:items-center justify-center md:justify-end bg-background"
       >
-        {/* GRAIN TEXTURE OVERLAY */}
-        <div className="absolute inset-0 z-[20] opacity-30 pointer-events-none bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22 opacity=%220.08%22/%3E%3C/svg%3E')] bg-repeat" />
+        {/* GRAIN TEXTURE OVERLAY - Light theme optimized */}
+        <div
+          className="absolute inset-0 z-[20] opacity-[0.04] mix-blend-overlay pointer-events-none"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")`,
+          }}
+        />
 
         {/* BACKGROUND EDITORIAL TEXT */}
         <motion.div
@@ -322,17 +327,14 @@ const Hero = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 0.9, scale: 1 }}
             transition={{ duration: 2, ease: "easeOut" }}
-            className="text-[20vw] sm:text-[20vw] md:text-[16vw] font-clash font-black text-black leading-none whitespace-nowrap tracking-tighter"
-            style={{
-              filter: "drop-shadow(0 0 40px rgba(0,0,0,0.8))",
-            }}
+            className="text-[20vw] sm:text-[20vw] md:text-[16vw] font-humane font-black text-themeBlack leading-none whitespace-nowrap tracking-tighter"
           >
             <JellyText text="BEERESH" />
           </motion.div>
         </motion.div>
 
-        {/* PREMIUM CONIC GRADIENT LIGHTING */}
-        <div className="absolute inset-0 z-[2] pointer-events-none bg-gradient-conic from-accent/5 via-transparent to-accent/5 opacity-10" />
+        {/* PREMIUM CONIC GRADIENT LIGHTING - Light theme */}
+        <div className="absolute inset-0 z-[2] pointer-events-none bg-gradient-conic from-themeBrown/3 via-transparent to-themeBrown/3 opacity-90" />
 
         <DustParticles />
 
@@ -354,16 +356,16 @@ const Hero = () => {
           />
         </div>
 
-        {/* GRADIENT SHIELDS - Depth overlays */}
+        {/* GRADIENT SHIELDS - Light theme overlays */}
         <div className="absolute inset-0 z-[6] pointer-events-none bg-gradient-to-l from-background via-background/80 to-transparent opacity-70 md:opacity-90" />
         <div className="absolute inset-0 z-[6] pointer-events-none bg-gradient-to-t from-background via-background/40 to-transparent" />
 
         {/* STATS PANEL - Left side, hidden on mobile/tablet */}
-        <div className="absolute left-4 md:left-8 bottom-[15%] md:bottom-[10%] z-[11] hidden lg:flex flex-col gap-6">
+        <div className="absolute left-4 md:left-8 bottom-[15%] md:bottom-[10%]  z-[11] hidden lg:flex flex-col gap-8">
           {[
-            { num: "Freelancer", label: "MERN Solutions" },
-            { num: "Student", label: "Computer Science Eng" },
-            { num: "MERN", label: "MERN + WEB 3.O Dev" },
+            { num: "8.6/10", label: "CGPA" },
+            { num: "40+", label: "MERN Projects" },
+            { num: "10+", label: "Live Deployments" },
           ].map((stat, idx) => (
             <motion.div
               key={stat.label}
@@ -377,10 +379,10 @@ const Hero = () => {
               whileHover={{ x: 8 }}
               className="group flex flex-col items-start cursor-pointer"
             >
-              <span className="font-clash text-2xl lg:text-3xl font-bold leading-none text-textPrimary group-hover:text-accent transition-colors duration-300">
+              <span className="font-epilogue font-black text-2xl lg:text-3xl  text-themeBlack group-hover:text-themeBrown transition-colors duration-300">
                 {stat.num}
               </span>
-              <span className="font-outfit text-[10px] uppercase tracking-[0.25em] text-textTertiary group-hover:text-accent mt-1 transition-colors">
+              <span className="font-epilogue text-[10xl] sm:text-[10px]  tracking-[0.2em] text-textTertiary group-hover:text-themeBrown transition-colors font-bold">
                 {stat.label}
               </span>
             </motion.div>
@@ -392,7 +394,21 @@ const Hero = () => {
           style={{ x: textX, y: textY }}
           className="relative z-[11] w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-24 flex flex-col items-center md:items-end text-center md:text-right"
         >
-          <div className="flex flex-col gap-4 sm:gap-6 items-center md:items-end max-w-xl lg:max-w-3xl mt-[-2vh] md:mt-0">
+          <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 items-center md:items-end max-w-xl lg:max-w-3xl mt-[-2vh] md:mt-0">
+            {/* SECTION LABEL */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex items-center gap-3 justify-center md:justify-end"
+            >
+              <span className="font-primary text-[9px] sm:text-[10px] uppercase tracking-[0.5em] text-themeBrown font-bold">
+                Full-Stack Architect
+              </span>
+              <div className="h-px w-8 md:w-12 bg-themeBrown" />
+            </motion.div>
+
             {/* HEADLINE */}
             <div className="overflow-hidden pb-2 w-full flex justify-center md:justify-end">
               <motion.h2
@@ -404,17 +420,17 @@ const Hero = () => {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 style={{ rotateZ }}
-                className="font-clash font-bold text-textPrimary leading-[1.1] sm:leading-[0.95] tracking-tighter text-4xl sm:text-5xl md:text-6xl lg:text-[80px]"
+                className="font-humane font-black text-themeBlack leading-[0.85] sm:leading-[0.95] tracking-tighter text-5xl sm:text-6xl md:text-7xl lg:text-[100px]"
               >
-                <JellyText text="Reality Is Just" />
+                <JellyText text="Building the" />
                 <br />
                 <motion.span
-                  className="font-clash italic font-medium text-accent inline-block"
+                  className="font-humane italic font-medium text-themeBrown inline-block"
                   animate={{
                     textShadow: [
-                      "0 0 8px rgba(244,91,38,0.3)",
-                      "0 0 16px rgba(244,91,38,0.6)",
-                      "0 0 8px rgba(244,91,38,0.3)",
+                      "0 0 8px rgba(94,0,6,0.2)",
+                      "0 0 16px rgba(94,0,6,0.4)",
+                      "0 0 8px rgba(94,0,6,0.2)",
                     ],
                   }}
                   transition={{
@@ -423,20 +439,45 @@ const Hero = () => {
                     ease: "easeInOut",
                   }}
                 >
-                  <JellyText text="The Beginning" />
+                  <JellyText text="Future Today" />
                 </motion.span>
               </motion.h2>
             </div>
 
-            {/* SUBTITLE */}
+            {/* SUBTITLE / BIO */}
             <motion.p
               initial={{ opacity: 0, filter: "blur(8px)" }}
               animate={{ opacity: 1, filter: "blur(0px)" }}
               transition={{ delay: 1, duration: 0.7 }}
-              className="text-textSecondary font-outfit text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.2em] sm:tracking-[0.25em] max-w-xs sm:max-w-md uppercase"
+              className="text-textSecondary font-primary text-xs sm:text-sm md:text-sm font-medium tracking-wide leading-relaxed max-w-xs sm:max-w-md md:max-w-lg"
             >
-              Software Architect & Web3 Pioneer
+              Full-Stack Developer | MERN Specialist | Web3 Pioneer | AI
+              Integration Expert
             </motion.p>
+
+            {/* CTA SECTION */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.3, duration: 0.6 }}
+              className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mt-2"
+            >
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-themeBrown bg-themeBrown text-white font-primary font-bold text-sm uppercase tracking-wider transition-all duration-300 hover:shadow-lg"
+              >
+                Let's Collaborate
+              </motion.button>
+              <motion.a
+                href="#me"
+                whileHover={{ scale: 1.02, x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg border border-borderLight bg-white text-themeBlack font-primary font-bold text-sm uppercase tracking-wider transition-all duration-300 hover:border-themeBrown hover:shadow-md"
+              >
+                Learn More ↓
+              </motion.a>
+            </motion.div>
           </div>
         </motion.div>
       </section>

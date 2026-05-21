@@ -60,12 +60,11 @@ const StatCard = ({ value, unit, label, index }) => (
     viewport={{ once: true }}
     transition={{ duration: 0.6, delay: 0.1 * index, ease: "easeOut" }}
     whileHover={{ y: -4, scale: 1.03 }}
-    className="relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl
-               border border-black/10 bg-white/40 backdrop-blur-md shadow-sm
-               hover:border-themeBrown/40 transition-colors duration-300
+    className="relative flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl
+               border border-borderLight bg-white shadow-sm
+               hover:border-themeBrown hover:shadow-md transition-all duration-300
                cursor-default group overflow-hidden"
   >
-    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-themeBrown/10 via-transparent to-transparent rounded-2xl" />
     <p className="font-primary font-black text-2xl sm:text-3xl text-themeBlack leading-none tracking-tighter">
       <CountUp value={value} />
       <span className="text-themeBrown text-xl sm:text-2xl">{unit}</span>
@@ -83,17 +82,17 @@ const EduRow = ({ item, index }) => (
     whileInView={{ opacity: 1, x: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.55, delay: 0.15 * index, ease: "easeOut" }}
-    className={`relative flex items-start gap-4 p-4 sm:p-5 rounded-xl border transition-colors duration-300 shadow-sm
+    className={`relative flex items-start gap-4 p-4 sm:p-5 rounded-lg border transition-all duration-300 shadow-sm
       ${
         item.current
-          ? "border-themeBrown/30 bg-themeBrown/5 hover:bg-themeBrown/10"
-          : "border-black/5 bg-white/40 hover:bg-white/70"
+          ? "border-themeBrown bg-white hover:shadow-md"
+          : "border-borderLight bg-white hover:shadow-md"
       }`}
   >
     <div className="mt-1 flex-shrink-0 flex flex-col items-center gap-1">
       <div
         className={`w-2.5 h-2.5 rounded-full border-2 flex-shrink-0
-          ${item.current ? "border-themeBrown bg-themeBrown shadow-[0_0_12px_rgba(244,91,38,0.5)]" : "border-black/20 bg-transparent"}`}
+          ${item.current ? "border-themeBrown bg-themeBrown" : "border-textTertiary bg-transparent"}`}
       />
     </div>
 
@@ -103,7 +102,7 @@ const EduRow = ({ item, index }) => (
           {item.degree}
         </p>
         {item.current && (
-          <span className="font-themeBrown text-[8px] text-themeBrown border border-themeBrown/40 px-2 py-0.5 rounded-full bg-themeBrown/10 uppercase tracking-wider flex-shrink-0 font-bold">
+          <span className="font-themeBrown text-[8px] text-themeBrown border border-themeBrown px-2 py-0.5 rounded-full bg-white uppercase tracking-wider flex-shrink-0 font-bold">
             Current
           </span>
         )}
@@ -115,7 +114,7 @@ const EduRow = ({ item, index }) => (
         <span className="font-themeBrown text-themeBrown font-bold text-[10px] sm:text-xs">
           {item.score}
         </span>
-        <span className="w-1 h-1 rounded-full bg-black/20" />
+        <span className="w-1 h-1 rounded-full bg-borderLight" />
         <span className="font-themeBrown text-themeBlack/50 text-[9px] sm:text-[10px] font-medium">
           {item.year}
         </span>
@@ -154,8 +153,8 @@ const Me = () => {
       />
 
       {/* ── BACKGROUND GLOWS (Adapted for Light Theme) ── */}
-      <div className="absolute top-[-10%] right-[-5%] w-[700px] h-[700px] bg-themeBrown/10 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-white blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-5%] w-[700px] h-[700px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] pointer-events-none" />
 
       {/* Inner Container: Scrollable while maintaining section height */}
       <div className="relative z-10 w-full flex-1 overflow-y-auto hide-scrollbar pb-20">
@@ -208,10 +207,9 @@ const Me = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, ease: "easeOut" }}
-                className="relative rounded-2xl border border-black/10 bg-white/60 backdrop-blur-md p-6 sm:p-8 overflow-hidden group shadow-sm"
+                className="relative rounded-xl border border-borderLight bg-white p-6 sm:p-8 overflow-hidden group shadow-sm"
               >
-                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-themeBrown/50 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-br from-themeBrown/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute top-0 left-0 w-full h-px bg-themeBrown/20" />
 
                 <div className="relative z-10 flex flex-col gap-1">
                   <p className="font-themeBrown text-themeBrown text-[10px] uppercase tracking-[0.4em] font-bold mb-2">
@@ -235,8 +233,8 @@ const Me = () => {
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 * i + 0.3 }}
                         className="font-themeBrown text-[9px] sm:text-[10px] uppercase tracking-widest font-bold
-                                     px-3 py-1.5 rounded-full border border-black/10 bg-white/80
-                                     text-themeBlack/70 hover:border-themeBrown/40 hover:text-themeBrown transition-colors duration-200"
+                                     px-3 py-1.5 rounded-full border border-borderLight bg-surface
+                                     text-themeBlack/70 hover:x1hemeBrown hover:text-themeBrown transition-colors duration-200"
                       >
                         {tag}
                       </motion.span>
@@ -303,16 +301,16 @@ const Me = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 0.3 }}
-                className="relative rounded-2xl border border-black/20 bg-[#0a0a0a] p-5 sm:p-6 overflow-hidden shadow-xl"
+                className="relative rounded-xl border border-themeBlack/10 bg-themeBlack p-5 sm:p-6 overflow-hidden shadow-md"
               >
                 {/* Traffic lights */}
                 <div className="flex gap-1.5 mb-4">
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-themeBrown shadow-[0_0_10px_rgba(244,91,38,0.5)]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-white/30" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-white/30" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-themeBrown" />
                 </div>
 
-                <div className="font-mono text-white/80 text-[10px] sm:text-xs leading-loose bg-white/[0.03] p-4 rounded-xl border border-white/10">
+                <div className="font-mono text-white/80 text-[10px] sm:text-xs leading-loose bg-black p-4 rounded-lg border border-white/10">
                   <TypewriterLine delay={0.5}>
                     <span className="text-themeBrown italic">const</span>{" "}
                     <span className="text-white font-semibold">architect</span>{" "}
@@ -399,8 +397,8 @@ const Me = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: 0.1 * i }}
                     whileHover={{ scale: 1.04, y: -2 }}
-                    className="flex items-center gap-3 p-4 rounded-xl border border-black/5
-                               bg-white/60 hover:border-themeBrown/40 hover:bg-white shadow-sm
+                    className="flex items-center gap-3 p-4 rounded-lg border border-borderLight
+                               bg-white hover:border-themeBrown hover:shadow-md
                                transition-all duration-300 cursor-default group"
                   >
                     <span className="text-xl sm:text-2xl group-hover:scale-110 transition-transform duration-200">
@@ -420,13 +418,13 @@ const Me = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.75, delay: 0.2 }}
-              className="md:col-span-7 relative rounded-2xl border border-black/5 bg-white/40 shadow-sm
+              className="md:col-span-7 relative rounded-xl border border-borderLight bg-white shadow-sm
                          p-6 sm:p-8 overflow-hidden group flex flex-col justify-between gap-6"
             >
-              <div className="absolute top-0 right-4 font-primary font-black text-[140px] leading-none text-black/[0.03] pointer-events-none select-none">
+              <div className="absolute top-0 right-4 font-primary font-black text-[140px] leading-none text-black/[0.05] pointer-events-none select-none">
                 "
               </div>
-              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-themeBrown/40 via-transparent to-transparent" />
+              <div className="absolute top-0 left-0 w-full h-px bg-themeBrown/30" />
 
               <p className="relative z-10 font-primary font-light text-2xl sm:text-3xl md:text-4xl text-themeBlack leading-snug tracking-tight">
                 "Code is the closest thing we have to{" "}
@@ -445,7 +443,7 @@ const Me = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 border border-black/10 px-3 py-1.5 rounded-full bg-white/50">
+                <div className="flex items-center gap-2 border border-borderLight px-3 py-1.5 rounded-full bg-white">
                   <div className="w-2 h-2 rounded-full bg-themeBrown animate-pulse" />
                   <span className="font-themeBrown text-themeBlack/70 font-bold text-[9px] uppercase tracking-widest">
                     Available for Internships

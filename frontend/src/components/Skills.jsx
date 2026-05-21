@@ -1,83 +1,30 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Globe,
+  Hexagon,
+  Brain,
+  Cpu,
+  Paintbrush,
+  Code,
+  Award,
+  Server,
+  Sparkles,
+} from "lucide-react";
 
-// ── CUSTOM INLINE ICONS (Zero Dependencies) ──
-const WebIcon = ({ size = 24 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-    <line x1="8" y1="21" x2="16" y2="21" />
-    <line x1="12" y1="17" x2="12" y2="21" />
-  </svg>
-);
-
-const BlockchainIcon = ({ size = 24 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-    <line x1="12" y1="22.08" x2="12" y2="12" />
-  </svg>
-);
-
-const AiIcon = ({ size = 24 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M12 2v20" />
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-  </svg>
-);
-
-const CoreIcon = ({ size = 24 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polyline points="16 18 22 12 16 6" />
-    <polyline points="8 6 2 12 8 18" />
-  </svg>
-);
-
-// ── SKILLS DATA (Consolidated to 4 Pillars for a sleek layout) ──
-// Data sourced accurately from your CV [cite: 23, 24, 25, 26, 27, 28, 30, 31]
-const skillsData = [
+/* ═══════════════════════════════════════════════════════════
+   SKILLS DATA — Complete with optimized images and colors
+═══════════════════════════════════════════════════════════ */
+const skillsCarouselData = [
   {
-    title: "MERN Stack & Web",
-    icon: <WebIcon size={28} />,
+    id: 1,
+    title: "MERN Stack Mastery",
+    subtitle: "Full-Scale Web Engineering",
+    description:
+      "Production-grade applications with React, Node, Express, MongoDB. Integrated JWT, REST APIs, real-time features, and payment gateways. Delivered 10+ live systems for enterprise and academic clients.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&h=600&fit=crop",
+    icon: <Globe size={28} />,
     skills: [
       "React.js",
       "Node.js",
@@ -86,11 +33,20 @@ const skillsData = [
       "Tailwind CSS",
       "JWT Auth",
       "REST APIs",
+      "Socket.io",
     ],
+    color: "#f45b26",
+    bgGradient: "from-orange-500/20 to-red-500/20",
   },
   {
+    id: 2,
     title: "Web3 & Blockchain",
-    icon: <BlockchainIcon size={28} />,
+    subtitle: "Decentralized Innovation",
+    description:
+      "Smart contract development with Solidity, Hardhat, Ethers.js. Integrated MetaMask, IPFS, and Hedera. Built secure dApps and token systems for real-world use cases.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=500&h=600&fit=crop",
+    icon: <Hexagon size={28} />,
     skills: [
       "Solidity",
       "Hardhat",
@@ -100,279 +56,545 @@ const skillsData = [
       "IPFS",
       "Hedera",
     ],
+    color: "#6c5ce7",
+    bgGradient: "from-purple-500/20 to-indigo-500/20",
   },
   {
+    id: 3,
     title: "AI & Machine Learning",
-    icon: <AiIcon size={28} />,
+    subtitle: "Intelligent Systems",
+    description:
+      "Python-based AI solutions using TensorFlow, Scikit-learn, Gemini & OpenAI APIs. Built NLP pipelines, predictive models, and AI-integrated curriculum management systems.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&h=600&fit=crop",
+    icon: <Brain size={28} />,
     skills: [
       "Python",
-      "TensorFlow / Keras",
+      "TensorFlow/Keras",
       "Scikit-learn",
       "Gemini API",
       "OpenAI API",
       "NLP",
       "Pandas",
     ],
+    color: "#00cec9",
+    bgGradient: "from-cyan-500/20 to-teal-500/20",
   },
   {
-    title: "Core CS & DevOps",
-    icon: <CoreIcon size={28} />,
+    id: 4,
+    title: "Core CS & DSA",
+    subtitle: "Algorithmic Foundation",
+    description:
+      "Strong grasp of Data Structures, Algorithms, OOP, and time/space complexity. Active LeetCode solver with Java, C, and JavaScript. Built efficient, scalable backends.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=500&h=600&fit=crop",
+    icon: <Cpu size={28} />,
     skills: [
-      "Java (OOP)",
+      "Java",
       "C",
       "JavaScript (ES6+)",
       "DSA",
+      "OOP Design Patterns",
+      "Complexity Analysis",
+    ],
+    color: "#0984e3",
+    bgGradient: "from-blue-500/20 to-cyan-500/20",
+  },
+  {
+    id: 5,
+    title: "DevOps & Tools",
+    subtitle: "Streamlined CI/CD",
+    description:
+      "Containerization with Docker, version control with Git/GitHub, CI/CD pipelines, and deployment on cloud platforms. Experienced with Postman, Cloudinary, and Razorpay.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=500&h=600&fit=crop",
+    icon: <Server size={28} />,
+    skills: [
       "Docker",
       "Git/GitHub",
       "CI/CD",
+      "Postman",
+      "Cloudinary",
+      "Razorpay",
+      "Vercel",
     ],
+    color: "#e17055",
+    bgGradient: "from-orange-500/20 to-rose-500/20",
+  },
+  {
+    id: 6,
+    title: "UI/UX & Prototyping",
+    subtitle: "Design + Development",
+    description:
+      "Crafting modern, responsive interfaces with Figma, Canva, and Eraser.io. Focus on micro-interactions, accessibility, and pixel-perfect implementation.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=500&h=600&fit=crop",
+    icon: <Paintbrush size={28} />,
+    skills: [
+      "Figma",
+      "Canva",
+      "Eraser.io",
+      "Wireframing",
+      "Prototyping",
+      "UI/UX Principles",
+    ],
+    color: "#fd79a8",
+    bgGradient: "from-pink-500/20 to-rose-500/20",
+  },
+  {
+    id: 7,
+    title: "Academic Systems",
+    subtitle: "University-Scale Platforms",
+    description:
+      "Official developer for GM University's CSE portal and AI-integrated Curriculum Management System (PDMS). Built for 200+ active users with 100% uptime during events.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&h=600&fit=crop",
+    icon: <Award size={28} />,
+    skills: [
+      "MERN",
+      "Gemini API",
+      "Event Management",
+      "Scalability",
+      "User Analytics",
+    ],
+    color: "#a29bfe",
+    bgGradient: "from-purple-400/20 to-pink-400/20",
+  },
+  {
+    id: 8,
+    title: "Freelance & Leadership",
+    subtitle: "Client-Driven Solutions",
+    description:
+      "Delivered end-to-end projects for diverse clients, leading cross-functional teams. Organized Interconnect 26.0, a university-wide open-source program inspired by GSoC.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=600&fit=crop",
+    icon: <Sparkles size={28} />,
+    skills: [
+      "Project Management",
+      "Client Communication",
+      "Team Coordination",
+      "Agile",
+      "Mentoring",
+    ],
+    color: "#fdcb6e",
+    bgGradient: "from-yellow-500/20 to-orange-500/20",
   },
 ];
 
-// ── ANIMATION VARIANTS ──
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-  },
+/* ═══════════════════════════════════════════════════════════
+   3D CAROUSEL HELPER FUNCTIONS
+═══════════════════════════════════════════════════════════ */
+const getZIndex = (total, index, active) => {
+  return total - Math.abs(index - active);
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 50, filter: "blur(10px)" },
-  show: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { type: "spring", stiffness: 60, damping: 15 },
-  },
+const getItemStyle = (index, active, total) => {
+  const relativeIndex = (index - active) / total;
+  const x = relativeIndex * 800;
+  const y = relativeIndex * 200;
+  const rot = relativeIndex * 120;
+  const zIndex = getZIndex(total, index, active);
+
+  let opacity = 1;
+  const distance = Math.abs(index - active);
+
+  if (distance > 2) opacity = 0;
+  else if (distance === 2) opacity = 0.4;
+  else if (distance === 1) opacity = 0.8;
+
+  return {
+    transform: `translate(${x}%, ${y}%) rotate(${rot}deg)`,
+    zIndex,
+    opacity,
+    transition:
+      "transform 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1), opacity 0.5s ease",
+  };
 };
 
-const pillVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  show: {
-    opacity: 1,
-    scale: 1,
-    transition: { type: "spring", stiffness: 100 },
-  },
-};
-
-const titleLetterVariants = {
-  hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
-  show: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { type: "spring", damping: 15, stiffness: 100 },
-  },
-};
-
-// ── BACKGROUND MARQUEE COMPONENT ──
-const BackgroundMarquee = () => {
+/* ═══════════════════════════════════════════════════════════
+   ANIMATED BACKGROUND COMPONENT
+═══════════════════════════════════════════════════════════ */
+const AnimatedBackground = () => {
   return (
-    <div className="absolute inset-0 z-0 flex flex-col justify-center items-center pointer-events-none overflow-hidden opacity-[0.07] select-none">
-      {/* Row 1: Left to Right */}
-      <div className="flex w-full whitespace-nowrap animate-marquee-left">
-        <span
-          className="font-humane text-[180px] md:text-[250px] leading-none tracking-tight text-transparent font-black mx-4"
-          style={{ WebkitTextStroke: "2px #000" }}
-        >
-          REACT NODE MONGODB EXPRESS TAILWIND JAVASCRIPT REACT NODE MONGODB
-          EXPRESS TAILWIND JAVASCRIPT
-        </span>
-      </div>
-      {/* Row 2: Right to Left */}
-      <div className="flex w-full whitespace-nowrap animate-marquee-right mt-[-40px] md:mt-[-80px]">
-        <span className="font-humane text-[180px] md:text-[250px] leading-none tracking-tight text-themeBlack font-black mx-4">
-          SOLIDITY ETHERS HARDHAT WEB3 IPFS METAMASK SOLIDITY ETHERS HARDHAT
-          WEB3 IPFS METAMASK
-        </span>
-      </div>
-      {/* Row 3: Left to Right */}
-      <div className="flex w-full whitespace-nowrap animate-marquee-left mt-[-40px] md:mt-[-80px]">
-        <span
-          className="font-humane text-[180px] md:text-[250px] leading-none tracking-tight text-transparent font-black mx-4"
-          style={{ WebkitTextStroke: "2px #000" }}
-        >
-          PYTHON TENSORFLOW GEMINI SCiKIT PANDAS NLP PYTHON TENSORFLOW GEMINI
-          SCiKIT PANDAS NLP
-        </span>
-      </div>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Animated Gradient Orbs */}
+      <motion.div
+        animate={{
+          x: [0, 100, -100, 0],
+          y: [0, -100, 100, 0],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-orange-500 to-red-500 rounded-full blur-3xl opacity-20"
+      />
+
+      <motion.div
+        animate={{
+          x: [0, -100, 100, 0],
+          y: [0, 100, -100, 0],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2,
+        }}
+        className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-3xl opacity-20"
+      />
+
+      {/* Grid Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.02)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-40" />
     </div>
   );
 };
 
-const Skills = () => {
-  const headerText = "TECHNICAL".split("");
+/* ═══════════════════════════════════════════════════════════
+   SKILL CARD COMPONENT
+═══════════════════════════════════════════════════════════ */
+const SkillCard = ({ skill, isActive, onClick, style }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   return (
-    <section
-      id="skills"
-      // STRICT H-SCREEN: Rounded corners, matches Hero bg-background
-      className="relative w-full h-[100dvh] bg-background rounded-t-[2.5rem] md:rounded-t-[4rem] flex flex-col items-center pt-10 sm:pt-16 md:pt-20 pb-6 overflow-hidden shadow-[0_-20px_50px_rgba(0,0,0,0.05)] z-10"
+    <motion.div
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyPress={(e) => {
+        if (e.key === "Enter") {
+          onClick();
+        }
+      }}
+      aria-label={`${skill.title} skill card, ${isActive ? "active" : "inactive"}`}
+      style={style}
+      className="absolute cursor-pointer will-change-transform focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+      whileHover={{ scale: isActive ? 1.05 : 1.02 }}
+      whileTap={{ scale: 0.98 }}
     >
-      {/* ── GRAIN TEXTURE ── */}
       <div
-        className="absolute inset-0 z-[1] pointer-events-none opacity-[0.04] mix-blend-overlay"
+        className={`
+          relative w-[280px] sm:w-[320px] md:w-[380px] lg:w-[420px] 
+          h-[420px] sm:h-[460px] md:h-[500px] lg:h-[540px]
+          rounded-2xl overflow-hidden transition-all duration-300
+          ${isActive ? "scale-105" : "scale-100"}
+          hover:shadow-2xl
+        `}
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")`,
+          boxShadow: isActive
+            ? `0 25px 50px -12px ${skill.color}80`
+            : "0 10px 30px -15px rgba(0,0,0,0.3)",
         }}
-      />
-
-      {/* ── CINEMATIC MARQUEE BACKGROUND ── */}
-      <BackgroundMarquee />
-
-      {/* ── ATMOSPHERIC GLOWS ── */}
-      <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-themeBrown/10 blur-[150px] rounded-full pointer-events-none z-[2]" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-white/80 blur-[120px] rounded-full pointer-events-none z-[2]" />
-
-      {/* Inner Container: flex-1 ensures it respects h-screen constraints */}
-      <div className="relative z-10 w-full max-w-[1400px] px-5 sm:px-12 lg:px-24 h-full flex flex-col">
-        {/* ── HEADER SECTION ── */}
-        <div className="flex flex-col mb-6 md:mb-10 w-full shrink-0">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center gap-3 mb-1 sm:mb-2"
-          >
-            <div className="h-px w-8 md:w-12 bg-themeBrown" />
-            <span className="font-geist text-[9px] sm:text-[10px] uppercase tracking-[0.5em] text-themeBrown font-bold">
-              The Architecture
-            </span>
-          </motion.div>
-
-          {/* Staggered Title Animation */}
-          <div className="flex flex-col sm:flex-row sm:items-end gap-0 sm:gap-6 overflow-hidden perspective-[1000px]">
-            <motion.h2
-              variants={{
-                hidden: { opacity: 0 },
-                show: {
-                  opacity: 1,
-                  transition: { staggerChildren: 0.05, delayChildren: 0.1 },
-                },
-              }}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              className="flex font-humane text-[5rem] sm:text-9xl md:text-[140px] text-themeBlack leading-[0.8] tracking-tighter drop-shadow-sm uppercase"
+      >
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0 z-0">
+          {imageError ? (
+            <div
+              className={`w-full h-full bg-gradient-to-br ${skill.bgGradient} flex items-center justify-center`}
             >
-              {headerText.map((char, index) => (
-                <motion.span
-                  key={index}
-                  variants={titleLetterVariants}
-                  className="inline-block"
-                >
-                  {char}
-                </motion.span>
-              ))}
-            </motion.h2>
+              <Code size={48} className="text-white/50" />
+            </div>
+          ) : (
+            <>
+              <img
+                src={skill.imageUrl}
+                alt={skill.title}
+                className={`w-full h-full object-cover transition-opacity duration-500 ${
+                  imageLoaded ? "opacity-100" : "opacity-0"
+                }`}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+                loading="lazy"
+              />
+              {!imageLoaded && (
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${skill.bgGradient}`}
+                />
+              )}
+            </>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/20" />
+        </div>
 
-            <motion.span
-              initial={{ opacity: 0, x: -30, filter: "blur(10px)" }}
-              whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-              className="font-season italic text-4xl sm:text-6xl md:text-[80px] text-themeBrown lowercase tracking-normal pb-1 sm:pb-4 drop-shadow-[0_4px_15px_rgba(94,0,6,0.15)]"
+        {/* Content Container */}
+        <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 text-white z-10 flex flex-col gap-3 h-auto">
+          {/* Icon + Title Row */}
+          <div className="flex items-start gap-3">
+            <div
+              className="p-2.5 rounded-lg bg-white/10 backdrop-blur-sm flex-shrink-0 border border-white/20"
+              style={{ color: skill.color }}
             >
-              Arsenal.
-            </motion.span>
+              {skill.icon}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-clash font-bold text-lg md:text-2xl tracking-tight leading-tight break-words">
+                {skill.title}
+              </h3>
+              <p className="font-outfit text-xs opacity-80 mt-1">
+                {skill.subtitle}
+              </p>
+            </div>
+          </div>
+
+          {/* Description */}
+          <p className="font-outfit text-xs sm:text-sm text-white/90 line-clamp-3 leading-relaxed">
+            {skill.description}
+          </p>
+
+          {/* Skills Pills */}
+          <div className="flex flex-wrap gap-2 mt-2">
+            {skill.skills.slice(0, 5).map((tech, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.05 }}
+                className="font-mono text-[9px] sm:text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 whitespace-nowrap"
+              >
+                {tech}
+              </motion.span>
+            ))}
+            {skill.skills.length > 5 && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.25 }}
+                className="font-mono text-[9px] sm:text-[10px] font-bold px-2.5 py-1.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/30"
+              >
+                +{skill.skills.length - 5}
+              </motion.span>
+            )}
           </div>
         </div>
 
-        {/* ── PILLAR GRID (Horizontal Scroll on Mobile, 4-Cols on Desktop) ── */}
-        <div className="w-full flex-1 min-h-0 overflow-y-auto hide-scrollbar pb-10">
+        {/* Active Indicator */}
+        {isActive && (
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5 h-full"
-          >
-            {skillsData.map((category, index) => (
-              <motion.div
-                key={index}
-                variants={cardVariants}
-                className="relative flex flex-col p-6 sm:p-8 rounded-[1.5rem] bg-white/70 border border-black/5 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.03)] overflow-hidden group transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:bg-white h-full"
-              >
-                {/* Top Inner Glow */}
-                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-themeBrown/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            layoutId="activeIndicator"
+            className="absolute top-4 right-4 w-3 h-3 rounded-full"
+            style={{ background: skill.color }}
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        )}
+      </div>
+    </motion.div>
+  );
+};
 
-                {/* Card Header & Icon */}
-                <div className="flex flex-col gap-5 mb-8 relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-black/[0.03] border border-black/5 flex items-center justify-center text-themeBlack/40 group-hover:bg-themeBrown group-hover:text-white group-hover:border-themeBrown group-hover:rotate-6 transition-all duration-500 shadow-sm group-hover:shadow-[0_0_20px_rgba(94,0,6,0.4)]">
-                    {category.icon}
-                  </div>
-                  <h3 className="font-primary font-black text-xl lg:text-2xl text-themeBlack tracking-tight leading-tight group-hover:text-themeBrown transition-colors duration-300">
-                    {category.title}
-                  </h3>
-                </div>
+/* ═══════════════════════════════════════════════════════════
+   MAIN SKILLS CAROUSEL COMPONENT
+═══════════════════════════════════════════════════════════ */
+const Skills = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isAutoplay, setIsAutoplay] = useState(true);
+  const totalItems = skillsCarouselData.length;
 
-                {/* Skills List (Staggered Pills) */}
-                <motion.div
-                  className="flex flex-wrap gap-2 relative z-10 mt-auto"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    show: {
-                      opacity: 1,
-                      transition: { staggerChildren: 0.05, delayChildren: 0.3 },
-                    },
-                  }}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true }}
-                >
-                  {category.skills.map((skill, i) => (
-                    <motion.span
-                      key={i}
-                      variants={pillVariants}
-                      whileHover={{
-                        scale: 1.05,
-                        backgroundColor: "#5E0006",
-                        color: "#FFFFFF",
-                      }}
-                      className="font-mono text-[10px] sm:text-xs text-themeBlack/80 font-bold px-3 py-1.5 rounded-lg bg-white border border-black/10 shadow-sm transition-colors duration-300 cursor-default"
-                    >
-                      {skill}
-                    </motion.span>
-                  ))}
-                </motion.div>
+  // Auto-advance carousel with pause on interaction
+  useEffect(() => {
+    if (!isAutoplay) return;
 
-                {/* Massive Background Watermark Icon */}
-                <div className="absolute -bottom-8 -right-8 opacity-[0.02] group-hover:opacity-[0.04] transition-all duration-700 pointer-events-none transform group-hover:scale-[3] scale-[2.5] group-hover:-rotate-12 text-themeBlack">
-                  {category.icon}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % totalItems);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, [isAutoplay, totalItems]);
+
+  // Handle card click with proper cleanup
+  const handleCardClick = useCallback((idx) => {
+    setActiveIndex(idx);
+    setIsAutoplay(false);
+
+    // Resume autoplay after 10 seconds of inactivity
+    const resumeTimer = setTimeout(() => {
+      setIsAutoplay(true);
+    }, 10000);
+
+    return () => clearTimeout(resumeTimer);
+  }, []);
+
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === "ArrowLeft") {
+        setActiveIndex((prev) => (prev - 1 + totalItems) % totalItems);
+        setIsAutoplay(false);
+      } else if (e.key === "ArrowRight") {
+        setActiveIndex((prev) => (prev + 1) % totalItems);
+        setIsAutoplay(false);
+      }
+    },
+    [totalItems],
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
+  return (
+    <section
+      className="relative w-full min-h-screen bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 overflow-hidden rounded-t-3xl md:rounded-t-[4rem] flex flex-col items-center justify-center pt-20 sm:pt-24 md:pt-32"
+      role="region"
+      aria-label="Skills carousel section"
+    >
+      <AnimatedBackground />
+
+      {/* Header Section */}
+      <div className="absolute top-8 sm:top-12 md:top-16 left-0 right-0 z-20 text-center pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="flex justify-center items-center gap-3 mb-4 flex-wrap px-4"
+        >
+          <div className="h-px w-8 sm:w-12 bg-orange-500/50" />
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.5em] text-orange-500 font-bold font-mono">
+            The Arsenal
+          </span>
+          <div className="h-px w-8 sm:w-12 bg-orange-500/50" />
+        </motion.div>
+
+        <motion.h1
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tight leading-tight px-4"
+        >
+          Technical
+          <br />
+          Expertise
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-sm sm:text-base text-slate-400 mt-4 px-4 max-w-2xl mx-auto"
+        >
+          Master of full-stack development, Web3 innovation, and intelligent
+          systems
+        </motion.p>
+      </div>
+
+      {/* Carousel Container */}
+      <div className="relative w-full h-full flex items-center justify-center overflow-visible px-4 sm:px-8 py-12 sm:py-16 md:py-20">
+        <div className="relative w-full max-w-7xl h-[500px] sm:h-[550px] md:h-[650px] lg:h-[700px] flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            {skillsCarouselData.map((skill, idx) => {
+              const style = getItemStyle(idx, activeIndex, totalItems);
+              const isActive = idx === activeIndex;
+
+              return (
+                <SkillCard
+                  key={skill.id}
+                  skill={skill}
+                  isActive={isActive}
+                  onClick={() => handleCardClick(idx)}
+                  style={style}
+                />
+              );
+            })}
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* Global Style for Keyframes and Scrollbar Hiding */}
-      <style
-        dangerouslySetInlineStyle={{
-          __html: `
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        @keyframes marquee-left {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+      {/* Navigation Dots */}
+      <nav
+        className="absolute bottom-6 sm:bottom-10 md:bottom-14 left-0 right-0 z-20 flex justify-center gap-3 px-4"
+        aria-label="Slide navigation"
+      >
+        {skillsCarouselData.map((_, idx) => (
+          <motion.button
+            key={idx}
+            onClick={() => handleCardClick(idx)}
+            aria-label={`Go to slide ${idx + 1}`}
+            aria-current={idx === activeIndex ? "page" : undefined}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+            className={`transition-all duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 ${
+              idx === activeIndex
+                ? "w-8 h-2 bg-orange-500"
+                : "w-2 h-2 bg-white/40 hover:bg-white/70"
+            }`}
+          />
+        ))}
+      </nav>
+
+      {/* Keyboard Navigation Hint */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="absolute bottom-2 sm:bottom-4 left-0 right-0 text-center text-xs sm:text-sm text-slate-500 pointer-events-none"
+      >
+        ← Use arrow keys or click dots to navigate →
+      </motion.div>
+
+      {/* Decorative Left/Right Gradient Edges */}
+      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 bg-gradient-to-r from-slate-900 to-transparent pointer-events-none z-10" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none z-10" />
+
+      {/* Global Styles */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+        .font-clash {
+          font-family: 'Clash Display', sans-serif;
+          font-weight: 600;
         }
-        @keyframes marquee-right {
-          0% { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
+
+        .font-outfit {
+          font-family: 'Outfit', sans-serif;
         }
-        .animate-marquee-left {
-          animation: marquee-left 40s linear infinite;
+
+        .font-mono {
+          font-family: 'Courier New', monospace;
         }
-        .animate-marquee-right {
-          animation: marquee-right 40s linear infinite;
+
+        html {
+          scroll-behavior: smooth;
         }
-      `,
-        }}
-      />
+
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: #f45b26;
+          border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: #e44b1d;
+        }
+
+        *:focus-visible {
+          outline: 2px solid #f45b26;
+          outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };

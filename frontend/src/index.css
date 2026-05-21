@@ -178,7 +178,6 @@
    5. SCROLLBAR STYLING
    ========================================================== */
 
-/* Hide scrollbars globally for a cleaner app-like feel */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -189,19 +188,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.1);
+    background: #D0D0D0;
     border-radius: 4px;
     transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background: #A0A0A0;
 }
 
 body {
     -ms-overflow-style: none;
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+    scrollbar-color: #D0D0D0 transparent;
 }
 
 /* Hide scrollbar utility */
@@ -254,7 +253,7 @@ textarea,
 select {
     font-family: 'Epilogue', sans-serif;
     font-size: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid #D0D0D0;
     border-radius: 8px;
     padding: 12px 16px;
     transition: all 0.3s ease;
@@ -265,7 +264,7 @@ textarea:focus,
 select:focus {
     outline: none;
     border-color: #F45B26;
-    box-shadow: 0 0 0 3px rgba(244, 91, 38, 0.1);
+    box-shadow: 0 0 0 3px rgba(244, 91, 38, 0.15);
 }
 
 /* Focus visible for accessibility */
@@ -295,15 +294,11 @@ select:focus {
 /* Enhanced text reveal */
 @keyframes textReveal {
     0% {
-        opacity: 0;
         transform: translateY(30px) skewY(5deg);
-        filter: blur(4px);
     }
 
     100% {
-        opacity: 1;
         transform: translateY(0) skewY(0deg);
-        filter: blur(0px);
     }
 }
 
@@ -333,33 +328,11 @@ select:focus {
 
     0%,
     100% {
-        box-shadow: 0 0 15px rgba(244, 91, 38, 0.2);
+        box-shadow: 0 0 15px rgba(244, 91, 38, 0.15);
     }
 
     50% {
-        box-shadow: 0 0 30px rgba(244, 91, 38, 0.4);
-    }
-}
-
-/* Shimmer effect for loading states */
-@keyframes shimmerEffect {
-    0% {
-        background-position: -1000px 0;
-    }
-
-    100% {
-        background-position: 1000px 0;
-    }
-}
-
-/* Border shimmer */
-@keyframes borderShimmer {
-    0% {
-        background-position: -1000px 0;
-    }
-
-    100% {
-        background-position: 1000px 0;
+        box-shadow: 0 0 20px rgba(244, 91, 38, 0.25);
     }
 }
 
@@ -368,40 +341,19 @@ select:focus {
    8. COMPONENT UTILITIES
    ========================================================== */
 
-/* Glass morphism effect */
-.glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.glass-dark {
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Gradient text */
-.gradient-text {
-    background: linear-gradient(135deg, #000000 0%, #5E0006 50%, #F45B26 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
 /* Elevated card */
 .card-elevated {
     background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid #D0D0D0;
     border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-elevated:hover {
-    border-color: rgba(244, 91, 38, 0.2);
-    box-shadow: 0 20px 60px rgba(244, 91, 38, 0.1);
-    transform: translateY(-4px);
+    border-color: #5E0006;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
 }
 
 /* Premium button styling */
@@ -418,55 +370,15 @@ select:focus {
     z-index: 1;
 }
 
-.btn-premium::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transform: translateX(-100%);
-    animation: shimmerEffect 3s infinite;
-    z-index: -1;
-}
-
 .btn-premium:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(244, 91, 38, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 /* Divider accent */
 .divider-accent {
     height: 1px;
-    background: linear-gradient(90deg, transparent, #F45B26, transparent);
-}
-
-/* Text gradient animation */
-.text-gradient-animate {
-    background: linear-gradient(90deg,
-            #000000 0%,
-            #5E0006 25%,
-            #F45B26 50%,
-            #5E0006 75%,
-            #000000 100%);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: gradientShift 6s ease infinite;
-}
-
-@keyframes gradientShift {
-
-    0%,
-    100% {
-        background-position: 0% center;
-    }
-
-    50% {
-        background-position: 100% center;
-    }
+    background: #D0D0D0;
 }
 
 

@@ -199,21 +199,6 @@ const Contact = () => {
       />
 
       {/* ── ATMOSPHERIC GLOWS (Animated) ── */}
-      <motion.div
-        animate={{ scale: [1, 1.05, 1], opacity: [0.7, 0.9, 0.7] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[20%] left-[-10%] w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-themeBrown/10 blur-[120px] md:blur-[150px] rounded-full pointer-events-none"
-      />
-      <motion.div
-        animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 1,
-        }}
-        className="absolute bottom-[0%] right-[-10%] w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-white/90 blur-[120px] md:blur-[150px] rounded-full pointer-events-none"
-      />
 
       {/* Inner Container: flex-1 ensures it respects h-screen constraints */}
       <div className="relative z-10 w-full max-w-[1400px] px-5 sm:px-12 lg:px-24 h-full flex flex-col">
@@ -312,13 +297,13 @@ const Contact = () => {
                 <motion.a
                   variants={cardVariants}
                   href="mailto:bcbeereshkumar@gmail.com"
-                  className="group flex flex-col justify-between p-5 sm:p-6 rounded-[1.25rem] bg-white/60 border border-black/5 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:bg-white transition-all duration-500"
+                  className="group flex flex-col justify-between p-5 sm:p-6 rounded-lg bg-white border border-borderLight shadow-sm hover:shadow-md transition-all duration-300"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-white border border-black/5 flex items-center justify-center text-themeBlack/40 group-hover:bg-themeBrown group-hover:text-white group-hover:border-themeBrown transition-all duration-500 shadow-sm mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-background border border-borderLight flex items-center justify-center text-themeBlack/50 group-hover:bg-themeBrown group-hover:text-white group-hover:border-themeBrown transition-all duration-300 mb-4">
                     <MailIcon size={20} />
                   </div>
                   <div>
-                    <span className="block font-primary text-[9px] uppercase tracking-widest text-themeBlack/40 font-bold mb-1">
+                    <span className="block font-primary text-[9px] uppercase tracking-widest text-themeBlack/50 font-bold mb-1">
                       Email
                     </span>
                     <span className="block font-secondary font-bold text-xs sm:text-sm tracking-wide text-themeBlack truncate">
@@ -332,13 +317,13 @@ const Contact = () => {
                 {/* Location Card */}
                 <motion.div
                   variants={cardVariants}
-                  className="group flex flex-col justify-between p-5 sm:p-6 rounded-[1.25rem] bg-white/60 border border-black/5 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:bg-white transition-all duration-500"
+                  className="group flex flex-col justify-between p-5 sm:p-6 rounded-lg bg-white border border-borderLight shadow-sm hover:shadow-md transition-all duration-300"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-white border border-black/5 flex items-center justify-center text-themeBlack/40 group-hover:bg-themeBrown group-hover:text-white group-hover:border-themeBrown transition-all duration-500 shadow-sm mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-background border border-borderLight flex items-center justify-center text-themeBlack/50 group-hover:bg-themeBrown group-hover:text-white group-hover:border-themeBrown transition-all duration-300 mb-4">
                     <MapPinIcon size={20} />
                   </div>
                   <div>
-                    <span className="block font-primary text-[9px] uppercase tracking-widest text-themeBlack/40 font-bold mb-1">
+                    <span className="block font-primary text-[9px] uppercase tracking-widest text-themeBlack/50 font-bold mb-1">
                       Location
                     </span>
                     <span className="block font-secondary font-bold text-xs sm:text-sm tracking-wide text-themeBlack truncate">
@@ -387,12 +372,12 @@ const Contact = () => {
                 </div>
 
                 {/* Status Pill */}
-                <div className="flex items-center gap-2 w-fit px-4 py-2 sm:py-3 rounded-xl border border-black/5 bg-white/80 shadow-sm">
+                <div className="flex items-center gap-2 w-fit px-4 py-2 sm:py-3 rounded-full border border-borderLight bg-white shadow-sm">
                   <div className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#25D366]"></span>
                   </div>
-                  <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-themeBlack/80 font-bold">
+                  <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-widest text-themeBlack/70 font-bold">
                     Available for Work
                   </span>
                 </div>
@@ -404,11 +389,8 @@ const Contact = () => {
               variants={cardVariants}
               className="lg:col-span-6 w-full h-full flex flex-col justify-center mt-4 lg:mt-0"
             >
-              <div className="relative p-8 md:p-12 lg:p-16 rounded-[2rem] bg-white/70 backdrop-blur-xl border border-black/5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex flex-col items-center text-center gap-5 sm:gap-6 group hover:border-[#25D366]/30 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500 overflow-hidden">
-                {/* Subtle Glow Effect behind Card */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#25D366]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-
-                <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border border-black/5 flex items-center justify-center text-[#25D366] mb-2 group-hover:scale-110 group-hover:bg-[#25D366] group-hover:text-white transition-all duration-500 shadow-[0_4px_20px_rgba(37,211,102,0.15)]">
+              <div className="relative p-8 md:p-12 lg:p-16 rounded-xl bg-white border border-borderLight shadow-sm flex flex-col items-center text-center gap-5 sm:gap-6 group hover:shadow-md transition-all duration-300 overflow-hidden">
+                <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-background border border-borderLight flex items-center justify-center text-[#25D366] mb-2 group-hover:scale-110 group-hover:bg-[#25D366] group-hover:text-white transition-all duration-300">
                   <WhatsAppIcon size={32} className="sm:w-[36px] sm:h-[36px]" />
                 </div>
 
@@ -416,7 +398,7 @@ const Contact = () => {
                   Instant Connection
                 </h4>
 
-                <p className="relative z-10 font-secondary text-themeBlack/70 font-medium text-xs sm:text-sm md:text-base leading-relaxed max-w-xs">
+                <p className="relative z-10 font-secondary text-themeBlack/60 font-medium text-xs sm:text-sm md:text-base leading-relaxed max-w-xs">
                   Skip the emails and contact forms. Let's discuss your project,
                   timelines, and tech stack directly.
                 </p>
@@ -427,7 +409,7 @@ const Contact = () => {
                   rel="noreferrer"
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
-                  className="relative z-10 overflow-hidden w-full max-w-xs mt-2 sm:mt-4 text-white px-6 py-4 sm:px-8 sm:py-5 rounded-xl font-primary font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] bg-[#25D366] border border-[#25D366] transition-all duration-300 flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(37,211,102,0.2)] hover:shadow-[0_15px_30px_rgba(37,211,102,0.4)] hover:-translate-y-1"
+                  className="relative z-10 overflow-hidden w-full max-w-xs mt-2 sm:mt-4 text-white px-6 py-4 sm:px-8 sm:py-5 rounded-lg font-primary font-bold text-[10px] sm:text-xs uppercase tracking-[0.2em] bg-[#25D366] border border-[#25D366] transition-all duration-300 flex items-center justify-center gap-3 shadow-md hover:shadow-lg hover:-translate-y-1"
                 >
                   <motion.div
                     initial={{ x: "-100%" }}
@@ -443,7 +425,7 @@ const Contact = () => {
                 </a>
 
                 {/* Number Display */}
-                <p className="relative z-10 font-mono text-themeBlack/40 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest mt-1 sm:mt-2">
+                <p className="relative z-10 font-mono text-themeBlack/50 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest mt-1 sm:mt-2">
                   +91 63609 95219
                 </p>
               </div>

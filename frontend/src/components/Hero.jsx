@@ -1,5 +1,11 @@
-import React, { useRef, useEffect, useState } from "react";
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+  useSpring,
+  AnimatePresence,
+} from "framer-motion";
 import { assets } from "../assets/assets";
 
 /* ─────────────────────────────────────────────────────────────────
@@ -19,7 +25,7 @@ const JellyText = ({ text, className = "" }) => {
       ch.style.transformOrigin = "50% 80%";
     });
 
-    let _raf;
+    let rafId;
     let isAnimating = false;
 
     const tick = () => {
@@ -45,7 +51,7 @@ const JellyText = ({ text, className = "" }) => {
       });
 
       if (!settled) {
-        _raf = requestAnimationFrame(tick);
+        rafId = requestAnimationFrame(tick);
       } else {
         isAnimating = false;
       }
@@ -66,15 +72,15 @@ const JellyText = ({ text, className = "" }) => {
     container.addEventListener("mouseover", onMouseOver);
     return () => {
       container.removeEventListener("mouseover", onMouseOver);
-      cancelAnimationFrame(_raf);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
   return (
     <span ref={containerRef} className={`inline-flex flex-wrap ${className}`}>
-      {text.split("").map((char, i) => (
+      {text.split("").map((char, idx) => (
         <span
-          key={i}
+          key={idx}
           className="char-hover inline-block whitespace-pre cursor-default"
         >
           {char}
@@ -88,75 +94,169 @@ const JellyText = ({ text, className = "" }) => {
    CURSOR GLOW — Soft accent radial follows the mouse
 ───────────────────────────────────────────────────────────────── */
 const CursorGlow = () => {
-  const cx = useMotionValue(-400);
-  const cy = useMotionValue(-400);
-  const sx = useSpring(cx, { damping: 25, stiffness: 150 });
-  const sy = useSpring(cy, { damping: 25, stiffness: 150 });
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+  const springX = useSpring(cursorX, { damping: 25, stiffness: 150 });
+  const springY = useSpring(cursorY, { damping: 25, stiffness: 150 });
 
   useEffect(() => {
-    const fn = (e) => {
-      cx.set(e.clientX - 200);
-      cy.set(e.clientY - 200);
+    const handleMouseMove = (e) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
     };
-    window.addEventListener("mousemove", fn);
-    return () => window.removeEventListener("mousemove", fn);
-  }, [cx, cy]);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [cursorX, cursorY]);
 
   return (
     <motion.div
-      className="hidden md:block fixed w-[400px] h-[400px] rounded-full pointer-events-none z-0 gpu-accelerate"
       style={{
-        x: sx,
-        y: sy,
-        background:
-          "radial-gradient(circle, rgba(244,91,38,0.08) 0%, transparent 60%)",
+        left: springX,
+        top: springY,
+        translateX: "-50%",
+        translateY: "-50%",
       }}
+      className="fixed pointer-events-none z-[100] w-[500px] h-[500px] rounded-full"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+    >
+      <div className="absolute inset-0 bg-gradient-radial from-accent/40 via-accent/5 to-transparent rounded-full blur-3xl" />
+    </motion.div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────────
+   ATMOSPHERIC DUST — Cinematic floating particles (Canvas)
+───────────────────────────────────────────────────────────────── */
+const DustParticles = () => {
+  const canvasRef = useRef(null);
+  const particlesRef = useRef([]);
+  const animationRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      initParticles();
+    };
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.2;
+        this.opacity = Math.random() * 0.4 + 0.1;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+      }
+      draw(ctx) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(244, 91, 38, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    const initParticles = () => {
+      const particleCount = Math.min(120, Math.floor((width * height) / 8000));
+      particlesRef.current = [];
+      for (let i = 0; i < particleCount; i++) {
+        particlesRef.current.push(new Particle());
+      }
+    };
+
+    const animate = () => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      particlesRef.current.forEach((particle) => {
+        particle.update();
+        particle.draw(ctx);
+      });
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener("resize", resize);
+    resize();
+    animate();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 pointer-events-none z-[5] w-full h-full"
     />
   );
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   ATMOSPHERIC DUST — Cinematic floating particles
+   LOADER COMPONENT — Rotating rings animation
 ───────────────────────────────────────────────────────────────── */
-const DustParticles = () => {
-  const [particles] = useState(() =>
-    Array.from({ length: 20 }).map(() => ({
-      id: Math.random(),
-      x: Math.random() * 100,
-      y: Math.random() * 80,
-      size: Math.random() * 2.5 + 0.5,
-      duration: Math.random() * 6 + 6,
-      delay: Math.random() * 5,
-      opacity: Math.random() * 0.6 + 0.2,
-    })),
-  );
-
+const Loader = () => {
   return (
-    <div className="absolute inset-0 z-[5] pointer-events-none overflow-hidden">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full bg-themeBrown/40 blur-sm gpu-accelerate"
-          style={{
-            width: p.size,
-            height: p.size,
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            opacity: p.opacity,
-          }}
-          animate={{
-            y: [0, -40, 0],
-            x: [0, Math.random() * 30 - 15, 0],
-            opacity: [p.opacity * 0.2, p.opacity, p.opacity * 0.2],
-          }}
-          transition={{
-            duration: p.duration,
-            repeat: Infinity,
-            delay: p.delay,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-darkBg">
+      <div id="loader">
+        <div className="inner rotate-one"></div>
+        <div className="inner rotate-two"></div>
+        <div className="inner rotate-three"></div>
+      </div>
+      <style>{`
+        #loader {
+          width: 100px;
+          height: 80px;
+          position: relative;
+          top: auto;
+          left: auto;
+          margin: 0;
+        }
+        .inner {
+          animation: rotate 0.8s linear infinite;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          position: absolute;
+        }
+        .rotate-one {
+          left: 50%;
+          margin-left: -25px;
+          border-top: 2px solid #f45b26;
+        }
+        .rotate-two {
+          top: -10px;
+          left: 30px;
+          border-left: 2px solid #f45b26;
+        }
+        .rotate-three {
+          top: -10px;
+          right: 30px;
+          border-right: 2px solid #f45b26;
+        }
+        @keyframes rotate {
+          0% { transform: rotateZ(0deg); }
+          100% { transform: rotateZ(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
@@ -165,186 +265,160 @@ const DustParticles = () => {
    MAIN HERO COMPONENT — Enhanced with parallax & animations
 ───────────────────────────────────────────────────────────────── */
 const Hero = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const sectionRef = useRef(null);
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
-  const cfg = { damping: 30, stiffness: 100 };
+  const cfg = { damping: 30, stiffness: 120 };
   const mx = useSpring(rawX, cfg);
   const my = useSpring(rawY, cfg);
 
-  const textX = useTransform(mx, [-0.5, 0.5], ["-30px", "30px"]);
-  const textY = useTransform(my, [-0.5, 0.5], ["-15px", "15px"]);
-  const bgTxtX = useTransform(mx, [-0.5, 0.5], ["40px", "-40px"]);
-  const rotateZ = useTransform(mx, [-0.5, 0.5], [-2, 2]);
+  const textX = useTransform(mx, [-0.5, 0.5], ["-20px", "20px"]);
+  const textY = useTransform(my, [-0.5, 0.5], ["-10px", "10px"]);
+  const bgTxtX = useTransform(mx, [-0.5, 0.5], ["30px", "-30px"]);
+  const rotateZ = useTransform(mx, [-0.5, 0.5], [-1.5, 1.5]);
 
-  const onMove = (e) => {
-    const r = sectionRef.current?.getBoundingClientRect();
-    if (!r) return;
-    rawX.set((e.clientX - r.left) / r.width - 0.5);
-    rawY.set((e.clientY - r.top) / r.height - 0.5);
-  };
+  const onMove = useCallback(
+    (e) => {
+      const rect = sectionRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      rawX.set((e.clientX - rect.left) / rect.width - 0.5);
+      rawY.set((e.clientY - rect.top) / rect.height - 0.5);
+    },
+    [rawX, rawY],
+  );
+
+  // Simulate loading (image preload + minimum display time)
+  useEffect(() => {
+    const img = new Image();
+    img.src = assets.footerImage;
+    img.onload = () => {
+      setTimeout(() => setIsLoading(false), 800);
+    };
+    const timeout = setTimeout(() => setIsLoading(false), 3000);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <>
+      <AnimatePresence>{isLoading && <Loader />}</AnimatePresence>
+
       <CursorGlow />
 
       <section
         ref={sectionRef}
         onMouseMove={onMove}
-        className="relative min-h-[100dvh] w-full overflow-hidden flex items-start pt-32 md:pt-0 md:items-center justify-center md:justify-end bg-background"
+        className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-start pt-20 md:pt-0 md:items-center justify-center md:justify-end bg-background"
       >
-        {/* GRAIN TEXTURE */}
-        <div
-          className="absolute inset-0 z-[20] pointer-events-none opacity-[0.03] mix-blend-overlay"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")`,
-          }}
-        />
+        {/* GRAIN TEXTURE OVERLAY */}
+        <div className="absolute inset-0 z-[20] opacity-30 pointer-events-none bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22 opacity=%220.08%22/%3E%3C/svg%3E')] bg-repeat" />
 
         {/* BACKGROUND EDITORIAL TEXT */}
         <motion.div
           style={{ x: bgTxtX }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-[1]"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-[1] overflow-hidden"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 0.45, scale: 1 }}
-            transition={{ duration: 2.5, ease: "easeOut" }}
-            className="text-[20vw] md:text-[16vw] font-clash font-black text-black leading-none whitespace-nowrap tracking-tighter"
+            animate={{ opacity: 0.9, scale: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="text-[20vw] sm:text-[20vw] md:text-[16vw] font-clash font-black text-black leading-none whitespace-nowrap tracking-tighter"
             style={{
-              filter: "drop-shadow(0 0 50px rgba(0,0,0,0.04))",
+              filter: "drop-shadow(0 0 40px rgba(0,0,0,0.8))",
             }}
           >
             <JellyText text="BEERESH" />
           </motion.div>
         </motion.div>
 
-        {/* PREMIUM LIGHTING & GLOWS */}
-        <div className="absolute inset-0 z-[3] pointer-events-none overflow-hidden">
-          <motion.div
-            animate={{
-              opacity: [0.25, 0.5, 0.25],
-              scale: [1, 1.08, 1],
-              x: [-20, 20, -20],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full bg-accent/15 blur-[130px] gpu-accelerate"
-          />
-          <motion.div
-            animate={{
-              opacity: [0.15, 0.3, 0.15],
-              scale: [0.95, 1.05, 0.95],
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 0.5,
-            }}
-            className="absolute -bottom-20 -right-32 w-[600px] h-[600px] rounded-full bg-themeBrown/10 blur-[120px] gpu-accelerate"
-          />
-        </div>
-
         {/* PREMIUM CONIC GRADIENT LIGHTING */}
-        <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
-          <div
-            className="absolute -top-20 -left-20 w-[150%] h-[150%] opacity-[0.15]"
-            style={{
-              background:
-                "conic-gradient(from 135deg at 0% 0%, transparent 0%, rgba(244,91,38,0.25) 15%, transparent 25%, rgba(244,91,38,0.1) 40%, transparent 55%)",
-              filter: "blur(70px)",
-            }}
-          />
-        </div>
+        <div className="absolute inset-0 z-[2] pointer-events-none bg-gradient-conic from-accent/5 via-transparent to-accent/5 opacity-10" />
 
         <DustParticles />
 
-        {/* HERO IMAGE */}
-        <div className="absolute inset-x-0 bottom-0 z-[4] flex justify-center md:justify-start pointer-events-none md:pl-20 overflow-hidden">
+        {/* HERO IMAGE - Responsive sizing & positioning */}
+        <div className="absolute inset-x-0 bottom-0 z-[4] flex justify-center md:justify-start pointer-events-none md:pl-8 lg:pl-20 overflow-hidden">
           <motion.img
             src={assets.footerImage}
             alt="Beeresh Kumar"
-            initial={{ opacity: 0, y: 120, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{
-              duration: 1.8,
+              duration: 1.5,
               ease: [0.16, 1, 0.3, 1],
               delay: 0.2,
             }}
             whileInView={{
-              y: [0, -15, 0],
+              y: [0, -12, 0],
             }}
             viewport={{ once: true }}
-            className="h-[75vh] sm:h-[65vh] md:h-[90vh] lg:h-[95vh] w-auto object-contain object-bottom sm:drop-shadow-[0_30px_60px_rgba(0,0,0,0.15)] gpu-accelerate"
+            className="h-[55vh] sm:h-[60vh] md:h-[85vh] lg:h-[92vh] w-auto object-contain drop-shadow-2xl"
           />
         </div>
 
-        {/* GRADIENT SHIELDS */}
-        <div className="absolute inset-0 z-[6] pointer-events-none bg-gradient-to-l from-background via-background/60 md:via-background/20 to-transparent" />
-        <div className="absolute inset-0 z-[6] pointer-events-none bg-gradient-to-t from-background via-transparent to-transparent" />
-        <div className="absolute inset-0 top-0 z-[6] pointer-events-none bg-gradient-to-b from-background/95 via-background/30 md:from-transparent to-transparent h-[50vh] md:h-0" />
+        {/* GRADIENT SHIELDS - Depth overlays */}
+        <div className="absolute inset-0 z-[6] pointer-events-none bg-gradient-to-l from-background via-background/80 to-transparent opacity-70 md:opacity-90" />
+        <div className="absolute inset-0 z-[6] pointer-events-none bg-gradient-to-t from-background via-background/40 to-transparent" />
 
-        {/* STATS */}
-        <div className="absolute left-8 bottom-[-10%] -translate-y-1/2 z-[11] hidden xl:flex flex-col gap-8">
+        {/* STATS PANEL - Left side, hidden on mobile/tablet */}
+        <div className="absolute left-4 md:left-8 bottom-[15%] md:bottom-[10%] z-[11] hidden lg:flex flex-col gap-6">
           {[
             { num: "Freelancer", label: "MERN Solutions" },
             { num: "Student", label: "Computer Science Eng" },
             { num: "MERN", label: "MERN + WEB 3.O Dev" },
-          ].map((s, i) => (
+          ].map((stat, idx) => (
             <motion.div
-              key={s.label}
+              key={stat.label}
               initial={{ opacity: 0, x: -25, filter: "blur(10px)" }}
               animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
               transition={{
-                delay: 1.5 + i * 0.2,
-                duration: 0.8,
+                delay: 1.2 + idx * 0.15,
+                duration: 0.7,
                 ease: "easeOut",
               }}
               whileHover={{ x: 8 }}
               className="group flex flex-col items-start cursor-pointer"
             >
-              <span className="font-clash text-3xl font-bold leading-none text-textPrimary group-hover:text-accent transition-colors duration-300 gpu-accelerate">
-                {s.num}
+              <span className="font-clash text-2xl lg:text-3xl font-bold leading-none text-textPrimary group-hover:text-accent transition-colors duration-300">
+                {stat.num}
               </span>
-              <span className="font-outfit text-xs-tiny uppercase tracking-[0.3em] text-textTertiary group-hover:text-accent mt-2 transition-colors">
-                {s.label}
+              <span className="font-outfit text-[10px] uppercase tracking-[0.25em] text-textTertiary group-hover:text-accent mt-1 transition-colors">
+                {stat.label}
               </span>
             </motion.div>
           ))}
         </div>
 
-        {/* MAIN TEXT CONTENT */}
+        {/* MAIN TEXT CONTENT - Responsive alignment */}
         <motion.div
           style={{ x: textX, y: textY }}
-          className="relative z-[11] w-full max-w-[1440px] px-6 sm:px-12 lg:px-24 flex flex-col items-center md:items-end text-center md:text-right gpu-accelerate"
+          className="relative z-[11] w-full max-w-[1440px] px-5 sm:px-8 md:px-12 lg:px-24 flex flex-col items-center md:items-end text-center md:text-right"
         >
-          <div className="flex flex-col gap-6 sm:gap-8 items-center md:items-end max-w-2xl lg:max-w-3xl mt-[-5vh] md:mt-0">
+          <div className="flex flex-col gap-4 sm:gap-6 items-center md:items-end max-w-xl lg:max-w-3xl mt-[-2vh] md:mt-0">
             {/* HEADLINE */}
-            <div className="overflow-hidden pb-4 w-full flex justify-center md:justify-end perspective">
+            <div className="overflow-hidden pb-2 w-full flex justify-center md:justify-end">
               <motion.h2
-                initial={{ opacity: 0, y: 60, rotateX: 10 }}
+                initial={{ opacity: 0, y: 50, rotateX: 10 }}
                 animate={{ opacity: 1, y: 0, rotateX: 0 }}
                 transition={{
-                  delay: 0.8,
-                  duration: 1.1,
+                  delay: 0.6,
+                  duration: 1,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 style={{ rotateZ }}
-                className="font-clash font-bold text-textPrimary leading-[0.9] tracking-tighter text-5xl sm:text-6xl md:text-7xl lg:text-[90px] gpu-accelerate"
+                className="font-clash font-bold text-textPrimary leading-[1.1] sm:leading-[0.95] tracking-tighter text-4xl sm:text-5xl md:text-6xl lg:text-[80px]"
               >
                 <JellyText text="Reality Is Just" />
                 <br />
                 <motion.span
-                  className="font-clash italic font-medium text-accent drop-shadow-[0_12px_30px_rgba(244,91,38,0.25)]"
+                  className="font-clash italic font-medium text-accent inline-block"
                   animate={{
-                    opacity: [0.9, 1, 0.9],
+                    textShadow: [
+                      "0 0 8px rgba(244,91,38,0.3)",
+                      "0 0 16px rgba(244,91,38,0.6)",
+                      "0 0 8px rgba(244,91,38,0.3)",
+                    ],
                   }}
                   transition={{
-                    duration: 3,
+                    duration: 2.5,
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
@@ -356,42 +430,13 @@ const Hero = () => {
 
             {/* SUBTITLE */}
             <motion.p
-              initial={{ opacity: 0, filter: "blur(10px)" }}
+              initial={{ opacity: 0, filter: "blur(8px)" }}
               animate={{ opacity: 1, filter: "blur(0px)" }}
-              transition={{ delay: 1.2, duration: 0.8 }}
-              className="text-textSecondary font-outfit text-xs-small sm:text-sm font-semibold tracking-[0.25em] max-w-md uppercase"
+              transition={{ delay: 1, duration: 0.7 }}
+              className="text-textSecondary font-outfit text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.2em] sm:tracking-[0.25em] max-w-xs sm:max-w-md uppercase"
             >
               Software Architect & Web3 Pioneer
             </motion.p>
-
-            {/* CTA BUTTON */}
-            <motion.div
-              initial={{ opacity: 0, y: 25, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 1.3, duration: 0.8 }}
-              className="mt-8 md:mt-10"
-            >
-              <motion.button
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="group relative overflow-hidden text-textPrimary px-7 py-4 sm:px-10 sm:py-5 rounded-full font-outfit font-bold text-xs-small sm:text-xs uppercase tracking-[0.2em] bg-white/70 backdrop-blur-md border border-textPrimary/10 transition-all duration-300 hover:border-accent/30 shadow-[0_8px_25px_rgba(0,0,0,0.08)] hover:shadow-[0_15px_40px_rgba(244,91,38,0.15)]"
-              >
-                {/* Shimmer effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                  animate={{ x: ["-100%", "100%"] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-                <span className="relative z-10 flex items-center gap-3 group-hover:text-accent transition-colors duration-300">
-                  <motion.div
-                    className="w-2 h-2 rounded-full bg-accent"
-                    animate={{ scale: [1, 1.3, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                  Explore Portfolio
-                </span>
-              </motion.button>
-            </motion.div>
           </div>
         </motion.div>
       </section>

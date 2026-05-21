@@ -10,59 +10,50 @@ import Skills from "../components/Skills";
 import Contact from "../components/Contact";
 
 const Home = () => {
-  // Parallax refs for each section
-  const heroRef = useRef(null);
+  // Parallax refs attached to each incoming section
   const meRef = useRef(null);
   const worksRef = useRef(null);
   const skillsRef = useRef(null);
   const contactRef = useRef(null);
 
-  // Scroll Progress Trackers with enhanced offsets
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
+  // ── SCROLL PROGRESS TRACKERS ──
+  // These track exactly when a section starts sliding up from the bottom of the screen
+  // until it reaches the top, allowing us to perfectly animate the section *underneath* it.
 
   const { scrollYProgress: meProgress } = useScroll({
     target: meRef,
-    offset: ["start center", "end start"],
+    offset: ["start end", "start start"],
   });
 
   const { scrollYProgress: worksProgress } = useScroll({
     target: worksRef,
-    offset: ["start center", "end start"],
+    offset: ["start end", "start start"],
   });
 
   const { scrollYProgress: skillsProgress } = useScroll({
     target: skillsRef,
-    offset: ["start center", "end start"],
+    offset: ["start end", "start start"],
   });
 
   const { scrollYProgress: contactProgress } = useScroll({
     target: contactRef,
-    offset: ["start center", "end start"],
+    offset: ["start end", "start start"],
   });
 
-  // Enhanced Parallax Transforms with smooth easing
-  const heroY = useTransform(heroProgress, [0, 1], ["0vh", "35vh"]);
-  const heroOpacity = useTransform(heroProgress, [0, 1], [1, 0]);
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 0.93]);
+  // ── PARALLAX TRANSFORMS (Scale Down & Darken) ──
+  // As the new section slides over, the old section scales to 0.9 and dims for realistic 3D depth
 
-  const meY = useTransform(meProgress, [0, 1], ["50px", "-30vh"]);
-  const meOpacity = useTransform(meProgress, [0, 1], [0, 1]);
-  const meScale = useTransform(meProgress, [0, 1], [0.95, 1]);
+  const heroScale = useTransform(meProgress, [0, 1], [1, 0.9]);
+  const heroBrightness = useTransform(meProgress, [0, 1], [1, 0.5]);
 
-  const worksY = useTransform(worksProgress, [0, 1], ["50px", "-25vh"]);
-  const worksOpacity = useTransform(worksProgress, [0, 1], [0, 1]);
-  const worksScale = useTransform(worksProgress, [0, 1], [0.95, 1]);
+  const meScale = useTransform(worksProgress, [0, 1], [1, 0.9]);
+  const meBrightness = useTransform(worksProgress, [0, 1], [1, 0.5]);
 
-  const skillsY = useTransform(skillsProgress, [0, 1], ["50px", "-20vh"]);
-  const skillsOpacity = useTransform(skillsProgress, [0, 1], [0, 1]);
-  const skillsScale = useTransform(skillsProgress, [0, 1], [0.95, 1]);
+  const worksScale = useTransform(skillsProgress, [0, 1], [1, 0.9]);
+  const worksBrightness = useTransform(skillsProgress, [0, 1], [1, 0.5]);
 
-  const contactY = useTransform(contactProgress, [0, 1], ["50px", "-15vh"]);
-  const contactOpacity = useTransform(contactProgress, [0, 1], [0, 1]);
-  const contactScale = useTransform(contactProgress, [0, 1], [0.95, 1]);
+  const skillsScale = useTransform(contactProgress, [0, 1], [1, 0.9]);
+  const skillsBrightness = useTransform(contactProgress, [0, 1], [1, 0.5]);
 
   return (
     <ReactLenis
@@ -75,103 +66,71 @@ const Home = () => {
         touchMultiplier: 2,
       }}
     >
-      <div className="relative bg-background text-textPrimary selection:bg-accent selection:text-white min-h-screen overflow-x-hidden">
+      <div className="relative bg-background text-themeBlack selection:bg-accent selection:text-white min-h-screen overflow-x-hidden">
         <Navbar />
 
+        {/* The main wrapper allows native sticky stacking */}
         <main className="relative w-full flex flex-col">
           {/* ── 1. HERO LAYER ── */}
-          <div
-            ref={heroRef}
-            className="relative w-full h-[100vh]"
+          <motion.div
+            style={{
+              scale: heroScale,
+              filter: useTransform(heroBrightness, (b) => `brightness(${b})`),
+            }}
+            className="sticky top-0 w-full h-[100dvh] z-[10] overflow-hidden bg-background origin-top will-change-transform"
           >
-            <motion.div
-              style={{
-                y: heroY,
-                opacity: heroOpacity,
-                scale: heroScale,
-                willChange: "transform, opacity",
-              }}
-              className="sticky top-0 w-full h-screen z-[1] overflow-hidden bg-background gpu-accelerate"
-            >
-              <Hero />
-            </motion.div>
-          </div>
+            <Hero />
+          </motion.div>
 
           {/* ── 2. ME LAYER ── */}
-          <div
+          <motion.div
             ref={meRef}
-            className="relative w-full h-[100vh] z-[2]"
+            style={{
+              scale: meScale,
+              filter: useTransform(meBrightness, (b) => `brightness(${b})`),
+            }}
+            className="sticky top-0 w-full h-[100dvh] z-[20] overflow-hidden rounded-t-[2.5rem] md:rounded-t-[4rem] bg-background origin-top shadow-[0_-20px_50px_rgba(0,0,0,0.08)] border-t border-black/5 will-change-transform"
           >
-            <motion.div
-              style={{
-                y: meY,
-                opacity: meOpacity,
-                scale: meScale,
-                willChange: "transform, opacity",
-              }}
-              className="sticky top-0 w-full h-screen z-[2] overflow-hidden rounded-t-[2.5rem] md:rounded-t-[4rem] bg-background gpu-accelerate"
-            >
-              <Me />
-            </motion.div>
-          </div>
+            <Me />
+          </motion.div>
 
           {/* ── 3. WORKS LAYER ── */}
-          <div
+          <motion.div
             ref={worksRef}
-            className="relative w-full h-[100vh] z-[3]"
+            style={{
+              scale: worksScale,
+              filter: useTransform(worksBrightness, (b) => `brightness(${b})`),
+            }}
+            className="sticky top-0 w-full h-full z-[30] overflow-hidden rounded-t-[2.5rem] md:rounded-t-[4rem] bg-background origin-top shadow-[0_-20px_50px_rgba(0,0,0,0.08)] border-t border-black/5 will-change-transform"
           >
-            <motion.div
-              style={{
-                y: worksY,
-                opacity: worksOpacity,
-                scale: worksScale,
-                willChange: "transform, opacity",
-              }}
-              className="sticky top-0 w-full h-screen z-[3] overflow-hidden rounded-t-[2.5rem] md:rounded-t-[4rem] bg-background gpu-accelerate"
-            >
-              <Works />
-            </motion.div>
-          </div>
+            <Works />
+          </motion.div>
 
           {/* ── 4. SKILLS LAYER ── */}
-          <div
+          <motion.div
             ref={skillsRef}
-            className="relative w-full h-[100vh] z-[4]"
+            style={{
+              scale: skillsScale,
+              filter: useTransform(skillsBrightness, (b) => `brightness(${b})`),
+            }}
+            className="sticky top-0 w-full h-full z-[40] overflow-hidden rounded-t-[2.5rem] md:rounded-t-[4rem] bg-background origin-top shadow-[0_-20px_50px_rgba(0,0,0,0.08)] border-t border-black/5 will-change-transform"
           >
-            <motion.div
-              style={{
-                y: skillsY,
-                opacity: skillsOpacity,
-                scale: skillsScale,
-                willChange: "transform, opacity",
-              }}
-              className="sticky top-0 w-full h-screen z-[4] overflow-hidden rounded-t-[2.5rem] md:rounded-t-[4rem] bg-background gpu-accelerate"
-            >
-              <Skills />
-            </motion.div>
-          </div>
+            <Skills />
+          </motion.div>
 
           {/* ── 5. CONTACT LAYER ── */}
-          <div
+          {/* Contact does not need to scale down because it is the final main section */}
+          <motion.div
             ref={contactRef}
-            className="relative w-full h-auto z-[5]"
+            className="sticky top-0 w-full h-full z-[50] overflow-hidden rounded-t-[2.5rem] md:rounded-t-[4rem] bg-background origin-top shadow-[0_-20px_50px_rgba(0,0,0,0.08)] border-t border-black/5 will-change-transform"
           >
-            <motion.div
-              style={{
-                y: contactY,
-                opacity: contactOpacity,
-                scale: contactScale,
-                willChange: "transform, opacity",
-              }}
-              className="w-full bg-background rounded-t-[2.5rem] md:rounded-t-[4rem] overflow-hidden gpu-accelerate"
-            >
-              <Contact />
-            </motion.div>
-          </div>
+            <Contact />
+          </motion.div>
         </main>
 
         {/* ── FOOTER ── */}
-        <div className="relative z-20 w-full bg-background">
+        {/* Slides natively over the Contact section at the very end of the scroll */}
+        <div className="relative z-[60] w-full h-full bg-background rounded-t-[2.5rem] md:rounded-t-[4rem] shadow-[0_-20px_50px_rgba(0,0,0,0.05)] border-t border-black/5">
           <Footer />
         </div>
       </div>

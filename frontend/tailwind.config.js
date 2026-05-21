@@ -19,13 +19,11 @@ export default {
         // Accents
         themeBrown: "#5E0006",
         accent: "#F45B26",
-        accentLight: "rgba(244, 91, 38, 0.1)",
-        accentDark: "#3D0004",
 
         // UI
-        border: "#E0E0E0",
-        borderLight: "rgba(0, 0, 0, 0.05)",
-        borderDark: "rgba(0, 0, 0, 0.1)",
+        border: "#D0D0D0",
+        borderLight: "#E8E8E8",
+        borderDark: "#B0B0B0",
 
         // Functional
         success: "#10B981",
@@ -162,10 +160,9 @@ export default {
 
       // --- SHADOWS ---
       boxShadow: {
-        "glow-sm": "0 0 15px rgba(244, 91, 38, 0.2)",
-        "glow-md": "0 0 30px rgba(244, 91, 38, 0.3)",
-        "glow-lg": "0 0 50px rgba(244, 91, 38, 0.4)",
-        "inner-glow": "inset 0 0 20px rgba(244, 91, 38, 0.1)",
+        sm: "0 2px 4px rgba(0, 0, 0, 0.08)",
+        md: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        lg: "0 8px 16px rgba(0, 0, 0, 0.12)",
       },
 
       // --- BORDER RADIUS ---

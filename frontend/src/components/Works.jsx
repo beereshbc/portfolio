@@ -1,422 +1,485 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCards, Mousewheel } from "swiper/modules";
+import { Autoplay, FreeMode } from "swiper/modules";
 import { worksData } from "../assets/assets";
-import {
-  ExternalLink,
-  Heart,
-  ChevronRight,
-  ChevronLeft,
-  GitBranch,
-  Info,
-  X,
-} from "lucide-react";
+import { ExternalLink, GitBranch, X, Code2, Box, Layers } from "lucide-react";
 
 // Swiper Styles
 import "swiper/css";
-import "swiper/css/effect-cards";
+import "swiper/css/free-mode";
 
+/* ─────────────────────────────────────────────────────────────────
+   ISOMETRIC WIREFRAME GRAPHICS (For the main carousel cards)
+───────────────────────────────────────────────────────────────── */
+const GraphicDiscovery = () => (
+  <svg viewBox="0 0 200 200" className="w-full h-full opacity-60">
+    <g transform="translate(100, 120) scale(1, 0.5) rotate(45)">
+      <path
+        d="M-60,-60 L60,-60 L60,60 L-60,60 Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="2 4"
+        strokeOpacity="0.3"
+      />
+      <path
+        d="M-30,-60 L-30,60 M0,-60 L0,60 M30,-60 L30,60"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeOpacity="0.1"
+      />
+      <path
+        d="M-60,-30 L60,-30 M-60,0 L60,0 M-60,30 L60,30"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeOpacity="0.1"
+      />
+      <path
+        d="M-40,-40 L40,-40 L40,40 L-40,40 Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="-30"
+        y="-30"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="0"
+        y="-30"
+        width="30"
+        height="6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="0"
+        y="-15"
+        width="20"
+        height="6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="-30"
+        y="0"
+        width="60"
+        height="10"
+        fill="currentColor"
+        stroke="none"
+      />
+      <rect
+        x="-30"
+        y="20"
+        width="20"
+        height="10"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <rect
+        x="0"
+        y="20"
+        width="30"
+        height="10"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </g>
+    <g transform="translate(120, 80)">
+      <circle
+        cx="0"
+        cy="0"
+        r="24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <circle
+        cx="0"
+        cy="0"
+        r="18"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+      <line
+        x1="16"
+        y1="16"
+        x2="45"
+        y2="45"
+        stroke="currentColor"
+        strokeWidth="6"
+        strokeLinecap="round"
+      />
+      <line
+        x1="16"
+        y1="16"
+        x2="45"
+        y2="45"
+        stroke="#000"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </g>
+  </svg>
+);
+
+const GraphicProduction = () => (
+  <svg viewBox="0 0 200 200" className="w-full h-full opacity-60">
+    <g transform="translate(100, 140) scale(1, 0.5) rotate(45)">
+      <path
+        d="M-60,-60 L60,-60 L60,60 L-60,60 Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="2 4"
+        strokeOpacity="0.3"
+      />
+      <path
+        d="M-40,-40 L40,-40 L40,40 L-40,40 Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <circle
+        cx="-15"
+        cy="-15"
+        r="12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="2 2"
+        strokeOpacity="0.4"
+      />
+      <rect
+        x="10"
+        y="-25"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="2 2"
+        strokeOpacity="0.4"
+      />
+      <rect
+        x="-25"
+        y="15"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="2 2"
+        strokeOpacity="0.4"
+      />
+      <g transform="translate(10, 10)">
+        <circle
+          cx="-25"
+          cy="-25"
+          r="12"
+          fill="#fff"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+      </g>
+      <g transform="translate(20, 20)">
+        <rect
+          x="-10"
+          y="-45"
+          width="20"
+          height="20"
+          fill="#fff"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+      </g>
+      <g transform="translate(10, 10)">
+        <rect
+          x="-35"
+          y="5"
+          width="20"
+          height="20"
+          fill="#fff"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+      </g>
+      <g transform="translate(15, 15)">
+        <rect
+          x="15"
+          y="-5"
+          width="20"
+          height="4"
+          fill="#fff"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+        <rect
+          x="15"
+          y="5"
+          width="20"
+          height="4"
+          fill="#fff"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+        <rect
+          x="15"
+          y="15"
+          width="20"
+          height="4"
+          fill="#fff"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+      </g>
+    </g>
+  </svg>
+);
+
+/* ─────────────────────────────────────────────────────────────────
+   MAIN WORKS COMPONENT
+───────────────────────────────────────────────────────────────── */
 const Works = () => {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [liked, setLiked] = useState({});
-  const [swiperInstance, setSwiperInstance] = useState(null);
-  const [showDetails, setShowDetails] = useState(false); // State for Details Modal
+  const [selectedProject, setSelectedProject] = useState(null);
 
-  const project = worksData[activeIdx];
-  const isFirst = activeIdx === 0;
-  const isLast = activeIdx === worksData.length - 1;
-
-  const nextProject = () => !isLast && setActiveIdx((p) => p + 1);
-  const prevProject = () => !isFirst && setActiveIdx((p) => p - 1);
-
-  const toggleLike = () => {
-    setLiked((prev) => ({ ...prev, [activeIdx]: !prev[activeIdx] }));
-  };
-
-  // Close details modal when changing projects
+  // Lock body scroll when modal is open to prevent double-scrolling
   useEffect(() => {
-    setShowDetails(false);
-  }, [activeIdx]);
-
-  // Keyboard navigation for Projects
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      // Don't navigate projects if the modal is open
-      if (showDetails) {
-        if (e.key === "Escape") setShowDetails(false);
-        return;
-      }
-      if (e.key === "ArrowRight") nextProject();
-      if (e.key === "ArrowLeft") prevProject();
+    if (selectedProject) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [activeIdx, isFirst, isLast, showDetails]);
-
-  // Staggered variants for text content
-  const contentVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (custom) => ({
-      opacity: 1,
-      y: 0,
-      transition: { delay: custom * 0.08, duration: 0.5, ease: "easeOut" },
-    }),
-    exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
-  };
+  }, [selectedProject]);
 
   return (
     <section
       id="works"
-      className="relative w-full min-h-[100dvh] bg-background overflow-hidden py-16 sm:py-24 flex items-center font-sans"
+      // h-[100dvh] forces the section to be exactly viewport height.
+      // overflow-hidden prevents the main page from scrolling.
+      className="relative w-full h-[100dvh] bg-[#fff] overflow-hidden flex flex-col font-primary text-zinc-900 pt-16 md:pt-24"
     >
-      {/* ── 1. Animated Floating Particles ── */}
-      <ul className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0 opacity-30">
-        {[...Array(10)].map((_, i) => (
-          <motion.li
-            key={i}
-            className="absolute bottom-[-150px] bg-gradient-to-tr from-themeBrown to-themeBlack/10 rounded-full"
-            initial={{ y: 0, rotate: 0, opacity: 1, borderRadius: "0%" }}
-            animate={{ y: -1200, rotate: 720, opacity: 0, borderRadius: "50%" }}
-            transition={{
-              duration: Math.random() * 15 + 15,
-              repeat: Infinity,
-              ease: "linear",
-              delay: Math.random() * 10,
-            }}
-            style={{
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 100 + 20}px`,
-              height: `${Math.random() * 100 + 20}px`,
-            }}
-          />
-        ))}
-      </ul>
-
-      {/* ── 2. Main Content Container ── */}
-      <div className="relative w-full max-w-[1300px] h-auto lg:h-[700px] mx-auto px-4 sm:px-8 lg:px-12 flex flex-col lg:flex-row items-center justify-center z-10 gap-8 lg:gap-0">
-        {/* LEFT COLORED SHAPE (Desktop Only) */}
-        <motion.div
-          layout
-          className="hidden lg:flex absolute top-0 left-4 h-full w-[45%] rounded-r-[40px] shadow-[0_30px_100px_rgba(0,0,0,0.1)] z-0 items-center overflow-hidden"
-          style={{
-            background: `linear-gradient(135deg, ${project.accentColor} 0%, ${project.accentColor}cc 100%)`,
-          }}
-        >
-          <motion.div
-            key={`bg-text-${activeIdx}`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 0.1, scale: 1 }}
-            className="absolute -left-24 text-[200px] font-clash font-black uppercase tracking-tighter text-white transform -rotate-90 origin-center whitespace-nowrap pointer-events-none"
-          >
-            {project.category}
-          </motion.div>
-        </motion.div>
-
-        {/* STACKED CARDS GALLERY (SWIPER) */}
-        <div className="relative lg:absolute lg:left-[15%] lg:top-1/2 lg:-translate-y-1/2 z-30 w-[260px] h-[360px] sm:w-[320px] sm:h-[460px] lg:w-[380px] lg:h-[500px] shrink-0 mt-4 lg:mt-0">
-          <Swiper
-            key={project.id}
-            onSwiper={setSwiperInstance}
-            effect={"cards"}
-            grabCursor={true}
-            allowTouchMove={false} // Disable dragging manually
-            onClick={() => swiperInstance?.slideNext()} // Swipe ONLY on click
-            cardsEffect={{ rotate: true }}
-            speed={600}
-            loop={project.images.length > 2}
-            mousewheel={{ invert: false }}
-            modules={[EffectCards, Mousewheel]}
-            className="w-full h-full cursor-pointer group"
-          >
-            {project.images.map((img, i) => (
-              <SwiperSlide
-                key={i}
-                className="rounded-3xl overflow-hidden shadow-[0_15px_50px_rgba(0,0,0,0.5)] bg-[#111] border border-white/10"
-              >
-                {/* Browser Mac Dots */}
-                <div className="absolute top-0 w-full h-8 bg-black/60 backdrop-blur-md flex items-center px-4 gap-2 z-10 transition-colors group-hover:bg-black/80">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
-                  <span className="ml-auto text-[8px] text-white/50 font-mono tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-                    CLICK TO SLIDE
-                  </span>
-                </div>
-                {/* Image */}
-                <img
-                  src={img}
-                  alt={`${project.title} screenshot ${i + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover object-top pt-8 transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                <span className="absolute bottom-4 right-4 bg-white/10 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest border border-white/10">
-                  {i + 1} / {project.images.length}
-                </span>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+      {/* Header Area */}
+      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 z-10 shrink-0">
+        <div>
+          <span className="text-zinc-500 font-epilogue text-sm uppercase tracking-widest font-bold mb-2 block">
+            Portfolio
+          </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-clash font-medium text-zinc-800 leading-tight">
+            Discover the <br />
+            <span className="font-bold text-black">structural process.</span>
+          </h2>
         </div>
-
-        {/* RIGHT DETAILS CARD */}
-        <div className="relative lg:absolute lg:right-4 w-full lg:w-[75%] h-auto lg:h-[88%] bg-zinc-900 rounded-[2rem] lg:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col justify-center z-20">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`content-${activeIdx}`}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="relative w-full h-full flex flex-col justify-center p-6 sm:p-10 lg:p-0"
-            >
-              {/* Subtle background glow */}
-              <div
-                className="absolute inset-0 opacity-15 pointer-events-none transition-colors duration-700"
-                style={{
-                  background: `radial-gradient(circle at top right, ${project.accentColor}, transparent 70%)`,
-                }}
-              />
-
-              <div className="relative z-10 w-full lg:pl-[42%] lg:pr-14 pt-2 lg:pt-0">
-                {/* Title */}
-                <motion.h1
-                  variants={contentVariants}
-                  custom={0}
-                  className="text-3xl sm:text-4xl lg:text-[54px] font-clash font-black text-white leading-[1] uppercase tracking-tight mb-2"
-                >
-                  {project.title}
-                </motion.h1>
-
-                {/* Subtitle */}
-                <motion.span
-                  variants={contentVariants}
-                  custom={1}
-                  className="block text-xs sm:text-sm lg:text-base text-white/70 font-epilogue font-medium mb-4"
-                >
-                  {project.projectType}
-                </motion.span>
-
-                {/* Short Description (Cleaned up for the main card) */}
-                <motion.p
-                  variants={contentVariants}
-                  custom={1.5}
-                  className="text-[11px] sm:text-xs lg:text-sm text-white/60 mb-5 leading-[1.6] sm:leading-relaxed line-clamp-3 sm:line-clamp-4 font-epilogue"
-                >
-                  {project.shortDescription}
-                </motion.p>
-
-                {/* Info Center Area (Tags & Details) */}
-                <motion.div
-                  variants={contentVariants}
-                  custom={2}
-                  className="flex flex-col sm:flex-row gap-5 sm:gap-6 lg:items-center border-t border-white/10 pt-5"
-                >
-                  {/* Tech Stack */}
-                  <div className="flex-1">
-                    <div className="text-[9px] font-bold tracking-[0.2em] text-white/40 mb-2 uppercase font-epilogue">
-                      Technologies
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                      {project.softwareUsed.slice(0, 6).map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-2.5 py-1 rounded-md text-[8px] sm:text-[9px] font-bold tracking-wider text-white bg-white/5 border border-white/10 uppercase font-mono shadow-sm"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="hidden sm:block w-px h-[50px] bg-white/10 shrink-0" />
-
-                  {/* Year Display */}
-                  <div className="flex flex-row sm:flex-col items-center gap-3 sm:gap-0 shrink-0">
-                    <div className="relative w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] sm:mb-1 flex items-center justify-center">
-                      <svg
-                        className="absolute inset-0 w-full h-full transform -rotate-90"
-                        viewBox="0 0 100 100"
-                      >
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="46"
-                          fill="none"
-                          stroke="rgba(255,255,255,0.05)"
-                          strokeWidth="5"
-                        />
-                        <motion.circle
-                          initial={{ strokeDasharray: "0 300" }}
-                          animate={{ strokeDasharray: "240 300" }}
-                          transition={{ delay: 0.5, duration: 1 }}
-                          cx="50"
-                          cy="50"
-                          r="46"
-                          fill="none"
-                          stroke={project.accentColor}
-                          strokeWidth="5"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <span className="text-white font-bold text-[10px] sm:text-xs tracking-wider font-mono">
-                        {project.year.split(" ")[0]}
-                      </span>
-                    </div>
-                    <span className="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] text-white/40 uppercase font-epilogue">
-                      Timeline
-                    </span>
-                  </div>
-                </motion.div>
-
-                {/* ── 3 BUTTONS: Live, Source Code, Details ── */}
-                <motion.div
-                  variants={contentVariants}
-                  custom={3}
-                  className="flex flex-wrap items-center gap-2.5 sm:gap-3 mt-6 sm:mt-8"
-                >
-                  {project.links?.live && (
-                    <a
-                      href={project.links.live}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="group relative overflow-hidden px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-white font-bold text-[9px] sm:text-[10px] tracking-widest uppercase transition-all hover:scale-105 hover:-translate-y-0.5 flex justify-center items-center gap-2 shadow-lg flex-1 sm:flex-none"
-                      style={{
-                        background: `linear-gradient(-45deg, ${project.accentColor} 0%, #111 200%)`,
-                        boxShadow: `0 8px 20px -8px ${project.accentColor}`,
-                      }}
-                    >
-                      <span className="relative z-10 font-epilogue">Live</span>
-                      <ExternalLink
-                        size={14}
-                        className="relative z-10 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
-                      />
-                    </a>
-                  )}
-
-                  {project.links?.github && (
-                    <a
-                      href={project.links.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="group px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-white font-bold text-[9px] sm:text-[10px] tracking-widest uppercase transition-all hover:scale-105 flex justify-center items-center gap-2 border border-white/20 hover:bg-white/10 backdrop-blur-md flex-1 sm:flex-none"
-                    >
-                      <span className="font-epilogue">Code</span>
-                      <GitBranch
-                        size={14}
-                        className="group-hover:scale-110 transition-transform"
-                      />
-                    </a>
-                  )}
-
-                  {/* Details Button triggers the Modal */}
-                  <button
-                    onClick={() => setShowDetails(true)}
-                    className="group px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-white font-bold text-[9px] sm:text-[10px] tracking-widest uppercase transition-all hover:scale-105 flex justify-center items-center gap-2 border border-white/20 hover:bg-white/10 backdrop-blur-md flex-1 sm:flex-none"
-                  >
-                    <span className="font-epilogue">Details</span>
-                    <Info
-                      size={14}
-                      className="group-hover:scale-110 transition-transform"
-                    />
-                  </button>
-
-                  <button
-                    onClick={toggleLike}
-                    className="ml-auto w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:scale-105 transition-all shrink-0 group"
-                  >
-                    <Heart
-                      size={18}
-                      className={`transition-colors duration-300 ${liked[activeIdx] ? "fill-red-500 text-red-500" : "fill-transparent text-white/50 group-hover:text-white"}`}
-                    />
-                  </button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* ── PROJECT NAVIGATION BUTTONS ── */}
-        <div className="absolute top-[32%] sm:top-[38%] lg:top-1/2 -translate-y-1/2 w-full flex justify-between px-2 sm:px-4 lg:-mx-6 z-40 pointer-events-none">
-          <button
-            onClick={prevProject}
-            disabled={isFirst}
-            className={`pointer-events-auto w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] lg:w-[56px] lg:h-[56px] rounded-full bg-white text-themeBlack flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.2)] transition-all ${isFirst ? "opacity-0" : "opacity-100 hover:scale-110 hover:bg-themeBrown hover:text-white"}`}
-          >
-            <ChevronLeft size={20} strokeWidth={3} />
-          </button>
-
-          <button
-            onClick={nextProject}
-            disabled={isLast}
-            className={`pointer-events-auto w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] lg:w-[56px] lg:h-[56px] rounded-full bg-white text-themeBlack flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.2)] transition-all ${isLast ? "opacity-0" : "opacity-100 hover:scale-110 hover:bg-themeBrown hover:text-white"}`}
-          >
-            <ChevronRight size={20} strokeWidth={3} />
-          </button>
-        </div>
+        <p className="text-zinc-500 font-epilogue text-sm md:text-base max-w-sm leading-relaxed">
+          These cards provide brief technical blueprints of past projects. Click
+          anywhere on a card to uncover full details and visual snaps.
+        </p>
       </div>
 
-      {/* ── 3. FULL DETAILS MODAL (Text Only) ── */}
+      {/* ── MAIN AUTO-CAROUSEL ── */}
+      <div className="w-full pl-6 md:pl-12 pb-12 z-10 flex-1 flex items-center min-h-0">
+        <Swiper
+          slidesPerView={1.1}
+          spaceBetween={20}
+          breakpoints={{
+            640: { slidesPerView: 1.8, spaceBetween: 24 },
+            1024: { slidesPerView: 2.5, spaceBetween: 32 },
+            1440: { slidesPerView: 3.2, spaceBetween: 40 },
+          }}
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          freeMode={true}
+          modules={[Autoplay, FreeMode]}
+          className="w-full h-full max-h-[550px]"
+        >
+          {worksData.map((proj, idx) => {
+            const isDark = idx % 2 === 0;
+
+            return (
+              <SwiperSlide key={proj.id} className="h-full">
+                {/* ENTIRE CARD IS CLICKABLE */}
+                <div
+                  onClick={() => setSelectedProject(proj)}
+                  className={`w-full h-full rounded-[32px] p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden transition-transform duration-500 hover:-translate-y-2 cursor-pointer group ${
+                    isDark
+                      ? "bg-[#0A0A0A] text-white shadow-2xl"
+                      : "bg-white text-zinc-900 border border-zinc-200 shadow-xl"
+                  }`}
+                >
+                  {/* Top Text Content */}
+                  <div className="z-10 relative">
+                    <span
+                      className={`text-[10px] uppercase tracking-[0.25em] font-epilogue font-bold mb-5 block ${isDark ? "text-zinc-400" : "text-zinc-500"}`}
+                    >
+                      {proj.category}
+                    </span>
+                    <h3 className="text-3xl md:text-4xl font-display font-medium mb-4 leading-tight tracking-tight group-hover:underline decoration-2 underline-offset-4">
+                      {proj.title}
+                    </h3>
+                    <p
+                      className={`text-xs md:text-sm font-epilogue leading-relaxed max-w-[85%] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}
+                    >
+                      {proj.shortDescription}
+                    </p>
+                  </div>
+
+                  {/* Blueprint Graphic Background */}
+                  <div className="absolute bottom-0 right-0 left-0 h-[60%] pointer-events-none flex items-end justify-center transition-transform duration-700 group-hover:scale-105">
+                    {isDark ? <GraphicDiscovery /> : <GraphicProduction />}
+                  </div>
+                </div>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
+
+      {/* ── MODAL: FULL DETAILS & PINTEREST GRID SNAPS ── */}
       <AnimatePresence>
-        {showDetails && (
+        {selectedProject && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-themeBlack/70 backdrop-blur-md"
-            onClick={() => setShowDetails(false)}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-zinc-900/40 backdrop-blur-sm"
+            onClick={() => setSelectedProject(null)}
           >
             <motion.div
-              initial={{ scale: 0.95, y: 30, opacity: 0 }}
+              initial={{ scale: 0.96, y: 30, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.95, y: 30, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()} // Prevent clicking inside from closing
-              className="relative w-full max-w-3xl max-h-[85vh] bg-zinc-900 border border-white/10 rounded-3xl p-6 sm:p-10 overflow-y-auto shadow-2xl custom-scrollbar"
+              exit={{ scale: 0.96, y: 20, opacity: 0 }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+              // Modal acts as its own scrolling window
+              className="relative w-full max-w-[1400px] h-[95vh] bg-[#F8F9FA] rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden"
             >
-              {/* Close Button */}
+              {/* Floating Close Button */}
               <button
-                onClick={() => setShowDetails(false)}
-                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white"
+                onClick={() => setSelectedProject(null)}
+                className="absolute top-6 right-6 p-3 rounded-full bg-white shadow-md hover:bg-zinc-100 text-zinc-900 transition-colors z-50 border border-zinc-200"
               >
-                <X size={20} />
+                <X size={20} strokeWidth={2.5} />
               </button>
 
-              <div className="pr-8">
-                {/* Modal Header */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className="w-2 h-2 rounded-full animate-pulse"
-                    style={{ backgroundColor: project.accentColor }}
-                  />
-                  <span className="text-[10px] sm:text-xs text-white/60 font-bold uppercase tracking-[0.3em] font-epilogue">
-                    {project.projectType}
-                  </span>
-                </div>
-
-                <h2 className="text-3xl sm:text-5xl md:text-6xl font-clash font-black text-white leading-[1] uppercase tracking-tight mb-6">
-                  {project.title}
-                </h2>
-
-                <div className="w-full h-px bg-white/10 mb-6" />
-
-                {/* Modal Full Description */}
-                <div className="text-sm sm:text-base text-white/80 leading-[1.8] sm:leading-loose font-epilogue whitespace-pre-wrap">
-                  {project.fullDescription}
-                </div>
-
-                {/* Modal Tech Stack (Repeated for clarity in detailed view) */}
-                <div className="mt-8 pt-6 border-t border-white/10">
-                  <div className="text-[10px] font-bold tracking-[0.2em] text-white/40 mb-4 uppercase font-epilogue">
-                    Complete Tech Stack
+              {/* Scrollable Content Area within Modal */}
+              <div className="w-full h-full overflow-y-auto custom-scrollbar">
+                {/* TOP SECTION: Project Info (Styled like the reference image) */}
+                <div className="w-full bg-white px-8 sm:px-16 pt-20 pb-16 flex flex-col lg:flex-row gap-12 lg:gap-24 relative overflow-hidden">
+                  {/* Decorative Elements mimicking the reference image */}
+                  <div className="absolute top-10 right-10 opacity-10 pointer-events-none hidden lg:block">
+                    <GraphicProduction />
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {project.softwareUsed.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold tracking-wider text-white bg-white/5 border border-white/10 uppercase font-mono shadow-sm"
-                      >
-                        {tech}
+
+                  <div className="w-full lg:w-1/2 relative z-10 flex flex-col justify-center">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: selectedProject.accentColor }}
+                      />
+                      <span className="text-xs font-epilogue font-bold text-zinc-500 uppercase tracking-widest">
+                        {selectedProject.projectType} • {selectedProject.year}
                       </span>
+                    </div>
+
+                    <h2 className="text-4xl sm:text-6xl lg:text-7xl font-clash font-bold text-zinc-900 leading-[1.05] mb-6 tracking-tight">
+                      {selectedProject.title}
+                    </h2>
+
+                    <div className="text-sm sm:text-base font-primary text-zinc-600 leading-relaxed whitespace-pre-wrap mb-10 max-w-xl">
+                      {selectedProject.fullDescription}
+                    </div>
+
+                    {/* Links */}
+                    <div className="flex flex-wrap gap-4">
+                      {selectedProject.links?.live && (
+                        <a
+                          href={selectedProject.links.live}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="bg-[#D4F34A] hover:bg-[#c5e638] text-zinc-900 px-8 py-3.5 rounded-full text-sm font-bold font-epilogue tracking-wide flex items-center gap-2 transition-colors shadow-sm"
+                        >
+                          Explore Live <ExternalLink size={16} />
+                        </a>
+                      )}
+                      {selectedProject.links?.github && (
+                        <a
+                          href={selectedProject.links.github}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-900 px-8 py-3.5 rounded-full text-sm font-bold font-epilogue tracking-wide flex items-center gap-2 transition-colors"
+                        >
+                          Source Code <GitBranch size={16} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Right Side: Tech Stack Widget (Matching the modular block vibe) */}
+                  <div className="w-full lg:w-1/2 flex items-center relative z-10">
+                    <div className="bg-[#F8F9FA] rounded-[2rem] p-8 border border-zinc-100 w-full shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
+                      <div className="flex items-center gap-2 mb-6 text-zinc-900">
+                        <Code2 size={20} />
+                        <h3 className="text-lg font-bold font-clash">
+                          Technology Stack
+                        </h3>
+                      </div>
+                      <div className="flex flex-wrap gap-3">
+                        {selectedProject.softwareUsed.map((tech) => (
+                          <span
+                            key={tech}
+                            className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide text-zinc-800 bg-white border border-zinc-200 shadow-sm"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* BOTTOM SECTION: Pinterest-style Grid Snaps */}
+                <div className="w-full px-8 sm:px-16 py-16 bg-[#F8F9FA]">
+                  <div className="flex flex-col items-center text-center mb-12">
+                    <h3 className="text-3xl md:text-4xl font-clash font-bold text-zinc-900 mb-4">
+                      Project Visuals & Snaps
+                    </h3>
+                    <p className="text-zinc-500 font-epilogue text-sm max-w-xl">
+                      A comprehensive view of the interfaces, dashboards, and
+                      visual components engineered for this platform.
+                    </p>
+                  </div>
+
+                  {/* MASONRY GRID USING CSS COLUMNS */}
+                  <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+                    {selectedProject.images.map((img, i) => (
+                      <div
+                        key={i}
+                        className="break-inside-avoid relative group rounded-2xl overflow-hidden bg-zinc-200 border border-zinc-200/60 shadow-sm"
+                      >
+                        <img
+                          src={img}
+                          alt={`${selectedProject.title} snap ${i + 1}`}
+                          className="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-700 ease-out"
+                          loading="lazy"
+                        />
+                        {/* Subtle hover overlay */}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -426,23 +489,23 @@ const Works = () => {
         )}
       </AnimatePresence>
 
-      {/* Scrollbar styling specifically for the modal */}
+      {/* Hide Scrollbar for modal but allow smooth scrolling */}
       <style
         dangerouslySetInlineStyle={{
           __html: `
         .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
+          width: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.02);
+          background: #F8F9FA;
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.1);
+          background: #D4D4D8;
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.2);
+          background: #A1A1AA;
         }
       `,
         }}

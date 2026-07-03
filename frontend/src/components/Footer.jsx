@@ -16,115 +16,99 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="w-full pt-20 pb-8 px-4 mt-20 relative flex justify-center bg-background overflow-hidden">
-      {/* --- Image Pop-out Overlay with Light Rays --- */}
-      <div className="absolute top-[80px] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+    <footer className="w-full pt-24 pb-12 px-6 relative bg-[#FAFAFA] text-themeBlack">
+      {/* --- Floating Portrait --- */}
+      <div className="absolute -top-12 left-1/2  -translate-x-1/2 z-20">
         <motion.div
-          whileHover={{ y: -5, scale: 1.05 }}
-          className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1.5 bg-white border border-borderLight shadow-md"
+          whileHover={{ rotate: [0, -10, 10, 0], scale: 1.05 }}
+          className="relative w-28 h-28 z-10 rounded-full p-1 bg-[#FAFAFA] border border-black/5 shadow-xl"
         >
           <img
             src={assets.footerImage}
             alt="Beereshkumar B C"
-            className="w-full h-full rounded-full object-cover grayscale hover:grayscale-0 transition-all duration-500 relative z-10"
+            className="w-full h-full rounded-full object-cover"
           />
-
-          {/* Border Ring */}
-          <div className="absolute inset-0 rounded-full border border-themeBrown/30 pointer-events-none z-20" />
         </motion.div>
       </div>
 
-      {/* --- Compact Footer Card --- */}
-      <div className="w-full max-w-5xl bg-white border border-borderLight rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-12 shadow-sm relative mt-8">
-        {/* Top Border */}
-        <div className="absolute inset-x-0 top-0 h-px bg-themeBrown/30" />
+      <div className="max-w-7xl mx-auto flex flex-col items-center">
+        {/* --- Main Signature --- */}
+        <div className="flex flex-col items-center mb-16 mt-8">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 leading-none"
+          >
+            <span className="font-clash text-7xl sm:text-9xl text-themeBlack tracking-tighter uppercase font-black">
+              BEERESH
+            </span>
+            <span className="font-season text-5xl sm:text-7xl italic text-themeBrown lowercase pb-2">
+              Kumar.
+            </span>
+          </motion.h2>
+          <p className="font-epilogue text-[10px] sm:text-xs uppercase tracking-[0.4em] text-themeBlack/40 mt-6 font-bold">
+            Software Architect • Davanagere, IN
+          </p>
+        </div>
 
-        <div className="flex flex-col items-center gap-8 mt-10">
-          {/* Main Typography Signature */}
-          <div className="flex flex-col items-center">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 leading-none"
+        {/* --- Social Links Grid --- */}
+        <div className="flex flex-wrap justify-center gap-x-12 gap-y-6 mb-16">
+          {socialLinks.map((link) => (
+            <motion.a
+              key={link.name}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ color: "#d97706" }}
+              className="font-epilogue text-[10px] sm:text-xs font-bold tracking-[0.25em] uppercase text-themeBlack/60 hover:text-themeBrown transition-colors"
             >
-              <span className="font-humane text-7xl sm:text-9xl md:text-[120px] text-themeBlack tracking-tighter uppercase leading-[0.8]">
-                BEERESH
-              </span>
-              <span className="font-season text-5xl sm:text-7xl md:text-[90px] italic text-themeBrown lowercase tracking-normal pb-2">
-                Kumar.
-              </span>
-            </motion.h2>
-            <p className="text-[10px] sm:text-xs font-geist uppercase tracking-[0.3em] text-themeBlack/50 mt-4 font-bold">
-              Software Architect • Davanagere
-            </p>
-          </div>
+              {link.name}
+            </motion.a>
+          ))}
+        </div>
 
-          {/* Social & Portfolio Links */}
-          <div className="flex flex-wrap justify-center gap-x-6 sm:gap-x-10 gap-y-4">
-            {socialLinks.map((link) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative text-[10px] sm:text-xs font-geist font-bold tracking-[0.2em] uppercase text-themeBlack/60 hover:text-themeBrown transition-all duration-300 group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-themeBrown transition-all duration-300 group-hover:w-full" />
-              </motion.a>
-            ))}
-          </div>
-
-          {/* Contact Details Row */}
-          <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-12 py-6 border-y border-borderLight w-full justify-center">
-            <div className="flex flex-col items-center sm:items-start gap-1">
-              <span className="text-[9px] font-geist text-themeBlack/50 uppercase tracking-widest font-bold">
-                Phone
+        {/* --- Contact Details Row --- */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 py-10 border-y border-black/5 w-full max-w-4xl text-center">
+          {[
+            {
+              label: "Phone",
+              value: "+91 63609 95219",
+              href: "tel:+916360995219",
+            },
+            {
+              label: "Email",
+              value: "bcbeereshkumar@gmail.com",
+              href: "mailto:bcbeereshkumar@gmail.com",
+            },
+            { label: "Location", value: "Davanagere, Karnataka", href: "#" },
+          ].map((item, i) => (
+            <div key={i} className="flex flex-col gap-1">
+              <span className="text-[9px] font-geist text-themeBlack/30 uppercase tracking-widest font-bold">
+                {item.label}
               </span>
               <a
-                href="tel:+916360995219"
+                href={item.href}
                 className="text-xs font-mono font-bold text-themeBlack/70 hover:text-themeBrown transition-colors"
               >
-                +91 63609 95219
+                {item.value}
               </a>
             </div>
-            <div className="hidden sm:block h-8 w-px bg-borderLight" />
-            <div className="flex flex-col items-center sm:items-start gap-1">
-              <span className="text-[9px] font-geist text-themeBlack/50 uppercase tracking-widest font-bold">
-                Email
-              </span>
-              <a
-                href="mailto:bcbeereshkumar@gmail.com"
-                className="text-xs font-mono font-bold text-themeBlack/70 hover:text-themeBrown transition-colors"
-              >
-                bcbeereshkumar@gmail.com
-              </a>
-            </div>
-            <div className="hidden sm:block h-8 w-px bg-borderLight" />
-            <div className="flex flex-col items-center sm:items-start gap-1">
-              <span className="text-[9px] font-geist text-themeBlack/50 uppercase tracking-widest font-bold">
-                Location
-              </span>
-              <span className="text-xs font-mono font-bold text-themeBlack/70">
-                Karnataka, India
-              </span>
-            </div>
-          </div>
+          ))}
+        </div>
 
-          {/* Bottom Copyright & Tech Stack Row */}
-          <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 pt-2">
-            <p className="text-[10px] font-geist font-semibold tracking-widest uppercase text-themeBlack/50">
-              &copy; {currentYear} Beereshkumar B C
-            </p>
+        {/* --- Copyright & Tech Footer --- */}
+        <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-6 pt-12">
+          <p className="text-[10px] font-geist font-bold tracking-widest uppercase text-themeBlack/40">
+            &copy; {currentYear} Beereshkumar B C
+          </p>
 
-            <div className="flex items-center gap-3 sm:gap-4 text-[10px] font-geist tracking-[0.15em] uppercase text-themeBlack/60">
-              <span className="font-bold">MERN Stack</span>
-              <div className="w-1.5 h-1.5 rounded-full bg-themeBrown/60" />
-              <span className="font-bold">Web3</span>
-              <div className="w-1.5 h-1.5 rounded-full bg-themeBrown/60" />
-              <span className="font-bold">AI Integrated</span>
-            </div>
+          <div className="flex items-center gap-4 text-[10px] font-geist tracking-[0.2em] uppercase text-themeBlack/40 font-bold">
+            <span>MERN</span>
+            <span className="w-1 h-1 rounded-full bg-themeBrown/30" />
+            <span>Web3</span>
+            <span className="w-1 h-1 rounded-full bg-themeBrown/30" />
+            <span>AI Powered</span>
           </div>
         </div>
       </div>

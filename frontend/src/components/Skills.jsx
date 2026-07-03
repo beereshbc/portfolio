@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Globe,
@@ -6,18 +6,17 @@ import {
   Brain,
   Cpu,
   Paintbrush,
-  Code,
-  Award,
   Server,
+  Award,
   Sparkles,
   ArrowRight,
-  ArrowLeft,
+  Code2,
 } from "lucide-react";
 
 /* ═══════════════════════════════════════════════════════════
           SKILLS DATA
 ═══════════════════════════════════════════════════════════ */
-const skillsCarouselData = [
+const skillsData = [
   {
     id: 1,
     title: "MERN Stack Mastery",
@@ -25,10 +24,18 @@ const skillsCarouselData = [
     description:
       "Production-grade applications with React, Node, Express, MongoDB. Integrated JWT, REST APIs, real-time features, and payment gateways. Delivered 10+ live systems.",
     imageUrl:
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&h=600&fit=crop",
-    icon: <Globe size={24} />,
-    skills: ["React.js", "Node.js", "Express.js", "MongoDB", "Tailwind CSS"],
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+    icon: Globe,
+    skills: [
+      "React.js",
+      "Node.js",
+      "Express.js",
+      "MongoDB",
+      "Tailwind CSS",
+      "Redux",
+    ],
     color: "#F45B26",
+    bgLight: "bg-orange-50",
   },
   {
     id: 2,
@@ -37,10 +44,11 @@ const skillsCarouselData = [
     description:
       "Smart contract development with Solidity, Hardhat, Ethers.js. Integrated MetaMask, IPFS, and Hedera. Built secure dApps and token systems.",
     imageUrl:
-      "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=500&h=600&fit=crop",
-    icon: <Hexagon size={24} />,
-    skills: ["Solidity", "Hardhat", "Ethers.js", "Web3.js", "MetaMask"],
+      "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80",
+    icon: Hexagon,
+    skills: ["Solidity", "Hardhat", "Ethers.js", "Web3.js", "MetaMask", "IPFS"],
     color: "#6c5ce7",
+    bgLight: "bg-indigo-50",
   },
   {
     id: 3,
@@ -49,309 +57,267 @@ const skillsCarouselData = [
     description:
       "Python-based AI solutions using TensorFlow, Scikit-learn, Gemini & OpenAI APIs. Built NLP pipelines, predictive models, and AI systems.",
     imageUrl:
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&h=600&fit=crop",
-    icon: <Brain size={24} />,
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
+    icon: Brain,
     skills: ["Python", "TensorFlow", "Scikit-learn", "Gemini API", "Pandas"],
     color: "#00cec9",
+    bgLight: "bg-teal-50",
   },
   {
     id: 4,
     title: "Core CS & DSA",
     subtitle: "Algorithmic Foundation",
     description:
-      "Strong grasp of Data Structures, Algorithms, OOP, and time/space complexity. Active LeetCode solver with Java, C, and JavaScript.",
+      "Strong grasp of Data Structures, Algorithms, OOP, and time/space complexity. Active competitive programmer and problem solver.",
     imageUrl:
-      "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=500&h=600&fit=crop",
-    icon: <Cpu size={24} />,
-    skills: ["Java", "C", "JavaScript", "DSA", "OOP Patterns"],
+      "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
+    icon: Cpu,
+    skills: ["Java", "C", "JavaScript", "DSA", "OOP Patterns", "System Design"],
     color: "#0984e3",
+    bgLight: "bg-blue-50",
   },
   {
     id: 5,
     title: "DevOps & Tools",
     subtitle: "Streamlined CI/CD",
     description:
-      "Containerization with Docker, version control with Git/GitHub, CI/CD pipelines, and deployment on modern cloud platforms.",
+      "Containerization with Docker, version control with Git/GitHub, CI/CD pipelines, and seamless deployment on modern cloud platforms.",
     imageUrl:
-      "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=500&h=600&fit=crop",
-    icon: <Server size={24} />,
-    skills: ["Docker", "Git/GitHub", "CI/CD", "Postman", "Vercel"],
+      "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=800&q=80",
+    icon: Server,
+    skills: ["Docker", "Git/GitHub", "CI/CD", "Postman", "Vercel", "AWS"],
     color: "#e17055",
+    bgLight: "bg-orange-50",
   },
   {
     id: 6,
     title: "UI/UX & Prototyping",
     subtitle: "Design + Development",
     description:
-      "Crafting modern, responsive interfaces with Figma, Canva, and Eraser.io. Focus on micro-interactions, accessibility, and pixel-perfect implementation.",
+      "Crafting modern, responsive interfaces with Figma, Canva, and Eraser.io. Focus on micro-interactions, accessibility, and pixel-perfect UI.",
     imageUrl:
-      "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=500&h=600&fit=crop",
-    icon: <Paintbrush size={24} />,
-    skills: ["Figma", "Canva", "Wireframing", "Prototyping", "UI/UX"],
+      "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=800&q=80",
+    icon: Paintbrush,
+    skills: ["Figma", "Canva", "Wireframing", "Prototyping", "Tailwind"],
     color: "#fd79a8",
-  },
-  {
-    id: 7,
-    title: "Academic Systems",
-    subtitle: "University-Scale Platforms",
-    description:
-      "Official developer for GM University's CSE portal and AI-integrated Curriculum Management System (PDMS). Built for 200+ active users.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&h=600&fit=crop",
-    icon: <Award size={24} />,
-    skills: ["MERN", "Event Management", "Scalability", "Analytics"],
-    color: "#a29bfe",
-  },
-  {
-    id: 8,
-    title: "Freelance & Leadership",
-    subtitle: "Client-Driven Solutions",
-    description:
-      "Delivered end-to-end projects for diverse clients, leading cross-functional teams. Organized Interconnect 26.0, an open-source program.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=600&fit=crop",
-    icon: <Sparkles size={24} />,
-    skills: ["Project Management", "Agile", "Team Coordination", "Mentoring"],
-    color: "#fdcb6e",
+    bgLight: "bg-pink-50",
   },
 ];
 
 /* ═══════════════════════════════════════════════════════════
-          HELPER: CALCULATE CIRCULAR OFFSET
-═══════════════════════════════════════════════════════════ */
-// Determines how far a card is from the center (0 = center, 1 = right, -1 = left, etc.)
-const getOffset = (index, activeIndex, total) => {
-  let diff = index - activeIndex;
-  if (diff > total / 2) diff -= total;
-  if (diff < -total / 2) diff += total;
-  return diff;
-};
-
-/* ═══════════════════════════════════════════════════════════
-          MAIN SKILLS COMPONENT
+          MAIN COMPONENT
 ═══════════════════════════════════════════════════════════ */
 const Skills = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const totalItems = skillsCarouselData.length;
+  const [activeIdx, setActiveIdx] = useState(0);
+  const activeSkill = skillsData[activeIdx];
 
-  // Check screen size for responsive 3D spacing
+  // Auto-cycle feature (Optional, can be removed if you want pure manual click)
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const timer = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % skillsData.length);
+    }, 8000);
+    return () => clearInterval(timer);
   }, []);
-
-  const handleNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % totalItems);
-  }, [totalItems]);
-
-  const handlePrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + totalItems) % totalItems);
-  }, [totalItems]);
-
-  // Keyboard Navigation
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "ArrowLeft") handlePrev();
-      if (e.key === "ArrowRight") handleNext();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleNext, handlePrev]);
 
   return (
     <section
       id="skills"
-      className="relative w-full min-h-[100dvh] h-auto bg-background flex flex-col items-center justify-center py-20 sm:py-24 md:py-32 overflow-hidden"
+      className="relative w-full min-h-[100dvh] bg-[#FAFAFA] text-zinc-900 py-20 sm:py-24 md:py-32 overflow-hidden flex items-center"
     >
-      {/* ── ATMOSPHERIC GLOWS ── */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <motion.div
-          animate={{ x: [0, 100, -50, 0], y: [0, -50, 50, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-themeBrown/10 rounded-full blur-[120px]"
-        />
-        <motion.div
-          animate={{ x: [0, -100, 50, 0], y: [0, 100, -50, 0] }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 2,
-          }}
-          className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px]"
-        />
-        <div
-          className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")`,
-          }}
-        />
-      </div>
+      {/* ── Subtle Grain Background ── */}
+      <div
+        className="absolute inset-0 z-[0] pointer-events-none opacity-[0.03] mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")`,
+        }}
+      />
 
-      {/* ── HEADER ── */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-5 text-center mb-10 sm:mb-16">
-        <motion.h2
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-humane font-black text-2xl sm:text-8xl md:text-[100px] text-themeBlack tracking-tighter leading-[0.8] uppercase"
-        >
-          Technical <span className="text-themeBrown">Expertise</span>
-        </motion.h2>
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-5 sm:px-10 lg:px-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        {/* ── LEFT COLUMN: Navigation & Info ── */}
+        <div className="lg:col-span-4 flex flex-col pt-4 lg:sticky lg:top-32">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center gap-3 mb-6"
+          >
+            <div className="h-px w-10 bg-themeBrown" />
+            <span className="font-geist text-[10px] uppercase tracking-[0.4em] text-themeBrown font-bold">
+              The Arsenal
+            </span>
+          </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0, filter: "blur(10px)" }}
-          whileInView={{ opacity: 1, filter: "blur(0px)" }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-xs sm:text-sm text-themeBlack/60 mt-6 max-w-xl mx-auto font-primary uppercase tracking-[0.2em] font-bold"
-        >
-          Master of full-stack engineering & Web3 innovation
-        </motion.p>
-      </div>
+          <motion.h2
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            className="font-clash font-black text-5xl sm:text-6xl md:text-7xl text-themeBlack leading-[0.9] tracking-tighter uppercase mb-10"
+          >
+            Technical <br /> <span className="text-themeBrown">Expertise</span>
+          </motion.h2>
 
-      {/* ── 3D CAROUSEL STAGE ── */}
-      <div className="relative z-20 w-full max-w-[1400px] h-[450px] sm:h-[550px] md:h-[600px] flex items-center justify-center perspective-[1200px]">
-        <AnimatePresence mode="popLayout">
-          {skillsCarouselData.map((skill, index) => {
-            const offset = getOffset(index, activeIndex, totalItems);
-            const absOffset = Math.abs(offset);
-            const isActive = offset === 0;
-
-            // Only render cards that are relatively close to save DOM performance
-            if (absOffset > 2) return null;
-
-            // Calculate 3D spatial properties
-            const xBase = isMobile ? 160 : 350;
-            const x = offset * xBase;
-            const scale = isActive ? 1 : 1 - absOffset * 0.15;
-            const rotateY = offset * -20; // Tilts side cards towards the center
-            const zIndex = 20 - absOffset;
-            const opacity = isActive ? 1 : 1 - absOffset * 0.35;
-
-            return (
+          {/* Interactive Navigation List */}
+          <div className="flex flex-col gap-2 relative">
+            {/* Animated Active Indicator Line */}
+            <div className="absolute left-0 top-0 w-1 h-full bg-black/5 rounded-full overflow-hidden hidden sm:block">
               <motion.div
-                key={skill.id}
-                onClick={() => !isActive && setActiveIndex(index)}
-                initial={{ opacity: 0, scale: 0.8, x: offset > 0 ? 200 : -200 }}
+                className="w-full bg-themeBrown rounded-full"
+                initial={false}
                 animate={{
-                  opacity,
-                  scale,
-                  x,
-                  rotateY,
-                  zIndex,
+                  height: `${100 / skillsData.length}%`,
+                  y: `${activeIdx * 100}%`,
                 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 30,
-                  mass: 1,
-                }}
-                className={`absolute w-[280px] sm:w-[340px] md:w-[400px] h-[400px] sm:h-[480px] md:h-[540px] rounded-[2rem] bg-white/80 backdrop-blur-2xl border border-black/5 flex flex-col p-4 shadow-xl cursor-pointer will-change-transform ${
-                  isActive
-                    ? "shadow-[0_20px_60px_rgba(0,0,0,0.1)] ring-1 ring-themeBrown/20"
-                    : "shadow-md hover:bg-white"
-                }`}
-              >
-                {/* Top Image Section */}
-                <div className="relative w-full h-[45%] rounded-[1.25rem] overflow-hidden bg-black/5 shrink-0">
-                  <img
-                    src={skill.imageUrl}
-                    alt={skill.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+            </div>
 
-                  {/* Floating Icon */}
-                  <div
-                    className="absolute bottom-3 left-3 p-3 rounded-xl bg-white/20 backdrop-blur-md border border-white/20 text-white shadow-lg"
-                    style={{ color: skill.color }}
-                  >
-                    {skill.icon}
+            {skillsData.map((skill, idx) => {
+              const isActive = activeIdx === idx;
+              const Icon = skill.icon;
+              return (
+                <button
+                  key={skill.id}
+                  onClick={() => setActiveIdx(idx)}
+                  className={`relative flex items-center justify-between w-full p-4 sm:pl-8 rounded-2xl transition-all duration-300 text-left group ${
+                    isActive
+                      ? "bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-black/5"
+                      : "hover:bg-black/5 border border-transparent"
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                        isActive
+                          ? skill.bgLight
+                          : "bg-black/5 group-hover:bg-white"
+                      }`}
+                      style={{ color: isActive ? skill.color : "#71717A" }}
+                    >
+                      <Icon size={18} strokeWidth={2.5} />
+                    </div>
+                    <span
+                      className={`font-clash text-lg sm:text-xl font-bold transition-colors duration-300 ${
+                        isActive
+                          ? "text-themeBlack"
+                          : "text-themeBlack/50 group-hover:text-themeBlack"
+                      }`}
+                    >
+                      {skill.title}
+                    </span>
                   </div>
-                </div>
-
-                {/* Bottom Content Section */}
-                <div className="pt-5 px-2 flex-1 flex flex-col">
-                  <h3 className="font-clash text-2xl md:text-3xl font-bold text-themeBlack tracking-tight leading-none mb-1">
-                    {skill.title}
-                  </h3>
-                  <p className="font-geist text-[9px] text-themeBrown uppercase tracking-[0.2em] font-bold mb-4">
-                    {skill.subtitle}
-                  </p>
-
-                  <p className="font-primary text-xs md:text-sm text-themeBlack/70 line-clamp-3 leading-relaxed mb-4">
-                    {skill.description}
-                  </p>
-
-                  {/* Skill Pills */}
-                  <div className="flex flex-wrap gap-1.5 mt-auto">
-                    {skill.skills.slice(0, 4).map((s) => (
-                      <span
-                        key={s}
-                        className="px-3 py-1.5 bg-black/5 border border-black/5 rounded-full text-[9px] md:text-[10px] font-bold text-themeBlack/80 uppercase tracking-wider"
-                      >
-                        {s}
-                      </span>
-                    ))}
-                    {skill.skills.length > 4 && (
-                      <span className="px-2 py-1.5 bg-themeBrown/10 text-themeBrown rounded-full text-[9px] md:text-[10px] font-bold uppercase">
-                        +{skill.skills.length - 4}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Active Highlight Glow */}
-                {isActive && (
-                  <motion.div
-                    className="absolute inset-0 rounded-[2rem] pointer-events-none"
-                    style={{ boxShadow: `inset 0 0 0 1px ${skill.color}40` }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  />
-                )}
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
-      </div>
-
-      {/* ── NAVIGATION CONTROLS ── */}
-      <div className="relative z-20 mt-10 md:mt-16 flex flex-col items-center gap-6">
-        <div className="flex gap-4">
-          <button
-            onClick={handlePrev}
-            className="w-12 h-12 rounded-full bg-white border border-black/10 flex items-center justify-center text-themeBlack shadow-sm hover:bg-themeBrown hover:text-white hover:border-themeBrown transition-all duration-300"
-          >
-            <ArrowLeft size={18} />
-          </button>
-          <button
-            onClick={handleNext}
-            className="w-12 h-12 rounded-full bg-white border border-black/10 flex items-center justify-center text-themeBlack shadow-sm hover:bg-themeBrown hover:text-white hover:border-themeBrown transition-all duration-300"
-          >
-            <ArrowRight size={18} />
-          </button>
+                  {isActive && (
+                    <motion.div layoutId="arrow" className="text-themeBrown">
+                      <ArrowRight size={20} />
+                    </motion.div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Dots */}
-        <div className="flex gap-2">
-          {skillsCarouselData.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveIndex(idx)}
-              className={`transition-all duration-300 rounded-full h-1.5 ${
-                idx === activeIndex
-                  ? "w-6 bg-themeBrown"
-                  : "w-1.5 bg-black/20 hover:bg-black/40"
-              }`}
-            />
-          ))}
+        {/* ── RIGHT COLUMN: Dynamic Showcase Graphic ── */}
+        <div className="lg:col-span-8 relative w-full h-[550px] sm:h-[650px] lg:h-[750px] rounded-[2rem] sm:rounded-[3rem] overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSkill.id}
+              initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -40, filter: "blur(10px)" }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0 w-full h-full bg-white shadow-[0_20px_80px_rgba(0,0,0,0.06)] border border-black/5 flex flex-col overflow-hidden"
+            >
+              {/* Top: Massive Image Graphic */}
+              <div className="relative w-full h-1/2 sm:h-[55%] overflow-hidden bg-zinc-100">
+                <motion.img
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  src={activeSkill.imageUrl}
+                  alt={activeSkill.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
+
+                {/* Floating Tech Badge */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  className="absolute top-6 right-6 px-4 py-2 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-black/5 flex items-center gap-2"
+                >
+                  <Code2 size={14} style={{ color: activeSkill.color }} />
+                  <span className="font-geist text-[10px] font-bold uppercase tracking-widest text-themeBlack">
+                    {activeSkill.skills[0]} Centric
+                  </span>
+                </motion.div>
+              </div>
+
+              {/* Bottom: Content & Floating Nodes */}
+              <div className="relative flex-1 p-8 sm:p-12 flex flex-col">
+                {/* Icon Hub (Connects Top and Bottom) */}
+                <div className="absolute -top-10 left-8 sm:left-12 w-20 h-20 rounded-2xl bg-white shadow-xl border border-black/5 flex items-center justify-center z-10">
+                  <activeSkill.icon
+                    size={36}
+                    style={{ color: activeSkill.color }}
+                    strokeWidth={2}
+                  />
+                </div>
+
+                <div className="mt-8 sm:mt-6 max-w-2xl">
+                  <h3 className="font-clash text-3xl sm:text-4xl lg:text-5xl font-black text-themeBlack leading-tight mb-2">
+                    {activeSkill.title}
+                  </h3>
+                  <p
+                    className="font-epilogue font-bold text-xs sm:text-sm uppercase tracking-[0.2em] mb-6"
+                    style={{ color: activeSkill.color }}
+                  >
+                    {activeSkill.subtitle}
+                  </p>
+                  <p className="font-epilogue text-sm sm:text-base text-themeBlack/70 leading-relaxed mb-8">
+                    {activeSkill.description}
+                  </p>
+                </div>
+
+                {/* Node Graph / Tech Pills Layout */}
+                <div className="mt-auto">
+                  <div className="text-[10px] font-bold tracking-[0.3em] text-themeBlack/30 mb-4 uppercase font-geist">
+                    Ecosystem & Tools
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {activeSkill.skills.map((tech, i) => (
+                      <motion.div
+                        key={tech}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 + i * 0.05, duration: 0.4 }}
+                        className="px-4 py-2.5 rounded-xl bg-white border border-black/10 shadow-sm flex items-center gap-2 hover:shadow-md hover:border-black/20 transition-all cursor-default"
+                      >
+                        <div
+                          className="w-1.5 h-1.5 rounded-full"
+                          style={{ backgroundColor: activeSkill.color }}
+                        />
+                        <span className="font-mono text-[10px] sm:text-xs font-bold text-themeBlack uppercase">
+                          {tech}
+                        </span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Decorative Progress Bar inside card */}
+              <motion.div
+                key={`progress-${activeSkill.id}`}
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 8, ease: "linear" }}
+                className="absolute bottom-0 left-0 h-1"
+                style={{ backgroundColor: activeSkill.color }}
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </section>

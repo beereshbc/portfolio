@@ -19,7 +19,7 @@ const Home = () => {
       }}
     >
       <div className="relative bg-background text-themeBlack selection:bg-accent selection:text-white min-h-screen overflow-x-hidden">
-        <Navbar />
+        {/* <Navbar /> */}
 
         <main className="w-full flex flex-col">
           {/* HERO SECTION */}

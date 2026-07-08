@@ -280,7 +280,8 @@ const Hero = () => {
 
         <div className="text-3xl md:text-7xl mb-40 md:mb-96 font-medium">
           <p className="inline-flex items-baseline gap-2">
-            I'm Not a Vibe Coder <Smile size={20} />
+            <p className="  text-orange-600"> I CoDe</p>, Not v!be CoDe.
+            <Smile size={20} />
           </p>
         </div>
 

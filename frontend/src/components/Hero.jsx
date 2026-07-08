@@ -6,7 +6,15 @@ import {
   useSpring,
   AnimatePresence,
 } from "framer-motion";
-import { ArrowRight, Code2, Palette, TerminalSquare } from "lucide-react";
+import {
+  ArrowRight,
+  Code2,
+  CodeSquare,
+  CupSoda,
+  Palette,
+  Smile,
+  TerminalSquare,
+} from "lucide-react";
 import { assets } from "../assets/assets";
 
 /* ─────────────────────────────────────────────────────────────────
@@ -270,6 +278,12 @@ const Hero = () => {
       >
         <DustParticles />
 
+        <div className="text-3xl md:text-7xl mb-40 md:mb-96 font-medium">
+          <p className="inline-flex items-baseline gap-2">
+            I'm Not a Vibe Coder <Smile size={20} />
+          </p>
+        </div>
+
         {/* 1. BACKGROUND HUGE TEXT (Behind Image) */}
         <motion.div
           style={{ x: bgTxtX, y: bgTxtY }}
@@ -369,7 +383,7 @@ const Hero = () => {
           {/* Secondary Cards mapping using Lucide Icons */}
           {[
             { date: "MERN Stack", title: "React & Node.js", icon: Code2 },
-            { date: "Modern UI", title: "Tailwind & Framer", icon: Palette },
+            { date: "DSA", title: "Java(OOP) + DSA", icon: CupSoda },
           ].map((card, idx) => (
             <motion.div
               key={idx}

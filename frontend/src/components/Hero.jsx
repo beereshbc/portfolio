@@ -229,6 +229,208 @@ const DustParticles = () => {
 };
 
 /* ─────────────────────────────────────────────────────────────────
+   PARTICLE IMAGE — converts a raster photo into a cursor-reactive
+   particle field. Pixels are sampled from an off-screen canvas,
+   near-white / transparent background pixels are dropped, and the
+   surviving pixels retain their original RGB color so the subject
+   still reads naturally (not tinted or monochrome).
+───────────────────────────────────────────────────────────────── */
+const ParticleImage = ({
+  src,
+  className = "",
+  particleGap = 1, // smaller = denser field, more particles
+  maxSampleDim = 3000, // caps the off-screen sampling resolution for perf
+  mouseRadius = 35,
+  repelStrength = 1.6,
+  easing = 98, // higher = slower/softer return to base position
+}) => {
+  const containerRef = useRef(null);
+  const canvasRef = useRef(null);
+  const particlesRef = useRef([]);
+  const mouseRef = useRef({ x: null, y: null, radius: mouseRadius });
+  const rafRef = useRef(null);
+  const imgRef = useRef(null);
+  const [ready, setReady] = useState(false);
+
+  // Sample the image into a particle array sized to fit the container height
+  const buildParticles = useCallback(
+    (img, canvas) => {
+      const container = containerRef.current;
+      if (!container || !img.naturalWidth) return [];
+
+      const displayHeight = container.clientHeight;
+      const displayWidth = Math.round(
+        (img.naturalWidth / img.naturalHeight) * displayHeight
+      );
+
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
+      canvas.style.width = `${displayWidth}px`;
+      canvas.style.height = `${displayHeight}px`;
+
+      // Off-screen canvas at a capped resolution — this is what we
+      // repeatedly call getImageData on, so willReadFrequently helps here.
+      const scaleDown = Math.min(
+        1,
+        maxSampleDim / Math.max(img.naturalWidth, img.naturalHeight)
+      );
+      const sw = Math.max(1, Math.round(img.naturalWidth * scaleDown));
+      const sh = Math.max(1, Math.round(img.naturalHeight * scaleDown));
+
+      const off = document.createElement("canvas");
+      off.width = sw;
+      off.height = sh;
+      const offCtx = off.getContext("2d", { willReadFrequently: true });
+      offCtx.drawImage(img, 0, 0, sw, sh);
+
+      let pixels;
+      try {
+        pixels = offCtx.getImageData(0, 0, sw, sh).data;
+      } catch (err) {
+        // Likely a CORS-tainted canvas — image must be same-origin or served
+        // with proper CORS headers for pixel sampling to work.
+        console.error("ParticleImage: could not read pixel data (CORS?)", err);
+        return [];
+      }
+
+      const scaleX = displayWidth / sw;
+      const scaleY = displayHeight / sh;
+      const particles = [];
+
+      for (let y = 0; y < sh; y += particleGap) {
+        for (let x = 0; x < sw; x += particleGap) {
+          const i = (y * sw + x) * 4;
+          const r = pixels[i];
+          const g = pixels[i + 1];
+          const b = pixels[i + 2];
+          const a = pixels[i + 3];
+
+          if (a < 100) continue; // transparent background
+          if (r > 240 && g > 240 && b > 240) continue; // flattened white background
+
+          const baseX = x * scaleX;
+          const baseY = y * scaleY;
+
+          particles.push({
+            // start scattered so the portrait assembles on load
+            x: Math.random() * displayWidth,
+            y: Math.random() * displayHeight,
+            baseX,
+            baseY,
+            size: Math.random() * 1.3 + 1,
+            color: `rgb(${r},${g},${b})`,
+            density: Math.random() * 3 + 1,
+          });
+        }
+      }
+      return particles;
+    },
+    [particleGap, maxSampleDim]
+  );
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+
+    const ctx = canvas.getContext("2d");
+    let cancelled = false;
+
+    const img = new Image();
+    imgRef.current = img;
+    img.crossOrigin = "anonymous";
+
+    const init = () => {
+      if (cancelled) return;
+      particlesRef.current = buildParticles(img, canvas);
+      setReady(true);
+    };
+
+    img.onload = init;
+    img.onerror = () => console.error("ParticleImage: failed to load", src);
+    img.src = src;
+
+    const onMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = e.clientX - rect.left;
+      mouseRef.current.y = e.clientY - rect.top;
+    };
+    const onMouseLeave = () => {
+      mouseRef.current.x = null;
+      mouseRef.current.y = null;
+    };
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseleave", onMouseLeave);
+
+    let resizeTimeout;
+    const onResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (img.complete && img.naturalWidth) init();
+      }, 150);
+    };
+    window.addEventListener("resize", onResize);
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const mouse = mouseRef.current;
+      const particles = particlesRef.current;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        if (mouse.x !== null) {
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
+
+          if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            const fx = (dx / dist) * force * p.density * repelStrength;
+            const fy = (dy / dist) * force * p.density * repelStrength;
+            p.x -= fx;
+            p.y -= fy;
+          } else {
+            p.x -= (p.x - p.baseX) / easing;
+            p.y -= (p.y - p.baseY) / easing;
+          }
+        } else {
+          p.x -= (p.x - p.baseX) / easing;
+          p.y -= (p.y - p.baseY) / easing;
+        }
+
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      }
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(resizeTimeout);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseleave", onMouseLeave);
+      window.removeEventListener("resize", onResize);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src, buildParticles]);
+
+  return (
+    <div ref={containerRef} className={`relative ${className}`}>
+      <canvas
+        ref={canvasRef}
+        className={`block transition-opacity duration-700 ${
+          ready ? "opacity-100" : "opacity-0"
+        }`}
+      />
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────────
    MAIN HERO COMPONENT
 ───────────────────────────────────────────────────────────────── */
 const Hero = () => {
@@ -337,16 +539,22 @@ const Hero = () => {
           ))}
         </div>
 
-        {/* 4. MAIN CENTER SUBJECT IMAGE */}
+        {/* 4. MAIN CENTER SUBJECT — now an interactive particle portrait */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl flex justify-center z-[5] pointer-events-none">
-          <motion.img
+          <motion.div
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            src={assets.footerImage}
-            alt="Beeresh Kumar"
-            className="h-[65vh] sm:h-[75vh] md:h-[85vh] w-auto object-cover object-bottom drop-shadow-2xl"
-          />
+          >
+            <ParticleImage
+              src={assets.footerImage}
+              className="h-[65vh] sm:h-[75vh] md:h-[85vh] drop-shadow-2xl"
+              particleGap={3}
+              mouseRadius={85}
+              repelStrength={1.6}
+              easing={12}
+            />
+          </motion.div>
           {/* Soft gradient fade at the bottom of the image for light theme */}
           <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-[#FAFAFA] to-transparent z-[6]" />
         </div>

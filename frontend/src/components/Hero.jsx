@@ -144,89 +144,7 @@ const JellyText = ({ text, className = "" }) => {
   );
 };
 
-/* ─────────────────────────────────────────────────────────────────
-   ATMOSPHERIC DUST — Dark particles for Light Theme
-───────────────────────────────────────────────────────────────── */
-const DustParticles = () => {
-  const canvasRef = useRef(null);
-  const particlesRef = useRef([]);
-  const animationRef = useRef(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-
-    const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-      initParticles();
-    };
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.size = Math.random() * 1.5 + 0.5;
-        this.speedX = (Math.random() - 0.5) * 0.2;
-        this.speedY = (Math.random() - 0.5) * 0.15;
-        this.opacity = Math.random() * 0.3 + 0.05;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0) this.x = width;
-        if (this.x > width) this.x = 0;
-        if (this.y < 0) this.y = height;
-        if (this.y > height) this.y = 0;
-      }
-      draw(ctx) {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        // Black particles for light background
-        ctx.fillStyle = `rgba(0, 0, 0, ${this.opacity})`;
-        ctx.fill();
-      }
-    }
-
-    const initParticles = () => {
-      const particleCount = Math.min(80, Math.floor((width * height) / 10000));
-      particlesRef.current = [];
-      for (let i = 0; i < particleCount; i++) {
-        particlesRef.current.push(new Particle());
-      }
-    };
-
-    const animate = () => {
-      if (!ctx) return;
-      ctx.clearRect(0, 0, width, height);
-      particlesRef.current.forEach((particle) => {
-        particle.update();
-        particle.draw(ctx);
-      });
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    window.addEventListener("resize", resize);
-    resize();
-    animate();
-    return () => {
-      window.removeEventListener("resize", resize);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 pointer-events-none z-[5] w-full h-full"
-    />
-  );
-};
 
 /* ─────────────────────────────────────────────────────────────────
    PARTICLE IMAGE — converts a raster photo into a cursor-reactive
@@ -476,16 +394,19 @@ const Hero = () => {
         ref={sectionRef}
         onMouseMove={onMove}
         // Light theme background
-        className="relative min-h-[100dvh] w-full overflow-hidden bg-[#FAFAFA] text-zinc-900 flex items-center justify-center font-primary"
+        className="relative min-h-[100dvh] w-full bg-white overflow-hidden bg-[#fffff] text-zinc-900 flex items-center justify-center font-primary"
       >
-        <DustParticles />
+    {/* Subtle Grid Pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(#000 1px, transparent 1px), 
+                           linear-gradient(90deg, #000 1px, transparent 1px)`,
+          backgroundSize: '50px 50px',
+        }}
+      />
 
-        <div className="text-3xl md:text-7xl mb-40 md:mb-96 font-medium">
-          <p className="inline-flex items-baseline gap-2">
-            <p className="  text-orange-600"> I CoDe</p>, Not v!be CoDe.
-            <Smile size={20} />
-          </p>
-        </div>
+
 
         {/* 1. BACKGROUND HUGE TEXT (Behind Image) */}
         <motion.div
@@ -497,47 +418,6 @@ const Hero = () => {
           </h1>
         </motion.div>
 
-        {/* 2. TOP NAVBAR */}
-        <div className="absolute top-0 w-full px-5 sm:px-6 md:px-12 pt-6 md:pt-8 z-[20] flex justify-between items-center font-medium">
-          <div className="font-display font-black text-xl sm:text-2xl tracking-wide uppercase text-zinc-900">
-            Beeresh B C
-          </div>
-          <div className="hidden md:flex gap-8 text-zinc-600 text-sm">
-            <a href="#about" className="hover:text-black transition-colors">
-              About
-            </a>
-            <a href="#works" className="hover:text-black transition-colors">
-              Projects
-            </a>
-            <a href="#skills" className="hover:text-black transition-colors">
-              Skills
-            </a>
-          </div>
-        </div>
-
-        {/* 3. LEFT STATS (Responsive text sizing) */}
-        <div className="absolute left-6 bottom-[-100px] md:left-12  -translate-y-1/2 z-[10] hidden lg:flex flex-col gap-10">
-          {[
-            { num: "8.6", label: "CGPA Score" },
-            { num: "40+", label: "MERN Projects" },
-            { num: "100%", label: "Client Satisfaction" },
-          ].map((stat, idx) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.5 + idx * 0.2, duration: 0.8 }}
-              className="flex flex-col"
-            >
-              <span className="font-display font-black text-2xl xl:text-4xl tracking-tight text-zinc-900">
-                {stat.num}
-              </span>
-              <span className="text-[10px] xl:text-xs font-bold text-zinc-500 uppercase tracking-widest mt-1">
-                {stat.label}
-              </span>
-            </motion.div>
-          ))}
-        </div>
 
         {/* 4. MAIN CENTER SUBJECT — now an interactive particle portrait */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl flex justify-center z-[5] pointer-events-none">
@@ -559,66 +439,6 @@ const Hero = () => {
           <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-[#FAFAFA] to-transparent z-[6]" />
         </div>
 
-        {/* 6. RIGHT SIDE GLASSMORPHISM CARDS (Light Theme widgets) */}
-        <motion.div
-          style={{ x: cardsX, y: cardsY }}
-          className="absolute right-6 xl:right-12 top-1/2 -translate-y-1/2 z-[15] hidden xl:flex flex-col gap-4 w-[280px]"
-        >
-          {/* Top Highlight Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.5 }}
-            className="bg-white/80 backdrop-blur-2xl border border-zinc-200/60 rounded-3xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-zinc-900"
-          >
-            <div className="flex justify-between items-center mb-4 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-              <span>Current Focus</span>
-              <button className="bg-zinc-100 p-2 rounded-full hover:bg-zinc-200 transition">
-                <ArrowRight size={12} className="text-zinc-600" />
-              </button>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center text-white opacity-10 font-bold text-xl shadow-lg">
-                <TerminalSquare size={20} strokeWidth={2.5} />
-              </div>
-              <span className="font-bold text-base leading-tight">
-                Full-Stack
-                <br />
-                Development
-              </span>
-            </div>
-          </motion.div>
-
-          {/* Secondary Cards mapping using Lucide Icons */}
-          {[
-            { date: "MERN Stack", title: "React & Node.js", icon: Code2 },
-            { date: "DSA", title: "Java(OOP) + DSA", icon: CupSoda },
-          ].map((card, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.7 + idx * 0.15 }}
-              className="group bg-white/60 backdrop-blur-xl border border-zinc-200/50 hover:bg-white/90 transition-all duration-300 rounded-3xl p-5 cursor-pointer shadow-sm hover:shadow-md"
-            >
-              <div className="flex justify-between items-center mb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
-                <span>{card.date}</span>
-                <ArrowRight
-                  size={12}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity text-zinc-900"
-                />
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-700 group-hover:bg-zinc-900 group-hover:text-white transition-colors duration-300">
-                  <card.icon size={18} strokeWidth={2.5} />
-                </div>
-                <span className="font-bold text-[13px] tracking-wide text-zinc-800">
-                  {card.title}
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
       </section>
     </>
   );

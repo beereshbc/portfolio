@@ -53,7 +53,7 @@
    ========================================================== */
 @layer base {
 
-    /* Root HTML */
+    /* Root HTML — smooth native scrolling */
     html {
         scroll-behavior: smooth;
         -webkit-font-smoothing: antialiased;
@@ -62,8 +62,8 @@
 
     /* Body Typography & Theme */
     body {
-        background-color: #F0EAE0;
-        color: #1A1A1A;
+        background-color: var(--background);
+        color: var(--text-primary);
         font-family: 'Epilogue', sans-serif;
         font-size: 16px;
         line-height: 1.6;
@@ -160,17 +160,52 @@
         letter-spacing: -0.5px;
     }
 
-    /* Semantic Colors */
+    /* ==========================================
+       LIGHT THEME (only theme — always active)
+       ========================================== */
     :root {
-        --color-primary: #000000;
-        --color-secondary: #5A5A5A;
-        --color-tertiary: #8B8B8B;
-        --color-accent: #F45B26;
-        --color-accent-dark: #5E0006;
-        --color-background: #F0EAE0;
-        --color-surface: #FFFFFF;
-        --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-        --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        color-scheme: light;
+
+        /* Backgrounds */
+        --background: #F0EAE0;
+        --surface: #FFFFFF;
+        --surface-alt: #F5F0E8;
+
+        /* Text hierarchy */
+        --text-primary: #1A1A1A;
+        --text-secondary: #5A5A5A;
+        --text-tertiary: #8B8B8B;
+
+        /* Primary & Secondary brand combos */
+        --primary: #d94e1f;
+        --primary-muted: #b83d14;
+        --secondary: #8b7355;
+        --secondary-muted: #a89b8c;
+
+        /* Accents */
+        --theme-brown: #6b5637;
+        --accent: #F45B26;
+        --accent-dark: #5E0006;
+        --accent-rgb: 244, 91, 38;
+
+        /* UI */
+        --border: #D0D0D0;
+        --border-light: #E0E0E0;
+        --border-dark: #B0B0B0;
+
+        /* Functional */
+        --success: #16a34a;
+        --warning: #d97706;
+        --error: #dc2626;
+
+        /* Legacy aliases (backward compatible) */
+        --color-primary: var(--text-primary);
+        --color-secondary: var(--text-secondary);
+        --color-tertiary: var(--text-tertiary);
+        --color-accent: var(--accent);
+        --color-accent-dark: var(--accent-dark);
+        --color-background: var(--background);
+        --color-surface: var(--surface);
     }
 }
 
@@ -188,19 +223,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #D0D0D0;
+    background: var(--border-light);
     border-radius: 4px;
-    transition: background 0.3s ease;
+    transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #A0A0A0;
+    background: var(--text-tertiary);
 }
 
 body {
     -ms-overflow-style: none;
     scrollbar-width: thin;
-    scrollbar-color: #D0D0D0 transparent;
+    scrollbar-color: var(--border-light) transparent;
 }
 
 /* Hide scrollbar utility */
@@ -220,30 +255,30 @@ body {
 
 /* Selection Styling */
 ::selection {
-    background-color: #F45B26;
-    color: #FFFFFF;
+    background-color: var(--accent);
+    color: #ffffff;
 }
 
 ::-moz-selection {
-    background-color: #F45B26;
-    color: #FFFFFF;
+    background-color: var(--accent);
+    color: #ffffff;
 }
 
 /* Links */
 a {
     color: inherit;
     text-decoration: none;
-    transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: color 0.2s ease;
 }
 
 a:hover {
-    color: #F45B26;
+    color: var(--accent);
 }
 
 /* Buttons */
 button {
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
     font-family: 'Epilogue', sans-serif;
 }
 
@@ -253,137 +288,70 @@ textarea,
 select {
     font-family: 'Epilogue', sans-serif;
     font-size: 16px;
-    border: 1px solid #D0D0D0;
+    background-color: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 16px;
-    transition: all 0.3s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
     outline: none;
-    border-color: #F45B26;
-    box-shadow: 0 0 0 3px rgba(244, 91, 38, 0.15);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
 }
 
 /* Focus visible for accessibility */
 *:focus-visible {
-    outline: 2px solid #F45B26;
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
 
 /* ==========================================================
-   7. PREMIUM ANIMATIONS & EFFECTS
-   ========================================================== */
-
-/* Smooth page transitions */
-@keyframes pageEnter {
-    from {
-        opacity: 0;
-        filter: blur(10px);
-    }
-
-    to {
-        opacity: 1;
-        filter: blur(0px);
-    }
-}
-
-/* Enhanced text reveal */
-@keyframes textReveal {
-    0% {
-        transform: translateY(30px) skewY(5deg);
-    }
-
-    100% {
-        transform: translateY(0) skewY(0deg);
-    }
-}
-
-/* Floating parallax cards */
-@keyframes floatParallax {
-
-    0%,
-    100% {
-        transform: translateY(0px) translateX(0px);
-    }
-
-    25% {
-        transform: translateY(-15px) translateX(5px);
-    }
-
-    50% {
-        transform: translateY(-30px) translateX(0px);
-    }
-
-    75% {
-        transform: translateY(-15px) translateX(-5px);
-    }
-}
-
-/* Glow pulse for interactive elements */
-@keyframes glowPulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 15px rgba(244, 91, 38, 0.15);
-    }
-
-    50% {
-        box-shadow: 0 0 20px rgba(244, 91, 38, 0.25);
-    }
-}
-
-
-/* ==========================================================
-   8. COMPONENT UTILITIES
+   7. COMPONENT UTILITIES (kept simple — no motion/animation)
    ========================================================== */
 
 /* Elevated card */
 .card-elevated {
-    background: #FFFFFF;
-    border: 1px solid #D0D0D0;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: border-color 0.2s ease;
 }
 
 .card-elevated:hover {
-    border-color: #5E0006;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
+    border-color: var(--accent-dark);
 }
 
 /* Premium button styling */
 .btn-premium {
-    position: relative;
-    overflow: hidden;
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     padding: 12px 24px;
     border-radius: 8px;
     border: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 1;
+    transition: opacity 0.2s ease;
 }
 
 .btn-premium:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    opacity: 0.9;
 }
 
 /* Divider accent */
 .divider-accent {
     height: 1px;
-    background: #D0D0D0;
+    background: var(--border);
 }
 
 
 /* ==========================================================
-   9. RESPONSIVE TYPOGRAPHY
+   8. RESPONSIVE TYPOGRAPHY
    ========================================================== */
 
 @media (max-width: 768px) {
@@ -436,22 +404,15 @@ select:focus {
 
 
 /* ==========================================================
-   10. PERFORMANCE OPTIMIZATIONS
+   9. ACCESSIBILITY — respect reduced motion preference
    ========================================================== */
 
-/* GPU acceleration for animations */
-.gpu-accelerate {
-    will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-}
-
-/* Reduced motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
     * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
 }

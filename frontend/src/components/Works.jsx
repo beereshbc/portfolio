@@ -1,516 +1,598 @@
-import React, { useState, useEffect } from "react";
+// Works.jsx
+import React, { useRef, useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, FreeMode } from "swiper/modules";
 import { worksData } from "../assets/assets";
-import { ExternalLink, GitBranch, X, Code2, Box, Layers } from "lucide-react";
+import {
+  ArrowUpRight,
+  X,
+  ExternalLink,
+  Calendar,
+  Tag,
+  ChevronRight,
+  Layers,
+  Code2,
+  Sparkles,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
+import Project from "./Project";
 
-// Swiper Styles
-import "swiper/css";
-import "swiper/css/free-mode";
+/* ═════════════════════════════════════════════════════════════
+   CONFIGURATION
+   ═════════════════════════════════════════════════════════════ */
+const FALLOFF_CURVES = {
+  linear: (p) => p,
+  smooth: (p) => p * p * (3 - 2 * p),
+  sharp: (p) => p * p * p,
+};
 
-/* ─────────────────────────────────────────────────────────────────
-   ISOMETRIC WIREFRAME GRAPHICS (For the main carousel cards)
-───────────────────────────────────────────────────────────────── */
-const GraphicDiscovery = () => (
-  <svg viewBox="0 0 200 200" className="w-full h-full opacity-60">
-    <g transform="translate(100, 120) scale(1, 0.5) rotate(45)">
-      <path
-        d="M-60,-60 L60,-60 L60,60 L-60,60 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeDasharray="2 4"
-        strokeOpacity="0.3"
-      />
-      <path
-        d="M-30,-60 L-30,60 M0,-60 L0,60 M30,-60 L30,60"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeOpacity="0.1"
-      />
-      <path
-        d="M-60,-30 L60,-30 M-60,0 L60,0 M-60,30 L60,30"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeOpacity="0.1"
-      />
-      <path
-        d="M-40,-40 L40,-40 L40,40 L-40,40 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <rect
-        x="-30"
-        y="-30"
-        width="20"
-        height="20"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <rect
-        x="0"
-        y="-30"
-        width="30"
-        height="6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <rect
-        x="0"
-        y="-15"
-        width="20"
-        height="6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <rect
-        x="-30"
-        y="0"
-        width="60"
-        height="10"
-        fill="currentColor"
-        stroke="none"
-      />
-      <rect
-        x="-30"
-        y="20"
-        width="20"
-        height="10"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <rect
-        x="0"
-        y="20"
-        width="30"
-        height="10"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-    </g>
-    <g transform="translate(120, 80)">
-      <circle
-        cx="0"
-        cy="0"
-        r="24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      <circle
-        cx="0"
-        cy="0"
-        r="18"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-      />
-      <line
-        x1="16"
-        y1="16"
-        x2="45"
-        y2="45"
-        stroke="currentColor"
-        strokeWidth="6"
-        strokeLinecap="round"
-      />
-      <line
-        x1="16"
-        y1="16"
-        x2="45"
-        y2="45"
-        stroke="#000"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </g>
-  </svg>
-);
+const NOTES = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51];
 
-const GraphicProduction = () => (
-  <svg viewBox="0 0 200 200" className="w-full h-full opacity-60">
-    <g transform="translate(100, 140) scale(1, 0.5) rotate(45)">
-      <path
-        d="M-60,-60 L60,-60 L60,60 L-60,60 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeDasharray="2 4"
-        strokeOpacity="0.3"
-      />
-      <path
-        d="M-40,-40 L40,-40 L40,40 L-40,40 Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <circle
-        cx="-15"
-        cy="-15"
-        r="12"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeDasharray="2 2"
-        strokeOpacity="0.4"
-      />
-      <rect
-        x="10"
-        y="-25"
-        width="20"
-        height="20"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeDasharray="2 2"
-        strokeOpacity="0.4"
-      />
-      <rect
-        x="-25"
-        y="15"
-        width="20"
-        height="20"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1"
-        strokeDasharray="2 2"
-        strokeOpacity="0.4"
-      />
-      <g transform="translate(10, 10)">
-        <circle
-          cx="-25"
-          cy="-25"
-          r="12"
-          fill="#fff"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-      </g>
-      <g transform="translate(20, 20)">
-        <rect
-          x="-10"
-          y="-45"
-          width="20"
-          height="20"
-          fill="#fff"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-      </g>
-      <g transform="translate(10, 10)">
-        <rect
-          x="-35"
-          y="5"
-          width="20"
-          height="20"
-          fill="#fff"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-      </g>
-      <g transform="translate(15, 15)">
-        <rect
-          x="15"
-          y="-5"
-          width="20"
-          height="4"
-          fill="#fff"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <rect
-          x="15"
-          y="5"
-          width="20"
-          height="4"
-          fill="#fff"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <rect
-          x="15"
-          y="15"
-          width="20"
-          height="4"
-          fill="#fff"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-      </g>
-    </g>
-  </svg>
-);
+const CATEGORIES = ["All", "Web App", "Mobile", "Web3", "AI/ML"];
 
-/* ─────────────────────────────────────────────────────────────────
-   MAIN WORKS COMPONENT
-───────────────────────────────────────────────────────────────── */
-const Works = () => {
-  const [selectedProject, setSelectedProject] = useState(null);
+/* ═════════════════════════════════════════════════════════════
+   AUDIO ENGINE
+   ═════════════════════════════════════════════════════════════ */
+const usePianoAudio = (enabled = true) => {
+  const ctxRef = useRef(null);
 
-  // Lock body scroll when modal is open to prevent double-scrolling
+  const playNote = useCallback((index, velocity = 0.25) => {
+    if (!enabled) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!ctxRef.current) ctxRef.current = new AudioCtx();
+      const ctx = ctxRef.current;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const freq = NOTES[index % NOTES.length];
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(velocity, ctx.currentTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.45);
+    } catch (e) {}
+  }, [enabled]);
+
+  return { playNote };
+};
+
+/* ═════════════════════════════════════════════════════════════
+   SMOOTH SCROLL HOOK
+   ═════════════════════════════════════════════════════════════ */
+const useSmoothScroll = () => {
   useEffect(() => {
-    if (selectedProject) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    const html = document.documentElement;
+    const original = html.style.scrollBehavior;
+    html.style.scrollBehavior = "smooth";
     return () => {
-      document.body.style.overflow = "unset";
+      html.style.scrollBehavior = original;
     };
-  }, [selectedProject]);
+  }, []);
+};
+
+/* ═════════════════════════════════════════════════════════════
+   PIANO KEY GALLERY - Standard Width, Vertical Scroll on Mobile
+   ═════════════════════════════════════════════════════════════ */
+const PianoKeyGallery = ({
+  items,
+  activeIndex,
+  setActiveIndex,
+  onSelect,
+  soundEnabled = true,
+}) => {
+  const containerRef = useRef(null);
+  const itemRefs = useRef([]);
+  const targetsRef = useRef([]);
+  const currentRef = useRef([]);
+  const rafRef = useRef(null);
+  const lastRef = useRef(0);
+  const lastPlayedRef = useRef(-1);
+  const { playNote } = usePianoAudio(soundEnabled);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mq.matches);
+    const handler = (e) => setReducedMotion(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const runFrame = useCallback((now) => {
+    const dt = Math.min((now - lastRef.current) / 1000, 0.05);
+    lastRef.current = now;
+    const tau = 0.09;
+    const k = reducedMotion ? 1 : 1 - Math.exp(-dt / tau);
+
+    let moving = false;
+    const refs = itemRefs.current;
+
+    for (let i = 0; i < refs.length; i++) {
+      const el = refs[i];
+      if (!el) continue;
+      const target = Math.max(targetsRef.current[i] || 0, activeIndex === i ? 1 : 0);
+      const cur = currentRef.current[i] || 0;
+      const next = cur + (target - cur) * k;
+      const settled = Math.abs(target - next) < 0.002;
+      const value = settled ? target : next;
+      currentRef.current[i] = value;
+      el.style.setProperty("--effect", value.toFixed(4));
+      if (!settled) moving = true;
+    }
+
+    rafRef.current = moving ? requestAnimationFrame(runFrame) : null;
+  }, [activeIndex, reducedMotion]);
+
+  const startLoop = useCallback(() => {
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    lastRef.current = performance.now();
+    rafRef.current = requestAnimationFrame(runFrame);
+  }, [runFrame]);
+
+  const handlePointerMove = useCallback((e) => {
+    const list = containerRef.current;
+    if (!list) return;
+    const rect = list.getBoundingClientRect();
+    
+    // Check if mobile - use vertical positioning
+    const pointerPos = isMobile ? e.clientY - rect.top : e.clientX - rect.left;
+    const ease = FALLOFF_CURVES.smooth;
+    const refs = itemRefs.current;
+    let maxEffect = 0;
+    let maxIndex = -1;
+
+    for (let i = 0; i < refs.length; i++) {
+      const el = refs[i];
+      if (!el) continue;
+      const center = isMobile 
+        ? el.offsetTop + el.offsetHeight / 2 
+        : el.offsetLeft + el.offsetWidth / 2;
+      const distance = Math.abs(pointerPos - center);
+      const raw = Math.max(0, 1 - distance / (isMobile ? 100 : 140));
+      const val = ease(raw);
+      targetsRef.current[i] = val;
+      if (val > maxEffect) {
+        maxEffect = val;
+        maxIndex = i;
+      }
+    }
+
+    if (maxEffect > 0.5 && maxIndex !== lastPlayedRef.current) {
+      playNote(maxIndex, maxEffect * 0.25);
+      lastPlayedRef.current = maxIndex;
+    } else if (maxEffect < 0.1) {
+      lastPlayedRef.current = -1;
+    }
+    startLoop();
+  }, [startLoop, playNote, isMobile]);
+
+  const handlePointerLeave = useCallback(() => {
+    targetsRef.current = targetsRef.current.map(() => 0);
+    lastPlayedRef.current = -1;
+    startLoop();
+  }, [startLoop]);
+
+  useEffect(() => {
+    startLoop();
+  }, [activeIndex, startLoop]);
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  const handleKeyDown = useCallback((e) => {
+    const max = items.length - 1;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev >= max ? 0 : prev + 1));
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev <= 0 ? max : prev - 1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      onSelect?.(items[activeIndex]);
+    }
+  }, [items, activeIndex, onSelect, setActiveIndex]);
+
+  const isBlackKey = (index) => [1, 3, 5].includes(index % 6);
 
   return (
-    <section
-      id="works"
-      // h-[100dvh] forces the section to be exactly viewport height.
-      // overflow-hidden prevents the main page from scrolling.
-      className="relative w-full h-[100dvh] bg-[#fff] overflow-hidden flex flex-col font-primary text-zinc-900 pt-16 md:pt-24"
+    <div
+      ref={containerRef}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      onKeyDown={handleKeyDown}
+      className={`relative w-full h-full overflow-y-auto overflow-x-hidden ${
+        isMobile ? "flex flex-col" : "flex items-start"
+      }`}
+      style={{ 
+        gap: isMobile ? "8px" : "4px",
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+      }}
+      role="list"
+      aria-label="Project gallery"
     >
-      {/* Header Area */}
-      <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 z-10 shrink-0">
-        <div>
-          <span className="text-zinc-500 font-epilogue text-sm uppercase tracking-widest font-bold mb-2 block">
-            Portfolio
-          </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-clash font-medium text-zinc-800 leading-tight">
-            Discover the <br />
-            <span className="font-bold text-black">structural process.</span>
-          </h2>
-        </div>
-        <p className="text-zinc-500 font-epilogue text-sm md:text-base max-w-sm leading-relaxed">
-          These cards provide brief technical blueprints of past projects. Click
-          anywhere on a card to uncover full details and visual snaps.
-        </p>
-      </div>
+      {/* Mounting Rail - Horizontal for desktop, Vertical for mobile */}
+      {!isMobile && (
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-zinc-900/20 z-20" />
+      )}
+      {isMobile && (
+        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-zinc-900/20 z-20" />
+      )}
 
-      {/* ── MAIN AUTO-CAROUSEL ── */}
-      <div className="w-full pl-6 md:pl-12 pb-12 z-10 flex-1 flex items-center min-h-0">
-        <Swiper
-          slidesPerView={1.1}
-          spaceBetween={20}
-          breakpoints={{
-            640: { slidesPerView: 1.8, spaceBetween: 24 },
-            1024: { slidesPerView: 2.5, spaceBetween: 32 },
-            1440: { slidesPerView: 3.2, spaceBetween: 40 },
-          }}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
-          freeMode={true}
-          modules={[Autoplay, FreeMode]}
-          className="w-full h-full max-h-[550px]"
-        >
-          {worksData.map((proj, idx) => {
-            const isDark = idx % 2 === 0;
+      <style>{`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
 
-            return (
-              <SwiperSlide key={proj.id} className="h-full">
-                {/* ENTIRE CARD IS CLICKABLE */}
-                <div
-                  onClick={() => setSelectedProject(proj)}
-                  className={`w-full h-full rounded-[32px] p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden transition-transform duration-500 hover:-translate-y-2 cursor-pointer group ${
-                    isDark
-                      ? "bg-[#0A0A0A] text-white shadow-2xl"
-                      : "bg-white text-zinc-900 border border-zinc-200 shadow-xl"
-                  }`}
-                >
-                  {/* Top Text Content */}
-                  <div className="z-10 relative">
-                    <span
-                      className={`text-[10px] uppercase tracking-[0.25em] font-epilogue font-bold mb-5 block ${isDark ? "text-zinc-400" : "text-zinc-500"}`}
-                    >
-                      {proj.category}
-                    </span>
-                    <h3 className="text-3xl md:text-4xl font-display font-medium mb-4 leading-tight tracking-tight group-hover:underline decoration-2 underline-offset-4">
-                      {proj.title}
-                    </h3>
-                    <p
-                      className={`text-xs md:text-sm font-epilogue leading-relaxed max-w-[85%] ${isDark ? "text-zinc-400" : "text-zinc-600"}`}
-                    >
-                      {proj.shortDescription}
-                    </p>
-                  </div>
+      {items.map((item, i) => {
+        const isActive = i === activeIndex;
+        const black = isBlackKey(i);
+        const effect = "var(--effect, 0)";
 
-                  {/* Blueprint Graphic Background */}
-                  <div className="absolute bottom-0 right-0 left-0 h-[60%] pointer-events-none flex items-end justify-center transition-transform duration-700 group-hover:scale-105">
-                    {isDark ? <GraphicDiscovery /> : <GraphicProduction />}
-                  </div>
-                </div>
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
-      </div>
-
-      {/* ── MODAL: FULL DETAILS & PINTEREST GRID SNAPS ── */}
-      <AnimatePresence>
-        {selectedProject && (
+        return (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-zinc-900/40 backdrop-blur-sm"
-            onClick={() => setSelectedProject(null)}
+            key={item.id}
+            ref={(el) => {
+              itemRefs.current[i] = el;
+            }}
+            className={`relative group outline-none cursor-pointer ${
+              isMobile 
+                ? "w-full h-[80px] min-h-[80px] flex-shrink-0" 
+                : "flex-1 h-full"
+            }`}
+            initial={false}
+            animate={{
+              x: !isMobile && isActive ? 4 : 0,
+              y: isMobile && isActive ? 4 : 0,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: reducedMotion ? 300 : 200,
+              damping: reducedMotion ? 30 : 25,
+            }}
+            onMouseEnter={() => {
+              setHoveredIndex(i);
+              setActiveIndex(i);
+            }}
+            onMouseLeave={() => setHoveredIndex(null)}
+            onClick={() => {
+              setActiveIndex(i);
+              onSelect?.(item);
+            }}
+            onFocus={() => setActiveIndex(i)}
+            tabIndex={0}
+            role="listitem"
+            aria-label={item.title}
+            aria-current={isActive ? "true" : undefined}
           >
-            <motion.div
-              initial={{ scale: 0.96, y: 30, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.96, y: 20, opacity: 0 }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-              // Modal acts as its own scrolling window
-              className="relative w-full max-w-[1400px] h-[95vh] bg-[#F8F9FA] rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden"
+            {/* Piano Key Body */}
+            <div
+              className={`
+                relative flex overflow-hidden h-full w-full
+                transition-colors duration-500
+                ${isMobile ? "flex-row items-center rounded-r-xl" : "flex-col items-center justify-between rounded-b-xl"}
+                ${black ? "bg-zinc-900 text-white" : "bg-white text-zinc-900"}
+              `}
+              style={{
+                transform: isMobile 
+                  ? `translateX(calc(${isActive ? 3 : 0}px + ${effect} * ${black ? 4 : 6}px))`
+                  : `translateY(calc(${isActive ? 3 : 0}px + ${effect} * ${black ? 4 : 6}px))`,
+                boxShadow: isActive
+                  ? "0 25px 50px -12px rgba(0,0,0,0.15)"
+                  : "0 4px 6px -1px rgba(0,0,0,0.05)",
+                border: isActive 
+                  ? black 
+                    ? "2px solid rgba(255,255,255,0.3)" 
+                    : "2px solid rgba(0,0,0,0.15)"
+                  : "1px solid rgba(0,0,0,0.05)",
+              }}
             >
-              {/* Floating Close Button */}
-              <button
-                onClick={() => setSelectedProject(null)}
-                className="absolute top-6 right-6 p-3 rounded-full bg-white shadow-md hover:bg-zinc-100 text-zinc-900 transition-colors z-50 border border-zinc-200"
-              >
-                <X size={20} strokeWidth={2.5} />
-              </button>
+              {/* Top contact line - Desktop */}
+              {!isMobile && (
+                <div className={`w-full ${black ? "h-[2px] bg-white/15" : "h-[3px] bg-zinc-200"}`} />
+              )}
+              {/* Left contact line - Mobile */}
+              {isMobile && (
+                <div className={`h-full ${black ? "w-[2px] bg-white/15" : "w-[3px] bg-zinc-200"}`} />
+              )}
 
-              {/* Scrollable Content Area within Modal */}
-              <div className="w-full h-full overflow-y-auto custom-scrollbar">
-                {/* TOP SECTION: Project Info (Styled like the reference image) */}
-                <div className="w-full bg-white px-8 sm:px-16 pt-20 pb-16 flex flex-col lg:flex-row gap-12 lg:gap-24 relative overflow-hidden">
-                  {/* Decorative Elements mimicking the reference image */}
-                  <div className="absolute top-10 right-10 opacity-10 pointer-events-none hidden lg:block">
-                    <GraphicProduction />
-                  </div>
+              {/* Index Number */}
+              <span className={`font-mono font-bold tracking-tighter ${
+                isMobile ? "px-3" : "pt-3"
+              } ${black ? "text-[8px] sm:text-[9px] text-white/40" : "text-[9px] sm:text-[10px] text-zinc-400"}`}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
 
-                  <div className="w-full lg:w-1/2 relative z-10 flex flex-col justify-center">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: selectedProject.accentColor }}
-                      />
-                      <span className="text-xs font-epilogue font-bold text-zinc-500 uppercase tracking-widest">
-                        {selectedProject.projectType} • {selectedProject.year}
-                      </span>
-                    </div>
-
-                    <h2 className="text-4xl sm:text-6xl lg:text-7xl font-clash font-bold text-zinc-900 leading-[1.05] mb-6 tracking-tight">
-                      {selectedProject.title}
-                    </h2>
-
-                    <div className="text-sm sm:text-base font-primary text-zinc-600 leading-relaxed whitespace-pre-wrap mb-10 max-w-xl">
-                      {selectedProject.fullDescription}
-                    </div>
-
-                    {/* Links */}
-                    <div className="flex flex-wrap gap-4">
-                      {selectedProject.links?.live && (
-                        <a
-                          href={selectedProject.links.live}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="bg-[#D4F34A] hover:bg-[#c5e638] text-zinc-900 px-8 py-3.5 rounded-full text-sm font-bold font-epilogue tracking-wide flex items-center gap-2 transition-colors shadow-sm"
-                        >
-                          Explore Live <ExternalLink size={16} />
-                        </a>
-                      )}
-                      {selectedProject.links?.github && (
-                        <a
-                          href={selectedProject.links.github}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="bg-white border border-zinc-300 hover:bg-zinc-50 text-zinc-900 px-8 py-3.5 rounded-full text-sm font-bold font-epilogue tracking-wide flex items-center gap-2 transition-colors"
-                        >
-                          Source Code <GitBranch size={16} />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Right Side: Tech Stack Widget (Matching the modular block vibe) */}
-                  <div className="w-full lg:w-1/2 flex items-center relative z-10">
-                    <div className="bg-[#F8F9FA] rounded-[2rem] p-8 border border-zinc-100 w-full shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
-                      <div className="flex items-center gap-2 mb-6 text-zinc-900">
-                        <Code2 size={20} />
-                        <h3 className="text-lg font-bold font-clash">
-                          Technology Stack
-                        </h3>
-                      </div>
-                      <div className="flex flex-wrap gap-3">
-                        {selectedProject.softwareUsed.map((tech) => (
-                          <span
-                            key={tech}
-                            className="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide text-zinc-800 bg-white border border-zinc-200 shadow-sm"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* BOTTOM SECTION: Pinterest-style Grid Snaps */}
-                <div className="w-full px-8 sm:px-16 py-16 bg-[#F8F9FA]">
-                  <div className="flex flex-col items-center text-center mb-12">
-                    <h3 className="text-3xl md:text-4xl font-clash font-bold text-zinc-900 mb-4">
-                      Project Visuals & Snaps
-                    </h3>
-                    <p className="text-zinc-500 font-epilogue text-sm max-w-xl">
-                      A comprehensive view of the interfaces, dashboards, and
-                      visual components engineered for this platform.
-                    </p>
-                  </div>
-
-                  {/* MASONRY GRID USING CSS COLUMNS */}
-                  <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-                    {selectedProject.images.map((img, i) => (
-                      <div
-                        key={i}
-                        className="break-inside-avoid relative group rounded-2xl overflow-hidden bg-zinc-200 border border-zinc-200/60 shadow-sm"
-                      >
-                        <img
-                          src={img}
-                          alt={`${selectedProject.title} snap ${i + 1}`}
-                          className="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-700 ease-out"
-                          loading="lazy"
-                        />
-                        {/* Subtle hover overlay */}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {/* Title - Vertical on desktop, Horizontal on mobile */}
+              <div className={`flex items-center justify-center overflow-hidden ${
+                isMobile ? "flex-1 px-3" : "flex-1 w-full px-1"
+              }`}>
+                <span
+                  className={`font-clash font-bold whitespace-nowrap ${
+                    black ? "text-white/90" : "text-zinc-800"
+                  }`}
+                  style={isMobile ? {
+                    letterSpacing: "0.08em",
+                    fontSize: "14px",
+                    opacity: isActive ? 1 : `calc(0.7 + ${effect} * 0.3)`,
+                  } : {
+                    writingMode: "vertical-rl",
+                    transform: "rotate(180deg)",
+                    letterSpacing: "0.12em",
+                    fontSize: "14px",
+                    opacity: isActive ? 1 : `calc(0.7 + ${effect} * 0.3)`,
+                  }}
+                >
+                  {item.title}
+                </span>
               </div>
-            </motion.div>
+
+              {/* Category Badge */}
+              <div className={isMobile ? "px-3" : "pb-3 px-1"}>
+                <span
+                  className={`text-[7px] sm:text-[8px] font-semibold uppercase tracking-widest ${
+                    black ? "text-zinc-400" : "text-zinc-500"
+                  }`}
+                  style={isMobile ? {
+                    opacity: isActive ? 0.9 : 0.5,
+                  } : {
+                    writingMode: "vertical-rl",
+                    transform: "rotate(180deg)",
+                    opacity: isActive ? 0.9 : 0.5,
+                  }}
+                >
+                  {item.category}
+                </span>
+              </div>
+
+              {/* Indicator Dot */}
+              <div className={isMobile ? "px-3" : "pb-2"}>
+                <div
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${
+                    isActive
+                      ? black
+                        ? "bg-white scale-110"
+                        : "bg-zinc-900 scale-110"
+                      : "scale-50 opacity-30"
+                  }`}
+                  style={{
+                    backgroundColor: !isActive
+                      ? black
+                        ? "rgba(255,255,255,0.3)"
+                        : "rgba(0,0,0,0.15)"
+                      : undefined,
+                  }}
+                />
+              </div>
+
+              {/* Proximity Glow */}
+              <div
+                className={`absolute inset-0 pointer-events-none ${
+                  isMobile ? "rounded-r-xl" : "rounded-b-xl"
+                }`}
+                style={{
+                  opacity: `calc(${effect} * 0.06)`,
+                  background: `radial-gradient(circle at ${isMobile ? "30% 50%" : "50% 30%"}, ${
+                    black ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.15)"
+                  }, transparent 70%)`,
+                }}
+              />
+
+              {/* Hover Overlay */}
+              <AnimatePresence>
+                {hoveredIndex === i && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={`absolute inset-0 pointer-events-none ${
+                      isMobile ? "rounded-r-xl" : "rounded-b-xl"
+                    } ${black ? "bg-white/5" : "bg-zinc-900/5"}`}
+                  />
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
+
+/* ═════════════════════════════════════════════════════════════
+   MAIN WORKS COMPONENT
+   ═════════════════════════════════════════════════════════════ */
+const Works = () => {
+  useSmoothScroll();
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isProjectOpen, setIsProjectOpen] = useState(false);
+  const [filter, setFilter] = useState("All");
+  const sectionRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.08 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const filteredItems = useMemo(() => {
+    const base = worksData.map((work, index) => ({
+      id: work.id,
+      title: work.title,
+      category: work.category,
+      shortDescription: work.shortDescription,
+      fullDescription: work.fullDescription,
+      thumbnail: work.thumbnail,
+      images: work.images,
+      techStack: work.techStack,
+      softwareUsed: work.softwareUsed || work.techStack,
+      liveUrl: work.liveUrl,
+      githubUrl: work.githubUrl,
+      links: {
+        live: work.liveUrl || work.links?.live,
+        github: work.githubUrl || work.links?.github,
+      },
+      year: work.year,
+      accentColor: work.accentColor,
+      projectType: work.projectType || work.category,
+      originalIndex: index,
+    }));
+
+    if (filter === "All") return base;
+    return base.filter((item) => item.category === filter);
+  }, [filter]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [filter]);
+
+  const handleSelect = (item) => {
+    setSelectedProject(item);
+    setIsProjectOpen(true);
+  };
+
+  const handleCloseProject = () => {
+    setIsProjectOpen(false);
+    setTimeout(() => setSelectedProject(null), 500);
+  };
+
+  return (
+    <>
+      <section
+        id="works"
+        ref={sectionRef}
+        className="relative w-full h-auto bg-[#FAFAFA] text-zinc-900 flex flex-col font-primary scroll-mt-24 overflow-hidden"
+      >
+        {/* Subtle Grid Pattern */}
+        <div 
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage: `linear-gradient(#000 1px, transparent 1px), 
+                             linear-gradient(90deg, #000 1px, transparent 1px)`,
+            backgroundSize: '50px 50px',
+          }}
+        />
+
+        {/* Header */}
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 pt-16 md:pt-20 pb-6 shrink-0">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6"
+          >
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-px w-8 md:w-12 bg-zinc-900" />
+                <span className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-zinc-900 font-bold">
+                  Selected Projects
+                </span>
+              </div>
+              <h2 className="font-clash font-black text-[40px] sm:text-[60px] md:text-[80px] text-zinc-900 leading-[0.85] tracking-tighter">
+                Works.
+              </h2>
+            </div>
+
+            {/* Category Filters */}
+            <div className="flex flex-wrap items-center gap-2">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setFilter(cat)}
+                  className={`
+                    px-3 py-2 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all duration-300
+                    ${
+                      filter === cat
+                        ? "bg-zinc-900 text-white shadow-lg shadow-zinc-900/20"
+                        : "bg-white text-zinc-600 border border-zinc-200 hover:border-zinc-400"
+                    }
+                  `}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Piano Key Gallery */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 flex-1 min-h-0 pb-6"
+          style={{ minHeight: '300px' }}
+        >
+          <PianoKeyGallery
+            items={filteredItems}
+            activeIndex={activeIndex}
+            setActiveIndex={setActiveIndex}
+            onSelect={handleSelect}
+            soundEnabled={true}
+          />
+        </motion.div>
+
+        {/* Bottom Hint */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.8 }}
+          className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 py-4 flex items-center justify-between shrink-0"
+        >
+          <p className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-[0.2em] font-semibold">
+            Click any key to explore
+          </p>
+          <div className="flex items-center gap-2 text-zinc-400">
+            <ChevronRight size={12} />
+            <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider">
+              {filteredItems.length} Projects
+            </span>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Project Detail Modal */}
+      <AnimatePresence>
+        {isProjectOpen && selectedProject && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[100] bg-[#FAFAFA] overflow-y-auto"
+          >
+            <Project 
+              project={selectedProject} 
+              onClose={handleCloseProject}
+            />
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Hide Scrollbar for modal but allow smooth scrolling */}
-      <style
-        dangerouslySetInlineStyle={{
-          __html: `
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #F8F9FA;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #D4D4D8;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #A1A1AA;
-        }
-      `,
-        }}
-      />
-    </section>
+    </>
   );
 };
 

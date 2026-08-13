@@ -17,6 +17,14 @@ const Footer = () => {
 
   return (
     <footer className="w-full pt-24 pb-12 px-6 relative bg-[#FAFAFA] text-themeBlack">
+         <div 
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(#000 1px, transparent 1px), 
+                           linear-gradient(90deg, #000 1px, transparent 1px)`,
+          backgroundSize: '50px 50px',
+        }}
+      />
       {/* --- Floating Portrait --- */}
       <div className="absolute -top-12 left-1/2  -translate-x-1/2 z-20">
         <motion.div

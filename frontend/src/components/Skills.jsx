@@ -466,7 +466,7 @@ const Skills = () => {
               className="w-full max-w-4xl"
             >
               {/* Skill Display Card */}
-              <div className="relative  rounded-3xl p-8 lg:p-12 ">
+              <div className="relative rounded-3xl p-8 lg:p-12 shadow-xl border border-zinc-100">
                 {/* Top Bar */}
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-4">

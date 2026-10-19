@@ -6,15 +6,7 @@ import {
   useSpring,
   AnimatePresence,
 } from "framer-motion";
-import {
-  ArrowRight,
-  Code2,
-  CodeSquare,
-  CupSoda,
-  Palette,
-  Smile,
-  TerminalSquare,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { assets } from "../assets/assets";
 
 /* ─────────────────────────────────────────────────────────────────
@@ -52,7 +44,7 @@ const Loader = () => {
         .rotate-one {
           left: 50%;
           margin-left: -25px;
-          border-top: 2px solid #18181B; /* zinc-900 */
+          border-top: 2px solid #18181B;
         }
         .rotate-two {
           top: -10px;
@@ -144,33 +136,25 @@ const JellyText = ({ text, className = "" }) => {
   );
 };
 
-
-
 /* ─────────────────────────────────────────────────────────────────
-   PARTICLE IMAGE — converts a raster photo into a cursor-reactive
-   particle field. Pixels are sampled from an off-screen canvas,
-   near-white / transparent background pixels are dropped, and the
-   surviving pixels retain their original RGB color so the subject
-   still reads naturally (not tinted or monochrome).
+   PARTICLE IMAGE — Interactive mouse-reactive particle field
 ───────────────────────────────────────────────────────────────── */
 const ParticleImage = ({
   src,
   className = "",
-  particleGap = 1, // smaller = denser field, more particles
-  maxSampleDim = 3000, // caps the off-screen sampling resolution for perf
-  mouseRadius = 35,
+  particleGap = 3,
+  maxSampleDim = 3000,
+  mouseRadius = 85,
   repelStrength = 1.6,
-  easing = 98, // higher = slower/softer return to base position
+  easing = 12,
 }) => {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
   const mouseRef = useRef({ x: null, y: null, radius: mouseRadius });
   const rafRef = useRef(null);
-  const imgRef = useRef(null);
   const [ready, setReady] = useState(false);
 
-  // Sample the image into a particle array sized to fit the container height
   const buildParticles = useCallback(
     (img, canvas) => {
       const container = containerRef.current;
@@ -186,8 +170,6 @@ const ParticleImage = ({
       canvas.style.width = `${displayWidth}px`;
       canvas.style.height = `${displayHeight}px`;
 
-      // Off-screen canvas at a capped resolution — this is what we
-      // repeatedly call getImageData on, so willReadFrequently helps here.
       const scaleDown = Math.min(
         1,
         maxSampleDim / Math.max(img.naturalWidth, img.naturalHeight)
@@ -205,9 +187,7 @@ const ParticleImage = ({
       try {
         pixels = offCtx.getImageData(0, 0, sw, sh).data;
       } catch (err) {
-        // Likely a CORS-tainted canvas — image must be same-origin or served
-        // with proper CORS headers for pixel sampling to work.
-        console.error("ParticleImage: could not read pixel data (CORS?)", err);
+        console.error("ParticleImage: CORS error", err);
         return [];
       }
 
@@ -223,14 +203,13 @@ const ParticleImage = ({
           const b = pixels[i + 2];
           const a = pixels[i + 3];
 
-          if (a < 100) continue; // transparent background
-          if (r > 240 && g > 240 && b > 240) continue; // flattened white background
+          if (a < 100) continue;
+          if (r > 240 && g > 240 && b > 240) continue; // Drop white bg
 
           const baseX = x * scaleX;
           const baseY = y * scaleY;
 
           particles.push({
-            // start scattered so the portrait assembles on load
             x: Math.random() * displayWidth,
             y: Math.random() * displayHeight,
             baseX,
@@ -255,7 +234,6 @@ const ParticleImage = ({
     let cancelled = false;
 
     const img = new Image();
-    imgRef.current = img;
     img.crossOrigin = "anonymous";
 
     const init = () => {
@@ -265,7 +243,7 @@ const ParticleImage = ({
     };
 
     img.onload = init;
-    img.onerror = () => console.error("ParticleImage: failed to load", src);
+    img.onerror = () => console.error("Failed to load", src);
     img.src = src;
 
     const onMouseMove = (e) => {
@@ -277,6 +255,7 @@ const ParticleImage = ({
       mouseRef.current.x = null;
       mouseRef.current.y = null;
     };
+    
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseleave", onMouseLeave);
 
@@ -333,7 +312,6 @@ const ParticleImage = ({
       window.removeEventListener("resize", onResize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src, buildParticles]);
 
   return (
@@ -362,12 +340,9 @@ const Hero = () => {
   const mx = useSpring(rawX, cfg);
   const my = useSpring(rawY, cfg);
 
-  // Transform values for different layers to create depth
+  // Depth layers
   const bgTxtX = useTransform(mx, [-0.5, 0.5], ["20px", "-20px"]);
   const bgTxtY = useTransform(my, [-0.5, 0.5], ["10px", "-10px"]);
-  const fgTxtX = useTransform(mx, [-0.5, 0.5], ["-30px", "30px"]);
-  const cardsX = useTransform(mx, [-0.5, 0.5], ["-15px", "15px"]);
-  const cardsY = useTransform(my, [-0.5, 0.5], ["-10px", "10px"]);
 
   const onMove = useCallback(
     (e) => {
@@ -379,7 +354,6 @@ const Hero = () => {
     [rawX, rawY],
   );
 
-  // Simulate loading screen
   useEffect(() => {
     const timeout = setTimeout(() => setIsLoading(false), 2000);
     return () => clearTimeout(timeout);
@@ -387,58 +361,80 @@ const Hero = () => {
 
   return (
     <>
-      {/* Loading Screen Overlay */}
       <AnimatePresence>{isLoading && <Loader />}</AnimatePresence>
 
       <section
         ref={sectionRef}
         onMouseMove={onMove}
-        // Light theme background
-        className="relative min-h-[100dvh] w-full bg-white overflow-hidden bg-[#fffff] text-zinc-900 flex items-center justify-center font-primary"
+        className="relative min-h-[100dvh] w-full overflow-hidden bg-[#FAFAFA] text-zinc-900 flex flex-col items-center justify-start pt-24 sm:pt-32"
       >
-    {/* Subtle Grid Pattern */}
-      <div 
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: `linear-gradient(#000 1px, transparent 1px), 
-                           linear-gradient(90deg, #000 1px, transparent 1px)`,
-          backgroundSize: '50px 50px',
-        }}
-      />
+        {/* ── 1. ABSTRACT BLACK & WHITE BACKGROUND ── */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <img
+            src="/bg1.jpg"
+            alt="Abstract monochrome background"
+            className="w-full h-full object-cover opacity-60 mix-blend-multiply"
+          />
+          {/* Subtle center fade to push the text forward */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#FAFAFA]/80 via-transparent to-[#FAFAFA]" />
+        </div>
 
+    
 
+        {/* ── 3. MAIN CONTENT (Typography & CTA) ── */}
+        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-3xl mx-auto mt-6 sm:mt-10">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-5xl sm:text-6xl md:text-7xl font-medium tracking-tight text-zinc-900"
+             // Or your preferred serif/sans
+          >
+            The Boring <br className="hidden sm:block" />
+            <span className="italic font-normal">Portfolio</span>
+          </motion.h1>
 
-        {/* 1. BACKGROUND HUGE TEXT (Behind Image) */}
-        <motion.div
-          style={{ x: bgTxtX, y: bgTxtY }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-[2]"
-        >
-          <h1 className="text-[22vw] md:text-[20vw] font-humane font-black leading-none whitespace-nowrap tracking-tighter text-zinc-900 opacity-90 mix-blend-multiply">
-            <JellyText text="BEERESH" />
-          </h1>
-        </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="mt-2 text-sm sm:text-base text-zinc-800 font-medium max-w-md mx-auto leading-relaxed"
+          >
+            Boring stuff about art, engineering, AI, and the little things
+            that rarely make noise.
+          </motion.p>
 
+          
+        </div>
 
-        {/* 4. MAIN CENTER SUBJECT — now an interactive particle portrait */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl flex justify-center z-[5] pointer-events-none">
+        {/* ── 4. PARTICLE PORTRAIT (Bottom Center) ── */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full opacity-80 max-w-4xl flex justify-center z-10 pointer-events-none">
           <motion.div
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
             <ParticleImage
               src={assets.footerImage}
-              className="h-[65vh] sm:h-[75vh] md:h-[85vh] drop-shadow-2xl"
+              className="h-[45vh] sm:h-[55vh] md:h-[65vh]"
               particleGap={3}
               mouseRadius={85}
               repelStrength={1.6}
               easing={12}
             />
           </motion.div>
-          {/* Soft gradient fade at the bottom of the image for light theme */}
-          <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-[#FAFAFA] to-transparent z-[6]" />
+          
+          {/* Soft gradient fade at the bottom to blend with the section */}
+          <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-[#FAFAFA] to-transparent z-20" />
         </div>
 
+        {/* Decorative subtle grain overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.04] pointer-events-none z-30"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
+        />
       </section>
     </>
   );

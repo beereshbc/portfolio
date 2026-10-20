@@ -16,10 +16,11 @@ import {
   Mail,
   Home,
   ArrowUpRight,
+  X,
 } from "lucide-react";
 
 /* ─────────────────────────────────────────────────────────────
-   CONFIGURATION
+   NAV CONFIG — `id` matches the real section id on the page
    ───────────────────────────────────────────────────────────── */
 const NAV_ITEMS = [
   {
@@ -27,61 +28,47 @@ const NAV_ITEMS = [
     icon: Home,
     id: "hero",
     description: "Welcome to my portfolio and creative space.",
-    links: [
-      { label: "Overview", href: "#hero" },
-      { label: "Highlights", href: "#highlights" },
-    ],
+    links: [{ label: "Overview", href: "#hero" }],
   },
   {
     name: "Me",
     icon: User,
     id: "me",
     description: "The person behind the pixels and code.",
-    links: [
-      { label: "About", href: "#me" },
-      { label: "Journey", href: "#journey" },
-    ],
+    links: [{ label: "About", href: "#me" }],
   },
   {
     name: "Works",
     icon: Briefcase,
     id: "works",
     description: "Selected projects and case studies.",
-    links: [
-      { label: "Featured", href: "#works" },
-      { label: "Case studies", href: "#case-studies" },
-    ],
+    links: [{ label: "Featured", href: "#works" }],
   },
   {
     name: "Skills",
     icon: Zap,
     id: "skills",
     description: "Tools, technologies and capabilities.",
-    links: [
-      { label: "Stack", href: "#skills" },
-      { label: "Services", href: "#services" },
-    ],
+    links: [{ label: "Stack", href: "#skills" }],
   },
   {
     name: "Contact",
     icon: Mail,
     id: "contact",
     description: "Let's build something together.",
-    links: [
-      { label: "Email", href: "mailto:hello@example.com" },
-      { label: "LinkedIn", href: "https://linkedin.com" },
-    ],
+    links: [{ label: "Portfolio", href: "https://beereshkumarbc.me" }],
   },
 ];
 
 const NARROW_BREAKPOINT = 640;
+const TINY_BREAKPOINT = 420;
 const EASE_OUT = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
 const easeOut = (t) => 1 - (1 - t) ** 3;
 
 /* ─────────────────────────────────────────────────────────────
-   CLASS STRINGS (Black & White)
+   CLASS STRINGS
    ───────────────────────────────────────────────────────────── */
 const ROOT =
   "group/cn relative mx-auto h-[var(--cn-bar)] w-full max-w-[var(--cn-max)] text-[14px] leading-[1.4] [-webkit-tap-highlight-color:transparent]";
@@ -92,14 +79,17 @@ const PANEL =
 const RIM =
   "pointer-events-none absolute inset-0 z-[3] rounded-[inherit] [box-shadow:inset_0_0_0_1px_var(--cn-edge),inset_0_1px_0_var(--cn-highlight)]";
 
+const PROGRESS =
+  "pointer-events-none absolute left-0 right-0 top-0 z-[4] h-[2px] overflow-hidden rounded-t-[var(--cn-radius)]";
+
 const BAR =
   "relative z-[2] box-border grid h-[var(--cn-bar)] grid-cols-[1fr_auto_1fr] items-center px-[var(--cn-inset)] group-data-[narrow]/cn:grid-cols-[auto_1fr_auto]";
 
 const MENU =
-  "inline-flex h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] cursor-pointer items-center gap-[10px] justify-self-start rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 pl-[16px] pr-[14px] [background:none] [font-family:inherit] [font-size:inherit] font-medium text-[var(--cn-text)] outline-none transition-[background-color] duration-200 ease-[ease] hover:[background:var(--cn-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] data-[icon-only]:w-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] data-[icon-only]:justify-center data-[icon-only]:p-0 group-data-[narrow]/cn:col-[3] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-end";
+  "inline-flex h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] cursor-pointer items-center gap-[10px] justify-self-start rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 pl-[16px] pr-[14px] [background:none] [font-family:inherit] [font-size:inherit] font-medium text-[var(--cn-text)] outline-none transition-[background-color] duration-200 ease-[ease] hover:[background:var(--cn-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] data-[icon-only]:w-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] data-[icon-only]:justify-center data-[icon-only]:p-0 group-data-[narrow]/cn:col-[1] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-start";
 
 const LOGO =
-  "inline-flex h-[var(--cn-logo)] items-center justify-self-center text-[var(--cn-text)] no-underline outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] [&_img]:block [&_img]:h-full [&_img]:w-auto [&_svg]:block [&_svg]:h-full [&_svg]:w-auto group-data-[narrow]/cn:col-[1] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-start group-data-[narrow]/cn:pl-[14px]";
+  "inline-flex h-[var(--cn-logo)] items-center justify-self-center text-[var(--cn-text)] no-underline outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)] [&_img]:block [&_img]:h-full [&_img]:w-auto [&_svg]:block [&_svg]:h-full [&_svg]:w-auto group-data-[narrow]/cn:col-[2] group-data-[narrow]/cn:row-[1] group-data-[narrow]/cn:justify-self-center group-data-[narrow]/cn:px-[8px]";
 
 const CTA =
   "inline-flex h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] justify-self-end cursor-pointer items-center justify-center whitespace-nowrap rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 px-[16px] [background:var(--cn-cta)] [box-shadow:var(--cn-cta-shadow)] [font-family:inherit] [font-size:inherit] font-semibold text-[var(--cn-cta-ink)] no-underline outline-none transition-[filter] duration-200 ease-[ease] hover:[filter:var(--cn-cta-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)]";
@@ -107,13 +97,16 @@ const CTA =
 const CTA_WIDE =
   "flex h-[44px] w-full cursor-pointer items-center justify-center whitespace-nowrap rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 px-[16px] [background:var(--cn-cta)] [box-shadow:var(--cn-cta-shadow)] [font-family:inherit] [font-size:inherit] font-semibold text-[var(--cn-cta-ink)] no-underline outline-none transition-[filter] duration-200 ease-[ease] hover:[filter:var(--cn-cta-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)]";
 
+const CLOSE_BTN =
+  "inline-flex h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] w-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] items-center justify-center rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] border-0 bg-transparent text-[var(--cn-text)] outline-none transition-colors duration-200 hover:[background:var(--cn-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--cn-ring)]";
+
 const CONTENT =
   "invisible absolute inset-x-0 top-[var(--cn-bar)] box-border flex flex-col gap-[var(--cn-gap)] px-[var(--cn-inset)] pb-[var(--cn-inset)] [perspective:900px] group-data-[shown]/cn:visible";
 
 const CARDS = "flex gap-[var(--cn-gap)] group-data-[narrow]/cn:flex-col";
 
 const CARD =
-  "group/card relative box-border flex min-h-[var(--cn-card)] min-w-0 flex-[1_1_0] origin-top flex-col gap-[18px] rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] px-[16px] pb-[14px] pt-[16px] [background:var(--cn-tile)] [box-shadow:var(--cn-tile-rim)] text-[var(--cn-text)] will-change-[transform,opacity] group-data-[narrow]/cn:min-h-0 group-data-[narrow]/cn:flex-none group-data-[narrow]/cn:gap-[10px] group-data-[narrow]/cn:px-[14px] group-data-[narrow]/cn:pb-[12px] group-data-[narrow]/cn:pt-[14px]";
+  "group/card relative box-border flex min-h-[var(--cn-card)] min-w-0 flex-[1_1_0] origin-top flex-col gap-[18px] rounded-[calc(var(--cn-radius)_-_var(--cn-inset))] px-[16px] pb-[14px] pt-[16px] [background:var(--cn-tile)] [box-shadow:var(--cn-tile-rim)] text-[var(--cn-text)] outline-none will-change-[transform,opacity] transition-[box-shadow] focus-visible:[box-shadow:inset_0_0_0_1.5px_var(--cn-ring)] group-data-[narrow]/cn:min-h-0 group-data-[narrow]/cn:flex-none group-data-[narrow]/cn:gap-[10px] group-data-[narrow]/cn:px-[14px] group-data-[narrow]/cn:pb-[12px] group-data-[narrow]/cn:pt-[14px]";
 
 const CARD_HEAD = "flex flex-col gap-[4px]";
 const LABEL = "text-[17px] font-semibold tracking-[-0.015em]";
@@ -134,12 +127,12 @@ const ARROW_IN =
   "absolute inset-0 h-full w-full -translate-x-[110%] translate-y-[110%] transition-transform duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/link:translate-x-0 group-hover/link:translate-y-0 group-focus-visible/link:translate-x-0 group-focus-visible/link:translate-y-0 motion-reduce:transition-none";
 
 /* ─────────────────────────────────────────────────────────────
-   BLACK & WHITE THEME
+   PURE BLACK & WHITE THEME — no hues anywhere
    ───────────────────────────────────────────────────────────── */
 const THEME = {
   dark: {
-    "--cn-panel": "rgba(20, 20, 22, 0.82)",
-    "--cn-solid": "#141416",
+    "--cn-panel": "rgba(10, 10, 11, 0.82)",
+    "--cn-solid": "#0a0a0b",
     "--cn-edge": "rgba(255, 255, 255, 0.08)",
     "--cn-highlight": "rgba(255, 255, 255, 0.07)",
     "--cn-shadow":
@@ -148,7 +141,7 @@ const THEME = {
     "--cn-muted": "rgba(250, 250, 250, 0.56)",
     "--cn-hover": "rgba(255, 255, 255, 0.06)",
     "--cn-ring": "rgba(250, 250, 250, 0.55)",
-    "--cn-tile": "linear-gradient(180deg, #1e1e21 0%, #141416 100%)",
+    "--cn-tile": "linear-gradient(180deg, #18181b 0%, #0a0a0b 100%)",
     "--cn-tile-rim":
       "inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 10px -4px rgba(0, 0, 0, 0.6)",
     "--cn-cta": "linear-gradient(180deg, #fafafa 0%, #e4e4e7 100%)",
@@ -156,10 +149,11 @@ const THEME = {
     "--cn-cta-shadow":
       "inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 16px -6px rgba(0, 0, 0, 0.6)",
     "--cn-cta-hover": "brightness(0.92)",
+    "--cn-progress": "rgba(250, 250, 250, 0.55)",
   },
   light: {
-    "--cn-panel": "rgba(250, 250, 250, 0.86)",
-    "--cn-solid": "#fafafa",
+    "--cn-panel": "rgba(255, 255, 255, 0.86)",
+    "--cn-solid": "#ffffff",
     "--cn-edge": "rgba(9, 9, 11, 0.07)",
     "--cn-highlight": "rgba(255, 255, 255, 0.95)",
     "--cn-shadow":
@@ -176,8 +170,21 @@ const THEME = {
     "--cn-cta-shadow":
       "inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 6px 14px -6px rgba(9, 9, 11, 0.45)",
     "--cn-cta-hover": "brightness(1.25)",
+    "--cn-progress": "rgba(9, 9, 11, 0.55)",
   },
 };
+
+/* ─────────────────────────────────────────────────────────────
+   FOCUS TRAP helper
+   ───────────────────────────────────────────────────────────── */
+const getFocusable = (root) =>
+  root
+    ? Array.from(
+        root.querySelectorAll(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null)
+    : [];
 
 /* ─────────────────────────────────────────────────────────────
    MAIN COMPONENT
@@ -202,6 +209,7 @@ const Navbar = ({
   style,
 }) => {
   const contentId = useId();
+  const navId = "primary-nav";
   const rootRef = useRef(null);
   const panelRef = useRef(null);
   const contentRef = useRef(null);
@@ -210,13 +218,17 @@ const Navbar = ({
   const engineRef = useRef(null);
   const leaveRef = useRef(0);
   const barRef = useRef(null);
+
   const [open, setOpen] = useState(defaultOpen);
   const [narrow, setNarrow] = useState(false);
+  const [tiny, setTiny] = useState(false);
   const [shown, setShown] = useState(defaultOpen);
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [activeId, setActiveId] = useState("");
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const hasCta = Boolean(cta);
   const palette = THEME[theme] ?? THEME.dark;
+  const showLabel = menuLabel && !tiny;
 
   const settingsRef = useRef({ open, cardEffect, stagger, bounce, speed });
   settingsRef.current = { open, cardEffect, stagger, bounce, speed };
@@ -224,7 +236,7 @@ const Navbar = ({
   const vars = useMemo(() => {
     const v = {
       ...palette,
-      "--cn-max": `${maxWidth}px`,
+      "--cn-max": `clamp(320px, calc(100vw - 16px), ${maxWidth}px)`,
       "--cn-bar": "60px",
       "--cn-inset": "8px",
       "--cn-gap": "8px",
@@ -368,18 +380,22 @@ const Navbar = ({
     engineRef.current?.refresh();
   });
 
-  /* ── Responsive detection ── */
+  /* ── Responsive detection (container-based) ── */
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return undefined;
-    const measure = () => setNarrow(root.offsetWidth < NARROW_BREAKPOINT);
+    const measure = () => {
+      const w = root.offsetWidth;
+      setNarrow(w < NARROW_BREAKPOINT);
+      setTiny(w < TINY_BREAKPOINT);
+    };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(root);
     return () => observer.disconnect();
   }, []);
 
-  /* ── Outside click + Escape ── */
+  /* ── Outside click + Escape + Focus trap ── */
   useEffect(() => {
     if (!open) return undefined;
     const onPointerDown = (event) => {
@@ -388,9 +404,24 @@ const Navbar = ({
       setOpen(false);
     };
     const onKeyDown = (event) => {
-      if (event.key !== "Escape") return;
-      setOpen(false);
-      menuRef.current?.focus();
+      if (event.key === "Escape") {
+        setOpen(false);
+        menuRef.current?.focus();
+        return;
+      }
+      if (event.key === "Tab") {
+        const focusables = getFocusable(contentRef.current);
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        } else if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      }
     };
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
@@ -399,6 +430,16 @@ const Navbar = ({
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
+
+  /* ── Body scroll lock on narrow open ── */
+  useEffect(() => {
+    if (!open || !narrow) return undefined;
+    const original = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = original;
+    };
+  }, [open, narrow]);
 
   useEffect(() => () => window.clearTimeout(leaveRef.current), []);
 
@@ -443,6 +484,56 @@ const Navbar = ({
     });
   }, []);
 
+  /* ── Active section tracking ── */
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const sectionIds = items.map((i) => i.id).filter(Boolean);
+    const els = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    if (!els.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible?.target?.id) {
+          setActiveId(visible.target.id);
+          if (window.history?.replaceState) {
+            window.history.replaceState(null, "", `#${visible.target.id}`);
+          }
+        }
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [items]);
+
+  /* ── Sync with initial hash + scroll progress ── */
+  useEffect(() => {
+    const initial = window.location.hash.slice(1);
+    if (initial) setActiveId(initial);
+
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        setScrollProgress(max > 0 ? clamp(h.scrollTop / max, 0, 1) : 0);
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   /* ── Hover open ── */
   const hover = openOn === "hover";
   const onPointerEnter = (event) => {
@@ -460,25 +551,50 @@ const Navbar = ({
   const handleNavigate = useCallback(
     (item, link, event) => {
       event?.preventDefault?.();
-      if (item) setActiveIndex(items.indexOf(item));
       setOpen(false);
       onNavigate?.(item, link);
 
-      const targetId = link.href?.replace("#", "");
-      if (targetId) {
+      const href = link?.href ?? "";
+      if (href.startsWith("#")) {
+        const targetId = href.slice(1);
         const el = document.getElementById(targetId);
         if (el) {
           const y = el.getBoundingClientRect().top + window.scrollY - 80;
           window.scrollTo({ top: y, behavior: "smooth" });
-        } else if (link.href?.startsWith("#")) {
+          setActiveId(targetId);
+          if (window.history?.pushState) {
+            window.history.pushState(null, "", `#${targetId}`);
+          }
+        } else {
           window.scrollTo({ top: 0, behavior: "smooth" });
         }
+      } else if (href) {
+        window.open(href, "_blank", "noopener,noreferrer");
       }
     },
-    [items, onNavigate]
+    [onNavigate]
   );
 
-  const isActive = (item) => activeIndex === items.indexOf(item);
+  /* ── Keyboard navigation across cards (open state) ── */
+  const onContentKeyDown = (event) => {
+    if (!open) return;
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    const cards = cardRefs.current.filter(Boolean);
+    if (!cards.length) return;
+    const currentIdx = cards.findIndex((c) => c.contains(document.activeElement));
+    const dir = event.key === "ArrowRight" ? 1 : -1;
+    const nextIdx =
+      currentIdx === -1
+        ? dir > 0
+          ? 0
+          : cards.length - 1
+        : (currentIdx + dir + cards.length) % cards.length;
+    event.preventDefault();
+    const link = cards[nextIdx]?.querySelector("a");
+    (link ?? cards[nextIdx])?.focus?.();
+  };
+
+  const isActive = (item) => activeId === item.id;
 
   /* ── Render ── */
   return (
@@ -496,11 +612,28 @@ const Navbar = ({
         data-open={open ? "" : undefined}
         data-shown={shown || open ? "" : undefined}
         data-narrow={narrow ? "" : undefined}
+        data-tiny={tiny ? "" : undefined}
         style={{ ...vars, ...style }}
         onPointerEnter={onPointerEnter}
         onPointerLeave={onPointerLeave}
       >
-        <nav ref={panelRef} className={PANEL} aria-label={ariaLabel}>
+        <nav
+          id={navId}
+          ref={panelRef}
+          className={PANEL}
+          aria-label={ariaLabel}
+        >
+          {/* Scroll progress */}
+          <div className={PROGRESS} aria-hidden="true">
+            <div
+              className="h-full origin-left transition-transform duration-150 ease-out"
+              style={{
+                transform: `scaleX(${scrollProgress})`,
+                backgroundColor: "var(--cn-progress)",
+              }}
+            />
+          </div>
+
           {/* ── Top Bar ── */}
           <div ref={barRef} className={BAR}>
             {/* Menu toggle */}
@@ -508,11 +641,11 @@ const Navbar = ({
               ref={menuRef}
               type="button"
               className={MENU}
-              data-icon-only={menuLabel ? undefined : ""}
+              data-icon-only={showLabel ? undefined : ""}
               aria-expanded={open}
               aria-controls={contentId}
               aria-label={
-                menuLabel ? undefined : open ? "Close menu" : "Open menu"
+                showLabel ? undefined : open ? "Close menu" : "Open menu"
               }
               onClick={() => setOpen((v) => !v)}
             >
@@ -528,7 +661,7 @@ const Navbar = ({
                   }`}
                 />
               </span>
-              {menuLabel && (
+              {showLabel && (
                 <span className="relative inline-grid overflow-hidden">
                   <span
                     className={`[grid-area:1/1] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
@@ -550,14 +683,19 @@ const Navbar = ({
               )}
             </button>
 
-            {/* Center — Logo / Brand */}
-            <div className={LOGO} aria-label="Brand">
-              <span className="text-[15px] font-light font-clash tracking-[-0.02em] sm:text-[16px]">
+            {/* Center — Brand */}
+            <a
+              href="#hero"
+              className={LOGO}
+              aria-label="Beereshkumar B C — home"
+              onClick={(e) => handleNavigate(null, { href: "#hero" }, e)}
+            >
+              <span className="truncate text-[15px] font-light font-clash tracking-[-0.02em] sm:text-[16px]">
                 Beereshkumar B C
               </span>
-            </div>
+            </a>
 
-            {/* Right — CTA (desktop) */}
+            {/* Right — CTA on desktop, Close on narrow+open */}
             {cta && !narrow && (
               <a
                 href={cta.href}
@@ -567,14 +705,31 @@ const Navbar = ({
                 {cta.label}
               </a>
             )}
+            {narrow && open && (
+              <button
+                type="button"
+                className={CLOSE_BTN}
+                onClick={() => setOpen(false)}
+                aria-label="Close menu"
+              >
+                <X size={18} strokeWidth={2} />
+              </button>
+            )}
+            {narrow && !open && (
+              <span
+                aria-hidden="true"
+                className="h-[calc(var(--cn-bar)_-_var(--cn-inset)*2)] w-[calc(var(--cn-bar)_-_var(--cn-inset)*2)]"
+              />
+            )}
           </div>
 
-          {/* ── Expandable Content (drops down from top) ── */}
+          {/* ── Expandable Content ── */}
           <div
             ref={contentRef}
             id={contentId}
             className={CONTENT}
             aria-hidden={!open}
+            onKeyDown={onContentKeyDown}
           >
             <div className={CARDS}>
               {items.map((item, index) => {
@@ -587,6 +742,7 @@ const Navbar = ({
                       cardRefs.current[index] = el;
                     }}
                     className={CARD}
+                    tabIndex={open ? -1 : undefined}
                     style={{
                       opacity: 0,
                       transform: "translateY(-26px) scale(0.97)",
@@ -605,6 +761,7 @@ const Navbar = ({
                         )}
                         <span
                           className={`${LABEL} ${active ? "" : "opacity-80"}`}
+                          aria-current={active ? "true" : undefined}
                         >
                           {item.name}
                         </span>
@@ -677,4 +834,4 @@ const Navbar = ({
   );
 };
 
-export default Navbar;  
+export default Navbar;

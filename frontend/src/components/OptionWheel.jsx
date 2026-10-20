@@ -1,18 +1,8 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 
 const DEFAULT_ITEMS = [
-  'Ambient',
-  'House',
-  'Techno',
-  'Jazz',
-  'Lo-Fi',
-  'Synthwave',
-  'Trance',
-  'Funk',
-  'Disco',
-  'Hip-Hop',
-  'Chillwave',
-  'Drum & Bass'
+  'Ambient', 'House', 'Techno', 'Jazz', 'Lo-Fi', 'Synthwave',
+  'Trance', 'Funk', 'Disco', 'Hip-Hop', 'Chillwave', 'Drum & Bass'
 ];
 
 const OptionWheel = ({
@@ -31,10 +21,8 @@ const OptionWheel = ({
   minOpacity = 0.05,
   smoothing = 200,
   inset = 80,
-  loop = false,
+  loop = true,        // ← circular by default now
   draggable = true,
-  soundUrl = '',
-  soundVolume = 0.5,
   className = ''
 }) => {
   const rootRef = useRef(null);
@@ -49,13 +37,13 @@ const OptionWheel = ({
   const wheelTimerRef = useRef(null);
   const dragRef = useRef(null);
   const dragMovedRef = useRef(false);
-  const audioRef = useRef(null);
-  const audioUrlRef = useRef('');
-  const lastTickRef = useRef(0);
   const [selectedIndex, setSelectedIndex] = useState(defaultSelected);
   const [isDragging, setIsDragging] = useState(false);
 
-  const remPx = typeof window !== 'undefined' ? parseFloat(getComputedStyle(document.documentElement).fontSize) || 16 : 16;
+  const remPx =
+    typeof window !== 'undefined'
+      ? parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+      : 16;
 
   onChangeRef.current = onChange;
   cfgRef.current = {
@@ -70,14 +58,9 @@ const OptionWheel = ({
     side,
     loop,
     smoothing,
-    draggable,
-    soundUrl,
-    soundVolume
+    draggable
   };
 
-  // Single rAF loop that eases the wheel position toward its target with
-  // frame-rate independent exponential smoothing, then lays every option out
-  // along the curve based on its distance from the current position.
   const runFrame = useCallback(now => {
     const dt = Math.min((now - lastRef.current) / 1000, 0.05);
     lastRef.current = now;
@@ -95,15 +78,15 @@ const OptionWheel = ({
     const els = itemRefs.current;
     const n = cfg.count;
     const mirror = cfg.side === 'right' ? -1 : 1;
-    // Options sit on a circle whose radius keeps the arc length between two
-    // neighbors equal to one row height, so tilt controls how tightly it curls.
     const tiltRad = (cfg.tilt * Math.PI) / 180;
     const R = tiltRad > 0.0005 ? cfg.rowH / tiltRad : 0;
+
     for (let i = 0; i < n; i++) {
       const el = els[i];
       if (!el) continue;
       let d = i - next;
       if (cfg.loop && n > 1) {
+        // Wrap to shortest signed arc so items re-enter from the opposite side
         d = ((d % n) + n) % n;
         if (d > n / 2) d -= n;
       }
@@ -127,31 +110,10 @@ const OptionWheel = ({
   }, []);
 
   const startLoop = useCallback(() => {
-    if (rafRef.current != null) {
-      cancelAnimationFrame(rafRef.current);
-    }
+    if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
     lastRef.current = performance.now();
     rafRef.current = requestAnimationFrame(runFrame);
   }, [runFrame]);
-
-  // Optional tick on selection change, throttled so fast scrolling can't spam
-  // it, and with playback failures (e.g. autoplay policies) silently ignored.
-  const playTick = useCallback(() => {
-    const { soundUrl, soundVolume } = cfgRef.current;
-    if (!soundUrl) return;
-    const now = performance.now();
-    if (now - lastTickRef.current < 70) return;
-    lastTickRef.current = now;
-    if (!audioRef.current || audioUrlRef.current !== soundUrl) {
-      audioRef.current = new Audio(soundUrl);
-      audioRef.current.preload = 'auto';
-      audioUrlRef.current = soundUrl;
-    }
-    const audio = audioRef.current;
-    audio.volume = Math.min(Math.max(soundVolume, 0), 1);
-    audio.currentTime = 0;
-    audio.play()?.catch(() => {});
-  }, []);
 
   const applyTarget = useCallback(
     (value, snap) => {
@@ -160,19 +122,18 @@ const OptionWheel = ({
       if (!cfg.loop) v = Math.min(Math.max(v, 0), Math.max(cfg.count - 1, 0));
       if (snap) v = Math.round(v);
       targetRef.current = v;
+
       const idx = ((Math.round(v) % cfg.count) + cfg.count) % cfg.count;
       if (idx !== selectedRef.current) {
         selectedRef.current = idx;
         setSelectedIndex(idx);
         onChangeRef.current?.(idx, cfg.items[idx]);
-        playTick();
       }
       startLoop();
     },
-    [startLoop, playTick]
+    [startLoop]
   );
 
-  // Wheel / touchpad scrolling, registered manually so it can be non-passive.
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
@@ -180,12 +141,13 @@ const OptionWheel = ({
       e.preventDefault();
       const cfg = cfgRef.current;
       const delta = e.deltaMode === 1 ? e.deltaY * 24 : e.deltaY;
-      // Cap each event at one step so notchy mouse wheels move exactly one
-      // option per click, while touchpads still scroll continuously.
       const step = Math.max(-1, Math.min(1, delta / cfg.rowH));
       applyTarget(targetRef.current + step, false);
       if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
-      wheelTimerRef.current = setTimeout(() => applyTarget(targetRef.current, true), 140);
+      wheelTimerRef.current = setTimeout(
+        () => applyTarget(targetRef.current, true),
+        140
+      );
     };
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => {
@@ -208,8 +170,6 @@ const OptionWheel = ({
       const dy = e.clientY - drag.y;
       if (!dragMovedRef.current && Math.abs(dy) > 4) {
         dragMovedRef.current = true;
-        // Capture only once a real drag starts, so plain clicks still reach
-        // the items and navigate to them.
         rootRef.current?.setPointerCapture(drag.id);
       }
       if (dragMovedRef.current) applyTarget(drag.start - dy / cfgRef.current.rowH, false);
@@ -259,7 +219,6 @@ const OptionWheel = ({
     () => () => {
       if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
-      audioRef.current?.pause();
     },
     []
   );
@@ -286,13 +245,13 @@ const OptionWheel = ({
       {items.map((label, index) => (
         <div
           key={`${label}-${index}`}
-          ref={el => {
-            itemRefs.current[index] = el;
-          }}
+          ref={el => { itemRefs.current[index] = el; }}
           role="option"
           aria-selected={selectedIndex === index}
           className={`absolute top-1/2 cursor-pointer whitespace-nowrap leading-none will-change-[transform,opacity,filter] [font-size:var(--ow-font-size)] [color:color-mix(in_srgb,var(--ow-active-color)_calc(var(--ow-p,0)*100%),var(--ow-text-color))] ${
-            side === 'right' ? 'right-[var(--ow-inset)] origin-right' : 'left-[var(--ow-inset)] origin-left'
+            side === 'right'
+              ? 'right-[var(--ow-inset)] origin-right'
+              : 'left-[var(--ow-inset)] origin-left'
           } ${selectedIndex === index ? 'font-medium' : 'font-extralight'}`}
           onClick={() => handleItemClick(index)}
         >

@@ -390,18 +390,17 @@ const Hero = () => {
             className="text-5xl sm:text-6xl md:text-7xl font-medium tracking-tight text-zinc-900"
              // Or your preferred serif/sans
           >
-            The Boring <br className="hidden sm:block" />
-            <span className="italic font-normal">Portfolio</span>
+           The InF!n!ty<br className="hidden sm:block" />
+            <span className="italic font-normal"> Mind$et</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-2 text-sm sm:text-base text-zinc-800 font-medium max-w-md mx-auto leading-relaxed"
+            className="mt-2 text-sm sm:text-base text-zinc-800 font-medium max-w-full mx-auto leading-relaxed"
           >
-            Boring stuff about art, engineering, AI, and the little things
-            that rarely make noise.
+              Things happen where they can, and where they can’t, let’s make them happen.
           </motion.p>
 
           

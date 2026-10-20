@@ -1179,7 +1179,7 @@ const Skills = () => {
               className="font-primary text-[10px] uppercase tracking-[0.4em] text-zinc-900 font-bold" />
           </motion.div>
           <motion.h2 initial={{ y: 30, opacity: 0 }} whileInView={{ y: 0, opacity: 1 }} viewport={{ once: true }}
-            className="font-clash font-black text-4xl sm:text-5xl lg:text-6xl text-zinc-900 leading-[0.9] tracking-tighter uppercase">
+            className="font-humane font-light text-4xl sm:text-5xl lg:text-6xl text-zinc-900 leading-[0.9] ">
             <DecryptedText text="Technical" speed={40} maxIterations={12} animateOn="view" className="inline-block" />{" "}
             <DecryptedText text="Expertise" speed={40} maxIterations={12} animateOn="view" className="inline-block text-zinc-500" />
           </motion.h2>

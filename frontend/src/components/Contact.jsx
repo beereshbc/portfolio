@@ -213,7 +213,7 @@ const Contact = () => {
               Get In Touch
             </span>
           </div>
-          <h2 className="font-clash font-black text-[48px] sm:text-[72px] md:text-[96px] text-zinc-900 leading-[0.85] tracking-tighter uppercase">
+          <h2 className="font-humane font-light text-[48px] sm:text-[72px] md:text-[96px] text-zinc-900 leading-[0.85] ">
             Let's Connect<span className="text-zinc-400">.</span>
           </h2>
           <p className="font-primary text-zinc-500 text-sm md:text-base max-w-md mt-4 leading-relaxed">

@@ -889,7 +889,7 @@ const Works = () => {
                   Selected Projects
                 </span>
               </div>
-              <h2 className="font-clash font-black text-[40px] sm:text-[60px] md:text-[80px] text-zinc-900 leading-[0.85] tracking-tighter">
+              <h2 className="font-humane font-light  text-[40px] sm:text-[60px] md:text-[80px] text-zinc-900 leading-[0.85] ">
                 Works.
               </h2>
             </div>

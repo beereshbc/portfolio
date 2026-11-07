@@ -167,9 +167,9 @@ const ArrowIcon = () => (
 );
 
 const InfiniteMenu = ({
-  items = [], count = 160, tileSize = 0.63, roundness = 0.2, zoom = 1.65,
-  pullBack = 1, stretch = 0.6, inertia = 0.6, autoplay = 3, grayscale = true,
-  dim = 0.5, intro = true, showInfo = true, theme = 'dark',
+  items = [], count = 160, tileSize = 0.72, roundness = 0.1, zoom = 1.65,
+  pullBack = 1, stretch = 0.6, inertia = 0.6, autoplay = 3, grayscale = false,
+  dim = 0.35, intro = true, showInfo = true, theme = 'light',
   accentColor, backgroundColor, onActiveChange, onItemClick, className = '', style
 }) => {
   const rootRef = useRef(null);
@@ -324,6 +324,10 @@ const InfiniteMenu = ({
       gl.generateMipmap(gl.TEXTURE_2D);
     };
 
+    /* Load images and paint them into square atlas cells.
+       For a landscape-desktop feel, we center-crop each image
+       so the horizontal composition survives (cover-based crop),
+       not letterboxed. Combined with roundness 0.1 → rect tiles. */
     const loadItems = list => {
       const request = ++atlas.request;
       const total = Math.max(1, list.length);
@@ -350,16 +354,26 @@ const InfiniteMenu = ({
         image.onload = () => {
           if (!alive || request !== atlas.request || !ctx) return;
           const size = atlas.cell;
-          const scale = Math.max(size / image.naturalWidth, size / image.naturalHeight);
-          const width = image.naturalWidth * scale;
-          const height = image.naturalHeight * scale;
+          // cover-crop with slight horizontal bias: prioritize width
+          const targetAspect = 1;
+          const imageAspect = image.naturalWidth / image.naturalHeight;
+          let sx = 0, sy = 0, sw = image.naturalWidth, sh = image.naturalHeight;
+          if (imageAspect > targetAspect) {
+            // wide image — crop sides
+            sw = image.naturalHeight * targetAspect;
+            sx = (image.naturalWidth - sw) / 2;
+          } else {
+            // tall image — crop top/bottom (keeps horizontal composition)
+            sh = image.naturalWidth / targetAspect;
+            sy = (image.naturalHeight - sh) / 2;
+          }
           const x = (index % atlas.cells) * size;
           const y = Math.floor(index / atlas.cells) * size;
           ctx.save();
           ctx.beginPath();
           ctx.rect(x, y, size, size);
           ctx.clip();
-          ctx.drawImage(image, x + (size - width) / 2, y + (size - height) / 2, width, height);
+          ctx.drawImage(image, sx, sy, sw, sh, x, y, size, size);
           ctx.restore();
           atlas.dirty = true;
           done();
@@ -601,7 +615,7 @@ const InfiniteMenu = ({
       gl.uniform1f(uniforms.uDim, s.dim * (0.45 + 0.55 * state.settle));
       gl.uniform1f(uniforms.uReveal, state.reveal);
       if (s.theme === 'light') {
-        gl.uniform3f(uniforms.uPlaceholder, 0.9, 0.9, 0.91);
+        gl.uniform3f(uniforms.uPlaceholder, 0.96, 0.96, 0.965);
         gl.uniform3f(uniforms.uTone, 1, 1, 1);
       } else {
         gl.uniform3f(uniforms.uPlaceholder, 0.13, 0.12, 0.15);
@@ -822,25 +836,21 @@ const Works = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Map worksData to InfiniteMenu-compatible items (add .image, .link, .shortDescription)
   const menuItems = worksData.map((work) => ({
     id: work.id,
     image: work.images?.[0] || '',
-    link: undefined, // handled by onItemClick -> opens Project modal
+    link: undefined,
     title: work.title,
     shortDescription: work.shortDescription,
-    // keep the full data for Project.jsx
     _raw: work,
   }));
 
   const handleItemClick = (_item, index) => {
-    // Use the original worksData project object so Project.jsx gets all fields
     setSelectedProject(worksData[index]);
   };
 
   const handleClose = () => setSelectedProject(null);
 
-  // Optional keyboard shortcuts inside the modal
   useEffect(() => {
     if (!selectedProject) return;
     const onKey = (e) => {
@@ -868,7 +878,7 @@ const Works = () => {
       >
         {/* Noise overlay */}
         <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none z-30"
+          className="absolute inset-0 opacity-[0.03] pointer-events-none z-30"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           }}
@@ -889,7 +899,7 @@ const Works = () => {
                   Selected Projects
                 </span>
               </div>
-              <h2 className="font-humane font-light  text-[40px] sm:text-[60px] md:text-[80px] text-zinc-900 leading-[0.85] ">
+              <h2 className="font-humane font-light text-[40px] sm:text-[60px] md:text-[80px] text-zinc-900 leading-[0.85]">
                 Works.
               </h2>
             </div>
@@ -900,33 +910,33 @@ const Works = () => {
           </motion.div>
         </div>
 
-        {/* Infinite Menu Sphere */}
+        {/* Infinite Menu Sphere — light card, no dark bg */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative z-10 w-full max-w-[1400px] mx-auto px-2 sm:px-6 md:px-12"
-          style={{ height: "clamp(420px, 65vh, 700px)", position: "relative" }}
+          style={{ height: 'clamp(420px, 65vh, 700px)', position: 'relative' }}
         >
           <InfiniteMenu
             items={menuItems}
             count={160}
-            tileSize={0.63}
-            roundness={0.2}
+            tileSize={0.72}
+            roundness={0.1}
             zoom={1.65}
             pullBack={1}
             stretch={0.6}
             inertia={0.6}
             autoplay={3}
-            grayscale
-            dim={0.5}
+            grayscale={false}
+            dim={0.35}
             intro
             showInfo
-            theme="dark"
-            accentColor="#ffffff"
-            backgroundColor="#18181B"
+            theme="light"
+            accentColor="#18181B"
+            backgroundColor="transparent"
             onItemClick={handleItemClick}
-            className="rounded-3xl border border-zinc-800 shadow-2xl shadow-zinc-900/40"
+            className="rounded-3xl border border-zinc-200 bg-white/70 backdrop-blur-sm shadow-[0_30px_80px_-40px_rgba(24,24,27,0.18)]"
           />
         </motion.div>
 
@@ -946,7 +956,7 @@ const Works = () => {
         </motion.div>
       </section>
 
-      {/* Project Detail Full Screen Modal (uses existing Project.jsx) */}
+      {/* Project Detail Modal */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
@@ -956,10 +966,7 @@ const Works = () => {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[200] bg-[#FAFAFA] overflow-y-auto"
           >
-            <Project
-              project={selectedProject}
-              onClose={handleClose}
-            />
+            <Project project={selectedProject} onClose={handleClose} />
           </motion.div>
         )}
       </AnimatePresence>

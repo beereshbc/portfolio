@@ -1362,7 +1362,7 @@ function ResumeSlide() {
         <a
           href={RESUME_FILE}
           download
-          className="mt-4 inline-flex items-center gap-2 rounded-full  px-3.5 py-1.5 text-[11.5px] font-medium text-zinc-900 hover:border-zinc-900 transition-colors"
+          className="mt-4 inline-flex items-center gap-2 rounded-full border border-zinc-300 px-3.5 py-1.5 text-[11.5px] font-medium text-zinc-900 hover:border-zinc-900 transition-colors"
         >
           <HugeiconsIcon icon={Download04Icon} size={12} strokeWidth={2} />
           Download

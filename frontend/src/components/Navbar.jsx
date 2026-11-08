@@ -127,51 +127,28 @@ const ARROW_IN =
   "absolute inset-0 h-full w-full -translate-x-[110%] translate-y-[110%] transition-transform duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/link:translate-x-0 group-hover/link:translate-y-0 group-focus-visible/link:translate-x-0 group-focus-visible/link:translate-y-0 motion-reduce:transition-none";
 
 /* ─────────────────────────────────────────────────────────────
-   PURE BLACK & WHITE THEME — no hues anywhere
+   LIGHT THEME ONLY — warm neutral palette with subtle depth
    ───────────────────────────────────────────────────────────── */
-const THEME = {
-  dark: {
-    "--cn-panel": "rgba(10, 10, 11, 0.82)",
-    "--cn-solid": "#0a0a0b",
-    "--cn-edge": "rgba(255, 255, 255, 0.08)",
-    "--cn-highlight": "rgba(255, 255, 255, 0.07)",
-    "--cn-shadow":
-      "0 24px 48px -20px rgba(0, 0, 0, 0.8), 0 6px 16px -8px rgba(0, 0, 0, 0.5)",
-    "--cn-text": "#fafafa",
-    "--cn-muted": "rgba(250, 250, 250, 0.56)",
-    "--cn-hover": "rgba(255, 255, 255, 0.06)",
-    "--cn-ring": "rgba(250, 250, 250, 0.55)",
-    "--cn-tile": "linear-gradient(180deg, #18181b 0%, #0a0a0b 100%)",
-    "--cn-tile-rim":
-      "inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 10px -4px rgba(0, 0, 0, 0.6)",
-    "--cn-cta": "linear-gradient(180deg, #fafafa 0%, #e4e4e7 100%)",
-    "--cn-cta-ink": "#09090b",
-    "--cn-cta-shadow":
-      "inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 6px 16px -6px rgba(0, 0, 0, 0.6)",
-    "--cn-cta-hover": "brightness(0.92)",
-    "--cn-progress": "rgba(250, 250, 250, 0.55)",
-  },
-  light: {
-    "--cn-panel": "rgba(255, 255, 255, 0.86)",
-    "--cn-solid": "#ffffff",
-    "--cn-edge": "rgba(9, 9, 11, 0.07)",
-    "--cn-highlight": "rgba(255, 255, 255, 0.95)",
-    "--cn-shadow":
-      "0 24px 48px -24px rgba(9, 9, 11, 0.25), 0 6px 16px -10px rgba(9, 9, 11, 0.12)",
-    "--cn-text": "#09090b",
-    "--cn-muted": "rgba(9, 9, 11, 0.56)",
-    "--cn-hover": "rgba(9, 9, 11, 0.05)",
-    "--cn-ring": "rgba(9, 9, 11, 0.45)",
-    "--cn-tile": "linear-gradient(180deg, #ffffff 0%, #f4f4f5 100%)",
-    "--cn-tile-rim":
-      "inset 0 0 0 1px rgba(9, 9, 11, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1), 0 4px 10px -5px rgba(9, 9, 11, 0.18)",
-    "--cn-cta": "linear-gradient(180deg, #18181b 0%, #09090b 100%)",
-    "--cn-cta-ink": "#fafafa",
-    "--cn-cta-shadow":
-      "inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 6px 14px -6px rgba(9, 9, 11, 0.45)",
-    "--cn-cta-hover": "brightness(1.25)",
-    "--cn-progress": "rgba(9, 9, 11, 0.55)",
-  },
+const LIGHT = {
+  "--cn-panel": "rgba(255, 255, 255, 0.82)",
+  "--cn-solid": "#ffffff",
+  "--cn-edge": "rgba(9, 9, 11, 0.06)",
+  "--cn-highlight": "rgba(255, 255, 255, 0.98)",
+  "--cn-shadow":
+    "0 1px 2px rgba(9, 9, 11, 0.04), 0 8px 24px -12px rgba(9, 9, 11, 0.14), 0 24px 48px -32px rgba(9, 9, 11, 0.18)",
+  "--cn-text": "#18181b",
+  "--cn-muted": "rgba(24, 24, 27, 0.58)",
+  "--cn-hover": "rgba(9, 9, 11, 0.045)",
+  "--cn-ring": "rgba(24, 24, 27, 0.45)",
+  "--cn-tile": "linear-gradient(180deg, #ffffff 0%, #f7f7f8 100%)",
+  "--cn-tile-rim":
+    "inset 0 0 0 1px rgba(9, 9, 11, 0.055), inset 0 1px 0 rgba(255, 255, 255, 1), 0 1px 2px rgba(9, 9, 11, 0.03), 0 6px 16px -10px rgba(9, 9, 11, 0.14)",
+  "--cn-cta": "linear-gradient(180deg, #18181b 0%, #09090b 100%)",
+  "--cn-cta-ink": "#fafafa",
+  "--cn-cta-shadow":
+    "inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 10px -4px rgba(9, 9, 11, 0.35), 0 1px 2px rgba(9, 9, 11, 0.2)",
+  "--cn-cta-hover": "brightness(1.18)",
+  "--cn-progress": "rgba(24, 24, 27, 0.5)",
 };
 
 /* ─────────────────────────────────────────────────────────────
@@ -183,7 +160,9 @@ const getFocusable = (root) =>
         root.querySelectorAll(
           'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
         )
-      ).filter((el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null)
+      ).filter(
+        (el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null
+      )
     : [];
 
 /* ─────────────────────────────────────────────────────────────
@@ -192,7 +171,6 @@ const getFocusable = (root) =>
 const Navbar = ({
   items = NAV_ITEMS,
   cta = { label: "Get started", href: "#contact" },
-  theme = "dark",
   surface = "glass",
   openOn = "click",
   cardEffect = "rise",
@@ -227,7 +205,7 @@ const Navbar = ({
   const [scrollProgress, setScrollProgress] = useState(0);
 
   const hasCta = Boolean(cta);
-  const palette = THEME[theme] ?? THEME.dark;
+  const palette = LIGHT;
   const showLabel = menuLabel && !tiny;
 
   const settingsRef = useRef({ open, cardEffect, stagger, bounce, speed });
@@ -244,13 +222,13 @@ const Navbar = ({
       "--cn-logo": "24px",
       "--cn-card": `${cardHeight}px`,
     };
-    if (surface === "glass") v["--cn-blur"] = "blur(20px) saturate(1.6)";
+    if (surface === "glass") v["--cn-blur"] = "blur(20px) saturate(1.8)";
     if (surface === "solid") {
       v["--cn-panel"] = palette["--cn-solid"];
       v["--cn-blur"] = "none";
     }
     return v;
-  }, [palette, maxWidth, surface, cardHeight]);
+  }, [maxWidth, surface, cardHeight]);
 
   /* ── Spring animation engine ── */
   useEffect(() => {
@@ -581,7 +559,9 @@ const Navbar = ({
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     const cards = cardRefs.current.filter(Boolean);
     if (!cards.length) return;
-    const currentIdx = cards.findIndex((c) => c.contains(document.activeElement));
+    const currentIdx = cards.findIndex((c) =>
+      c.contains(document.activeElement)
+    );
     const dir = event.key === "ArrowRight" ? 1 : -1;
     const nextIdx =
       currentIdx === -1

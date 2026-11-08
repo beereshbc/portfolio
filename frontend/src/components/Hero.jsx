@@ -255,7 +255,7 @@ const ParticleImage = ({
       mouseRef.current.x = null;
       mouseRef.current.y = null;
     };
-    
+
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseleave", onMouseLeave);
 
@@ -318,9 +318,8 @@ const ParticleImage = ({
     <div ref={containerRef} className={`relative ${className}`}>
       <canvas
         ref={canvasRef}
-        className={`block transition-opacity duration-700 ${
-          ready ? "opacity-100" : "opacity-0"
-        }`}
+        className={`block transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"
+          }`}
       />
     </div>
   );
@@ -379,31 +378,58 @@ const Hero = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-[#FAFAFA]/80 via-transparent to-[#FAFAFA]" />
         </div>
 
-    
 
-        {/* ── 3. MAIN CONTENT (Typography & CTA) ── */}
-        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-3xl mx-auto mt-6 sm:mt-10">
+
+        {/* ── 3. MAIN CONTENT (Typography) ── */}
+        <div className="relative z-10 flex flex-col items-center text-center px-4 sm:px-6 max-w-4xl mx-auto -mt-4 ">
+
+          {/* Headline */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl sm:text-6xl md:text-7xl font-medium tracking-tight text-zinc-900"
-             // Or your preferred serif/sans
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="
+      font-medium tracking-tight text-zinc-900
+      text-[2.75rem] leading-[1.05]
+      sm:text-6xl sm:leading-[1.05]
+      md:text-7xl md:leading-[1.02]
+    "
           >
-           The InF!n!ty<br className="hidden sm:block" />
-            <span className="italic font-normal"> Mind$et</span>
+            <span className="block">Never Compromise</span>
+
+            {/* "on" centered between the two lines */}
+            <span className="my-1  flex items-center justify-center gap-3 text-base sm:text-lg font-normal tracking-widest uppercase text-zinc-400">
+              <span className="h-px w-8 bg-zinc-300" />
+              on
+              <span className="h-px w-8 bg-zinc-300" />
+            </span>
+
+            <span className="block text-zinc-900">
+              <span className="text-orange-600 font-medium">Good</span> Things
+            </span>
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="mt-2 text-sm sm:text-base text-zinc-800 font-medium max-w-full mx-auto leading-relaxed"
-          >
-              Things happen where they can, and where they can’t, let’s make them happen.
-          </motion.p>
+          {/* Divider */}
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            animate={{ opacity: 1, scaleX: 1 }}
+            transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-4 sm:mt-6 h-px w-16 sm:w-24 bg-gradient-to-r from-transparent via-orange-500/60 to-transparent origin-center"
+          />
 
-          
+          {/* Subline */}
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="
+      mt-2
+      text-sm sm:text-base
+      text-zinc-600 font-medium tracking-wide
+      max-w-md mx-auto leading-relaxed
+    "
+          >
+            Compromise is an injury to identity.  </motion.p>
         </div>
 
         {/* ── 4. PARTICLE PORTRAIT (Bottom Center) ── */}
@@ -422,13 +448,13 @@ const Hero = () => {
               easing={12}
             />
           </motion.div>
-          
+
           {/* Soft gradient fade at the bottom to blend with the section */}
           <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-[#FAFAFA] to-transparent z-20" />
         </div>
 
         {/* Decorative subtle grain overlay */}
-        <div 
+        <div
           className="absolute inset-0 opacity-[0.04] pointer-events-none z-30"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
